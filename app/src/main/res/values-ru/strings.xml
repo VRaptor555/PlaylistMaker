@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Playlist Maker</string>
     <string name="library_button">Медиатека</string>
     <string name="search_button">Поиск</string>
     <string name="settings_button">Настройки</string>
