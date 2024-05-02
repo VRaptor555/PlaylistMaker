@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/settings"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="@dimen/medium_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="@dimen/medium_padding"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            app:icon="@drawable/arrow_back"
+            app:iconGravity="start"
+            app:iconPadding="@dimen/medium_padding"
+            app:iconTint="@color/black"
+            app:iconTintMode="multiply" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="9"
+            android:text="@string/settings_button"
+            android:layout_gravity="start|center_vertical"
+            android:textColor="@color/black"
+            android:layout_marginStart="@dimen/medium_padding"
+            android:textSize="@dimen/def_text_size"
+            />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/white"
+        android:gravity="start|center_vertical"
+        android:text="@string/dark_theme"
+        android:textColor="@color/black"
+        android:paddingStart="@dimen/medium_padding"
+        android:textSize="@dimen/small_text_size"
+        tools:ignore="RtlSymmetry" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/half_medium_padding"
+        android:backgroundTint="@color/white"
+        android:fontFamily="sans-serif"
+        android:gravity="start|center_vertical"
+        android:text="@string/share_app"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/small_text_size"
+        android:textAllCaps="false"
+        app:icon="@drawable/shareapp"
+        app:iconGravity="end"
+        app:iconPadding="20dp"
+        app:iconTint="@color/black"
+        app:iconTintMode="multiply" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/half_medium_padding"
+        android:backgroundTint="@color/white"
+        android:fontFamily="sans-serif"
+        android:gravity="start|center_vertical"
+        android:text="@string/support_text"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/small_text_size"
+        android:textAllCaps="false"
+        app:icon="@drawable/support"
+        app:iconGravity="end"
+        app:iconPadding="20dp"
+        app:iconTint="@color/black"
+        app:iconTintMode="multiply" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/half_medium_padding"
+        android:backgroundTint="@color/white"
+        android:fontFamily="sans-serif"
+        android:gravity="start|center_vertical"
+        android:text="@string/agreement_text"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/small_text_size"
+        android:textAllCaps="false"
+        app:icon="@drawable/agreement"
+        app:iconGravity="end"
+        app:iconPadding="20dp"
+        app:iconTint="@color/black"
+        app:iconTintMode="multiply" />
+
+</LinearLayout>
