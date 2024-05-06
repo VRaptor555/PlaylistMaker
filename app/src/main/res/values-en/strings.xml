@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="library_name">Library</string>
+    <string name="search_name">Search</string>
+    <string name="settings_name">Settings</string>
     <string name="library_button">Library</string>
     <string name="search_button">Search</string>
     <string name="settings_button">Settings</string>
