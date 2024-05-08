@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
@@ -16,7 +17,7 @@ class SettingsActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
 
-        val backBtn = findViewById<Button>(R.id.home)
+        val backBtn = findViewById<TextView>(R.id.home)
         val shareBtn = findViewById<Button>(R.id.share_btn)
         val supportBtn = findViewById<Button>(R.id.support_btn)
         val agreementBtn = findViewById<Button>(R.id.agreement_btn)
