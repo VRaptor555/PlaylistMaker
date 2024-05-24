@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SettingsWindowStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:background">?attr/colorSecondary</item>
+        <item name="android:padding">@dimen/medium_padding</item>
+    </style>
+    <style name="MainButtonsStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginVertical">@dimen/half_medium_padding</item>
+        <item name="android:backgroundTint">?attr/colorPrimaryVariant</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/def_text_size</item>
+        <item name="cornerRadius">@dimen/radius_button</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/icon_padding</item>
+        <item name="iconTint">?attr/colorOnSecondary</item>
+        <item name="iconTintMode">multiply</item>
+    </style>
+    <style name="SettingsButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:layout_marginTop">@dimen/half_medium_padding</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
+        <item name="iconGravity">end</item>
+        <item name="iconPadding">@dimen/icon_padding</item>
+        <item name="iconTint">?attr/colorSecondaryVariant</item>
+        <item name="iconTintMode">multiply</item>
+    </style>
+</resources>

@@ -2,13 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SettingsActivity"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true"
-    android:background="@color/color_background2"
-    android:padding="@dimen/medium_padding">
+    style="@style/SettingsWindowStyle"
+    tools:context=".SettingsActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -17,8 +12,8 @@
         android:text="@string/settings_name"
         android:padding="12dp"
         android:layout_gravity="start|center_vertical"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/color_text"
+        android:fontFamily="@font/ys_display_medium"
+        android:textColor="?attr/colorOnPrimary"
         android:textSize="@dimen/def_text_size"
         app:drawableStartCompat="@drawable/arrow_back"
         android:drawablePadding="12dp"
@@ -26,75 +21,26 @@
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/dark_btn"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="24dp"
-        android:fontFamily="sans-serif"
-        android:gravity="start|center_vertical"
-        android:paddingStart="@dimen/medium_padding"
+        style="@style/SettingsButtonStyle"
         android:text="@string/dark_theme"
-        android:textAllCaps="false"
-        android:textColor="@color/color_text2"
-        android:textSize="@dimen/small_text_size"
         tools:ignore="RtlSymmetry" />
 
     <Button
         android:id="@+id/share_btn"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="@dimen/half_medium_padding"
-        android:fontFamily="sans-serif"
-        android:gravity="start|center_vertical"
+        style="@style/SettingsButtonStyle"
         android:text="@string/share_app"
-        android:textAllCaps="false"
-        android:textColor="@color/color_text2"
-        android:textSize="@dimen/small_text_size"
-        app:icon="@drawable/shareapp"
-        app:iconGravity="end"
-        app:iconPadding="@dimen/icon_padding"
-        app:iconTint="@color/color_settings_icon"
-        app:iconTintMode="multiply" />
+        app:icon="@drawable/shareapp"/>
 
     <Button
         android:id="@+id/support_btn"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="@dimen/half_medium_padding"
-        android:fontFamily="sans-serif"
-        android:gravity="start|center_vertical"
+        style="@style/SettingsButtonStyle"
         android:text="@string/support_text"
-        android:textAllCaps="false"
-        android:textColor="@color/color_text2"
-        android:textSize="@dimen/small_text_size"
-        app:icon="@drawable/support"
-        app:iconGravity="end"
-        app:iconPadding="@dimen/icon_padding"
-        app:iconTint="@color/color_settings_icon"
-        app:iconTintMode="multiply" />
+        app:icon="@drawable/support"/>
 
     <Button
         android:id="@+id/agreement_btn"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="@dimen/half_medium_padding"
-        android:fontFamily="sans-serif"
-        android:gravity="start|center_vertical"
+        style="@style/SettingsButtonStyle"
         android:text="@string/agreement_text"
-        android:textAllCaps="false"
-        android:textColor="@color/color_text2"
-        android:textSize="@dimen/small_text_size"
-        app:icon="@drawable/agreement"
-        app:iconGravity="end"
-        app:iconPadding="@dimen/icon_padding"
-        app:iconTint="@color/color_settings_icon"
-        app:iconTintMode="multiply" />
+        app:icon="@drawable/agreement"/>
 
 </LinearLayout>
