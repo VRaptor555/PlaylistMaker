@@ -7,7 +7,7 @@
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
         <item name="colorPrimary">@color/color_background_main</item>
-        <item name="colorPrimaryVariant">@color/color_background_other</item>
+        <item name="colorPrimaryVariant">@color/color_button_main</item>
         <item name="colorOnPrimary">@color/color_text</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/color_background_other</item>
