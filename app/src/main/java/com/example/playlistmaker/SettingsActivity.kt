@@ -1,13 +1,11 @@
 package com.example.playlistmaker
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 
 
@@ -27,13 +25,27 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         shareBtn.setOnClickListener {
-            Toast.makeText(this@SettingsActivity, "Поделимся, скоро!", Toast.LENGTH_SHORT).show()
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.setType("text/plain")
+            with (getResources()){
+                shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message))
+                shareIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.share_message_subj))
+            }
+            startActivity(Intent.createChooser(shareIntent, null))
         }
         supportBtn.setOnClickListener {
-            Toast.makeText(this@SettingsActivity, "Помогите!!!", Toast.LENGTH_SHORT).show()
+            val shareIntent = Intent(Intent.ACTION_SENDTO)
+            shareIntent.data = Uri.parse("mailto:")
+            with (getResources()) {
+                shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_message_email)))
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_message_subj))
+                shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.support_message_text))
+            }
+            startActivity(shareIntent)
         }
         agreementBtn.setOnClickListener {
-            Toast.makeText(this@SettingsActivity, "Вы должны нам денег!", Toast.LENGTH_SHORT).show()
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.agreement_url)))
+            startActivity(browserIntent)
         }
     }
 }
