@@ -13,4 +13,5 @@
     <string name="share_message_subj">App for music</string>
     <string name="support_message_subj">Message to the developers and developers of the Playlist Maker app</string>
     <string name="support_message_text">Thanks to the developers for the cool app!</string>
+    <string name="input_hint">Search</string>
 </resources>

@@ -1,17 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:id="@+id/container"
+    style="@style/SettingsWindowStyle"
+    android:orientation="vertical"
     tools:context=".SearchActivity">
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center_vertical"
+        android:drawablePadding="12dp"
+        android:fontFamily="@font/ys_display_medium"
+        android:padding="12dp"
+        android:text="@string/search_name"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="@dimen/def_text_size"
+        app:drawableStartCompat="@drawable/arrow_back"
+        app:drawableTint="?attr/colorOnSecondary"
+        tools:ignore="RtlSymmetry" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/search_name"/>
+        android:orientation="horizontal">
 
-</FrameLayout>
+
+    <EditText
+        android:id="@+id/inputSearchText"
+        style="@style/SettingsButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="@dimen/half_medium_padding"
+        android:background="@drawable/shape_edit"
+        android:drawableStart="@drawable/search"
+        android:drawablePadding="@dimen/half_medium_padding"
+        android:drawableTint="@color/color_srchIcon"
+        android:hint="@string/input_hint"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:maxLength="25"
+        android:maxLines="1"
+        android:padding="@dimen/half_medium_padding"
+        android:textColor="@color/color_text"
+        android:textColorHint="@color/color_srchIcon"/>
+
+    <ImageView
+        android:id="@+id/clearIcon"
+        android:layout_width="wrap_content"
+        android:layout_marginEnd="@dimen/half_medium_padding"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:importantForAccessibility="no"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:visibility="gone"/>
+    </LinearLayout>
+
+</LinearLayout>

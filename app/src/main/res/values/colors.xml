@@ -6,4 +6,6 @@
     <color name="color_text">#1A1B22</color>
     <color name="color_text2">#FF000000</color>
     <color name="color_settings_icon">#AEAFB4</color>
+    <color name="color_srchIcon">#818C99</color>
+    <color name="color_srchField">#E6E8EB</color>
 </resources>

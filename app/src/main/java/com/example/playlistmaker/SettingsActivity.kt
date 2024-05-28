@@ -27,24 +27,20 @@ class SettingsActivity : AppCompatActivity() {
         shareBtn.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.setType("text/plain")
-            with (getResources()){
-                shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message))
-                shareIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.share_message_subj))
-            }
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message))
+            shareIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.share_message_subj))
             startActivity(Intent.createChooser(shareIntent, null))
         }
         supportBtn.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SENDTO)
             shareIntent.data = Uri.parse("mailto:")
-            with (getResources()) {
-                shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_message_email)))
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_message_subj))
-                shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.support_message_text))
-            }
+            shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_message_email)))
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_message_subj))
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.support_message_text))
             startActivity(shareIntent)
         }
         agreementBtn.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.agreement_url)))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.agreement_url)))
             startActivity(browserIntent)
         }
     }

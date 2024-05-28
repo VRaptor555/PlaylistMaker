@@ -18,7 +18,7 @@
         android:textSize="@dimen/def_text_size"
         app:drawableStartCompat="@drawable/arrow_back"
         app:drawableTint="?attr/colorOnSecondary"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"/>
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/dark_btn"
