@@ -29,20 +29,29 @@
         <Button
             android:id="@+id/search_btn"
             style="@style/MainButtonsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/search_button"
             app:icon="@drawable/search" />
 
         <Button
             android:id="@+id/library_btn"
             style="@style/MainButtonsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/library_button"
-            app:icon="@drawable/library"/>
+            app:icon="@drawable/library" />
 
         <Button
             android:id="@+id/settings_btn"
             style="@style/MainButtonsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/settings_button"
-            app:icon="@drawable/settings"/>
+            app:icon="@drawable/settings" />
     </LinearLayout>
 
 </LinearLayout>
