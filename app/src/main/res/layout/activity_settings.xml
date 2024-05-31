@@ -54,6 +54,6 @@
         android:layout_gravity="start"
         android:gravity="start|center_vertical"
         android:text="@string/agreement_text"
-        app:icon="@drawable/agreement" />
+        app:icon="@drawable/agreement"/>
 
 </LinearLayout>
