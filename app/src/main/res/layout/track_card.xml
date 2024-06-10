@@ -18,13 +18,13 @@
 
         <ImageView
             android:id="@+id/imageTrack"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="13dp"
+            android:layout_width="@dimen/track_image_size"
+            android:layout_height="@dimen/track_image_size"
             android:layout_gravity="center_vertical"
-            android:scaleType="fitCenter"
+            android:layout_marginStart="13dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_launcher_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/placeholder"
             tools:ignore="RtlSymmetry" />
 
         <LinearLayout
@@ -37,51 +37,60 @@
                 android:id="@+id/textNameTrack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
                 android:layout_marginStart="@dimen/half_medium_padding"
+                android:layout_marginTop="14dp"
+                android:ellipsize="end"
                 android:gravity="start"
+                android:maxLines="1"
                 android:paddingBottom="2dp"
                 android:textColor="?attr/colorOnSecondary"
                 android:textSize="16sp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                tools:text="Yesterday (Remastered 2009)"/>
+                tools:text="Yesterday (Remastered 2009)" />
+
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="14dp"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/textArtist"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     style="@style/ArtistTextStyle"
-                    tools:text="The Beatles"/>
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textFontWeight="1"
+                    tools:text="The Beatles" />
+
                 <TextView
                     android:id="@+id/textTime"
+                    style="@style/ArtistTextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/ArtistTextStyle"
                     android:drawablePadding="5dp"
+                    android:ellipsize="none"
+                    android:maxLines="1"
                     app:drawableStartCompat="@drawable/point"
                     app:drawableTint="?attr/colorSecondaryVariant"
                     app:drawableTintMode="multiply"
-                    tools:text="2:55"/>
+                    tools:text="2:55" />
 
             </LinearLayout>
 
         </LinearLayout>
+
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:padding="5dp"
-            android:layout_marginEnd="@dimen/half_medium_padding"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/agreement"
+            android:layout_marginEnd="@dimen/half_medium_padding"
+            android:padding="5dp"
             android:scaleType="fitXY"
-            app:tint="?attr/colorSecondaryVariant"
+            android:src="@drawable/agreement"
             android:tintMode="multiply"
-            />
+            app:tint="?attr/colorSecondaryVariant" />
 
     </LinearLayout>
 
