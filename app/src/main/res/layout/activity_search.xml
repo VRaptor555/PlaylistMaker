@@ -1,17 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    style="@style/SettingsWindowStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context=".SearchActivity">
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/home"
+        style="@style/BackButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center_vertical"
+        android:text="@string/search_name"
+        tools:ignore="RtlSymmetry" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/search_name"/>
+        android:layout_marginHorizontal="@dimen/medium_padding"
+        android:orientation="horizontal">
 
-</FrameLayout>
+
+        <EditText
+            android:id="@+id/inputSearchText"
+            style="@style/SearchTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/search"
+            android:hint="@string/input_hint"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLength="25"
+            android:maxLines="1" />
+
+        <ImageView
+            android:id="@+id/clearIcon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="@dimen/half_medium_padding"
+            android:importantForAccessibility="no"
+            android:scaleType="fitEnd"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:visibility="visible" />
+    </RelativeLayout>
+
+</LinearLayout>
