@@ -47,5 +47,11 @@
             android:src="@android:drawable/ic_menu_close_clear_cancel"
             android:visibility="visible" />
     </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:id="@+id/searchingList"/>
+
 
 </LinearLayout>
