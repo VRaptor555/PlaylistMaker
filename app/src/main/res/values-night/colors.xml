@@ -8,4 +8,6 @@
     <color name="color_settings_icon">#FFFFFFFF</color>
     <color name="color_srchIcon">#1A1B22</color>
     <color name="color_srchField">#FFFFFF</color>
+    <color name="color_refresh_btn">#FFFFFF</color>
+    <color name="color_refresh_text">#1A1B22</color>
 </resources>

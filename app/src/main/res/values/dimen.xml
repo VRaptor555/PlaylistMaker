@@ -6,4 +6,5 @@
     <dimen name="small_text_size">16sp</dimen>
     <dimen name="icon_padding">20dp</dimen>
     <dimen name="track_image_size">45dp</dimen>
+    <dimen name="small_image_size">24dp</dimen>
 </resources>

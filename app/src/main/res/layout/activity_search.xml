@@ -31,10 +31,12 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/search"
             android:hint="@string/input_hint"
+            android:imeOptions="actionDone"
             android:importantForAutofill="no"
             android:inputType="text"
             android:maxLength="25"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:singleLine="true" />
 
         <ImageView
             android:id="@+id/clearIcon"
@@ -47,11 +49,57 @@
             android:src="@android:drawable/ic_menu_close_clear_cancel"
             android:visibility="visible" />
     </RelativeLayout>
-    <androidx.recyclerview.widget.RecyclerView
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/medium_padding"
-        android:id="@+id/searchingList"/>
+        android:layout_height="match_parent">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchingList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/medium_padding" />
 
+        <LinearLayout
+            android:id="@+id/placeholder_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="?attr/not_connect_icon" />
+
+            <TextView
+                style="@style/ErrorTextStyle"
+                android:layout_width="312dp"
+                android:layout_height="wrap_content"
+                android:text="@string/not_connect"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+            <Button
+                android:id="@+id/btn_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/color_refresh_btn"
+                android:textColor="@color/color_refresh_text"
+                android:text="@string/refresh_btn"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/placeholder_found"
+            style="@style/ErrorTextStyle"
+            android:layout_width="312dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableTop="?attr/not_found_icon"
+            android:visibility="gone"
+            android:text="@string/not_found"
+            tools:ignore="UseCompatTextViewDrawableXml" />
+    </FrameLayout>
 </LinearLayout>
