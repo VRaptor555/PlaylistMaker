@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     style="@style/SettingsWindowStyle"
@@ -25,7 +26,7 @@
 
 
         <EditText
-            android:id="@+id/inputSearchText"
+            android:id="@+id/input_search_text"
             style="@style/SearchTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,18 +37,21 @@
             android:inputType="text"
             android:maxLength="25"
             android:maxLines="1"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textCursorDrawable="@drawable/cursor_color" />
 
         <ImageView
-            android:id="@+id/clearIcon"
-            android:layout_width="match_parent"
+            android:id="@+id/clear_icon"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:layout_marginEnd="@dimen/half_medium_padding"
+            android:layout_marginEnd="@dimen/half_full_padding"
             android:importantForAccessibility="no"
             android:scaleType="fitEnd"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:visibility="visible" />
+            android:src="@drawable/close_clear_cancel"
+            android:visibility="visible"
+            app:tint="@color/color_srchIcon" />
     </RelativeLayout>
 
     <FrameLayout
@@ -55,7 +59,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/searchingList"
+            android:id="@+id/searching_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/medium_padding" />
@@ -65,8 +69,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -78,17 +82,19 @@
                 style="@style/ErrorTextStyle"
                 android:layout_width="312dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_padding"
                 android:text="@string/not_connect"
                 tools:ignore="UseCompatTextViewDrawableXml" />
+
             <Button
                 android:id="@+id/btn_refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="@dimen/full_padding"
                 android:backgroundTint="@color/color_refresh_btn"
-                android:textColor="@color/color_refresh_text"
                 android:text="@string/refresh_btn"
-                />
+                android:textColor="@color/color_refresh_text" />
 
         </LinearLayout>
 
@@ -99,8 +105,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawableTop="?attr/not_found_icon"
-            android:visibility="gone"
+            android:drawablePadding="@dimen/medium_padding"
             android:text="@string/not_found"
+            android:visibility="gone"
             tools:ignore="UseCompatTextViewDrawableXml" />
     </FrameLayout>
 </LinearLayout>

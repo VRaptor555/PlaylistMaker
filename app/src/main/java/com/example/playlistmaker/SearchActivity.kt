@@ -50,11 +50,11 @@ class SearchActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
 
-        inputEditText = findViewById(R.id.inputSearchText)
-        trackList = findViewById(R.id.searchingList)
+        inputEditText = findViewById(R.id.input_search_text)
+        trackList = findViewById(R.id.searching_list)
         placeholderConnect = findViewById(R.id.placeholder_connect)
         placeholderFound = findViewById(R.id.placeholder_found)
-        val clearButton = findViewById<ImageView>(R.id.clearIcon)
+        val clearButton = findViewById<ImageView>(R.id.clear_icon)
         val backBtn = findViewById<TextView>(R.id.home)
         val refreshBtn = findViewById<Button>(R.id.btn_refresh)
 
@@ -71,6 +71,7 @@ class SearchActivity : AppCompatActivity() {
             inputEditText.setText("")
             tracks.clear()
             adapter.notifyDataSetChanged()
+            showMessage("")
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
