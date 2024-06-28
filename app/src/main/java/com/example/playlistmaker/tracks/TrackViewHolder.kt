@@ -1,5 +1,6 @@
 package com.example.playlistmaker.tracks
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +11,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.utils.dpToPx
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class TrackViewHolder private constructor(itemView: View) : ViewHolder(itemView) {
-    private val trackView: TextView = itemView.findViewById(R.id.textNameTrack)
-    private val artistView: TextView = itemView.findViewById(R.id.textArtist)
-    private val timeView: TextView = itemView.findViewById(R.id.textTime)
-    private val trackImage: ImageView = itemView.findViewById(R.id.imageTrack)
+    private val trackView: TextView = itemView.findViewById(R.id.text_name_track)
+    private val artistView: TextView = itemView.findViewById(R.id.text_artist)
+    private val timeView: TextView = itemView.findViewById(R.id.text_time)
+    private val trackImage: ImageView = itemView.findViewById(R.id.image_track)
 
     constructor(
         parent: ViewGroup
@@ -23,10 +26,12 @@ class TrackViewHolder private constructor(itemView: View) : ViewHolder(itemView)
         LayoutInflater.from(parent.context).inflate(R.layout.track_card, parent, false)
     )
 
+    @SuppressLint("SimpleDateFormat")
     fun bind(track: Track) {
         trackView.text = track.trackName
         artistView.text = track.artistName
-        timeView.text = track.trackTime
+        val trackTime: Long = java.lang.Long.parseLong(track.trackTimeMillis)
+        timeView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTime)
         Glide.with(itemView.context)
             .load(track.artworkUrl100)
             .placeholder(R.drawable.placeholder)

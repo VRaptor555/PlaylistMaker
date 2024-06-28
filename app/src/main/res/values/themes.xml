@@ -15,6 +15,8 @@
         <item name="colorOnSecondary">@color/color_text2</item>
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="not_connect_icon">@drawable/not_connect_l</item>
+        <item name="not_found_icon">@drawable/not_found_l</item>
     </style>
 
 </resources>
