@@ -7,6 +7,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -16,12 +18,18 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         val backBtn = findViewById<TextView>(R.id.home)
+        val themeSwitcher = findViewById<SwitchCompat>(R.id.theme_switcher)
         val shareBtn = findViewById<Button>(R.id.share_btn)
         val supportBtn = findViewById<Button>(R.id.support_btn)
         val agreementBtn = findViewById<Button>(R.id.agreement_btn)
 
         backBtn.setOnClickListener {
             this.finish()
+        }
+        themeSwitcher.isChecked = (applicationContext as App).darkTheme
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
+            (applicationContext as App).switchTheme(isChecked)
         }
 
         shareBtn.setOnClickListener {
