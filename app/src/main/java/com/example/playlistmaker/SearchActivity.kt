@@ -218,6 +218,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun clickTrack(track: Track){
         searchHistory.AddToSavedTrackList(track)
         adapterSearch.notifyDataSetChanged()
