@@ -17,7 +17,7 @@
         tools:ignore="RtlSymmetry" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/dark_btn"
+        android:id="@+id/theme_switcher"
         style="@style/SettingsButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

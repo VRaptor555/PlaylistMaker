@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -23,6 +25,7 @@ import com.example.playlistmaker.api.TrackResponse
 import com.example.playlistmaker.api.TracksApi
 import com.example.playlistmaker.tracks.Track
 import com.example.playlistmaker.tracks.TrackAdapter
+import com.example.playlistmaker.utils.SearchHistory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,10 +35,19 @@ import retrofit2.converter.gson.GsonConverterFactory
 class SearchActivity : AppCompatActivity() {
     private var textValue: String = TEXT_VALUE
     private val apiURL = "https://itunes.apple.com"
-    private val tracks = ArrayList<Track>()
-    private val adapter = TrackAdapter()
+    private val tracks: MutableList<Track> = mutableListOf()
+    private val adapter = TrackAdapter{
+        clickTrack(it)
+    }
+
+    // TrackSearch
+    private lateinit var sharedSearch: SharedPreferences
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var adapterSearch: TrackAdapter
+
     private lateinit var inputEditText: EditText
     private lateinit var trackList: RecyclerView
+    private lateinit var trackSeachHistoryList: RecyclerView
     private lateinit var placeholderConnect: LinearLayout
     private lateinit var placeholderFound: TextView
     private val retrofit = Retrofit.Builder()
@@ -50,21 +62,39 @@ class SearchActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
 
+        sharedSearch = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedSearch)
+        adapterSearch = TrackAdapter{
+            clickHistoryTrack(it)
+        }
+
         inputEditText = findViewById(R.id.input_search_text)
         trackList = findViewById(R.id.searching_list)
+        trackSeachHistoryList = findViewById(R.id.searching_history_list)
         placeholderConnect = findViewById(R.id.placeholder_connect)
         placeholderFound = findViewById(R.id.placeholder_found)
         val clearButton = findViewById<ImageView>(R.id.clear_icon)
         val backBtn = findViewById<TextView>(R.id.home)
         val refreshBtn = findViewById<Button>(R.id.btn_refresh)
+        val clearHistoryBtn = findViewById<Button>(R.id.btn_clear_history)
+
+        val musicLayout = findViewById<FrameLayout>(R.id.music_layout)
+        val searchHistoryLayout = findViewById<LinearLayout>(R.id.search_his_layout)
 
         adapter.tracks = tracks
+
+        adapterSearch.tracks = searchHistory.tracks
 
         backBtn.setOnClickListener {
             this.finish()
         }
         refreshBtn.setOnClickListener {
             startSearch()
+        }
+        clearHistoryBtn.setOnClickListener{
+            searchHistory.clearTracks()
+            adapterSearch.notifyDataSetChanged()
+            searchHistoryLayout.visibility = View.GONE
         }
 
         clearButton.setOnClickListener {
@@ -86,6 +116,15 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
+        inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            searchHistoryLayout.visibility = if (
+                hasFocus &&
+                inputEditText.text.isEmpty() &&
+                searchHistory.tracks.size > 0
+                ) View.VISIBLE else View.GONE
+            musicLayout.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.GONE else View.VISIBLE
+        }
+
         val searchTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
@@ -93,6 +132,12 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.isVisible = !s.isNullOrEmpty()
+                searchHistoryLayout.visibility = if (
+                    inputEditText.hasFocus() &&
+                    s?.isEmpty() == true &&
+                    searchHistory.tracks.size > 0
+                    ) View.VISIBLE else View.GONE
+                musicLayout.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true) View.GONE else View.VISIBLE
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -103,6 +148,8 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setText(textValue)
         trackList.layoutManager = LinearLayoutManager(this)
         trackList.adapter = adapter
+        trackSeachHistoryList.layoutManager = LinearLayoutManager(this)
+        trackSeachHistoryList.adapter = adapterSearch
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -171,9 +218,23 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun clickTrack(track: Track){
+        searchHistory.addToSavedTrackList(track)
+        adapterSearch.notifyDataSetChanged()
+    }
+
+    private fun clickHistoryTrack(track: Track){
+
+    }
+
     companion object {
         private const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val TEXT_VALUE = ""
     }
 
+    override fun onStop() {
+        super.onStop()
+        searchHistory.saveSearchingList()
+    }
 }

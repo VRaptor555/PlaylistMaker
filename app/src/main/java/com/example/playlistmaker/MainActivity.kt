@@ -7,6 +7,10 @@ import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 
+const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
+const val DARK_THEME_KEY = "key_dark_theme"
+const val SEARCH_HISTORY_KEY = "key_search_history"
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,5 +36,10 @@ class MainActivity : AppCompatActivity() {
             val displayIntent = Intent(this, SettingsActivity::class.java)
             startActivity(displayIntent)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (applicationContext as App).saveConfiguration()
     }
 }
