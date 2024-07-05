@@ -35,7 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class SearchActivity : AppCompatActivity() {
     private var textValue: String = TEXT_VALUE
     private val apiURL = "https://itunes.apple.com"
-    private val tracks = ArrayList<Track>()
+    private val tracks: MutableList<Track> = mutableListOf()
     private val adapter = TrackAdapter{
         clickTrack(it)
     }
@@ -92,7 +92,7 @@ class SearchActivity : AppCompatActivity() {
             startSearch()
         }
         clearHistoryBtn.setOnClickListener{
-            searchHistory.ClearTracks()
+            searchHistory.clearTracks()
             adapterSearch.notifyDataSetChanged()
             searchHistoryLayout.visibility = View.GONE
         }
@@ -220,7 +220,7 @@ class SearchActivity : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun clickTrack(track: Track){
-        searchHistory.AddToSavedTrackList(track)
+        searchHistory.addToSavedTrackList(track)
         adapterSearch.notifyDataSetChanged()
     }
 

@@ -6,13 +6,13 @@ import com.example.playlistmaker.tracks.Track
 import com.google.gson.Gson
 
 class SearchHistory(val shared: SharedPreferences) {
-    var tracks: ArrayList<Track>
+    var tracks: MutableList<Track>
 
     init {
         tracks = read().toCollection(ArrayList())
     }
 
-    fun AddToSavedTrackList(track: Track){
+    fun addToSavedTrackList(track: Track){
         val findIndex = tracks.indexOfFirst { it.trackId == track.trackId }
         if (findIndex != -1){
             tracks.removeAt(findIndex)
@@ -22,7 +22,7 @@ class SearchHistory(val shared: SharedPreferences) {
             tracks.removeLast()
     }
 
-    fun ClearTracks(){
+    fun clearTracks(){
         tracks.clear()
     }
 
