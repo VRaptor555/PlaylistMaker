@@ -21,4 +21,9 @@
     <string name="refresh_btn">Refresh</string>
     <string name="clear_his_btn">Clear history</string>
     <string name="you_search">You were looking for</string>
+    <string name="country_head">Country</string>
+    <string name="genre_head">Genre</string>
+    <string name="year_head">Year</string>
+    <string name="album_head">Album</string>
+    <string name="duration_head">Duration</string>
 </resources>

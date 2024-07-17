@@ -11,8 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.utils.dpToPx
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.playlistmaker.utils.timeMillisToMin
 
 class TrackViewHolder private constructor(itemView: View) : ViewHolder(itemView) {
     private val trackView: TextView = itemView.findViewById(R.id.text_name_track)
@@ -30,8 +29,7 @@ class TrackViewHolder private constructor(itemView: View) : ViewHolder(itemView)
     fun bind(track: Track) {
         trackView.text = track.trackName
         artistView.text = track.artistName
-        val trackTime: Long = java.lang.Long.parseLong(track.trackTimeMillis)
-        timeView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTime)
+        timeView.text = timeMillisToMin(track.trackTimeMillis)
         Glide.with(itemView.context)
             .load(track.artworkUrl100)
             .placeholder(R.drawable.placeholder)
