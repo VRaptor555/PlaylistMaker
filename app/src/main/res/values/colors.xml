@@ -12,4 +12,5 @@
     <color name="color_refresh_text">#FFFFFF</color>
     <color name="color_queue">#401A1B22</color>
     <color name="color_head_track">#AEAFB4</color>
+    <color name="color_text_cursor">#3772E7</color>
 </resources>
