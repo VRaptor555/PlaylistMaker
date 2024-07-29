@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -31,6 +32,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.Serializable
 
 class SearchActivity : AppCompatActivity() {
     private var textValue: String = TEXT_VALUE
@@ -222,10 +224,13 @@ class SearchActivity : AppCompatActivity() {
     private fun clickTrack(track: Track){
         searchHistory.addToSavedTrackList(track)
         adapterSearch.notifyDataSetChanged()
+        clickHistoryTrack(track)
     }
 
     private fun clickHistoryTrack(track: Track){
-
+        val playerIntent = Intent(this, PlayerActivity::class.java)
+        playerIntent.putExtra("track", track)
+        startActivity(playerIntent)
     }
 
     companion object {

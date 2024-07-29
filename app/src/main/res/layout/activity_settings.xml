@@ -23,7 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:gravity="start|center_vertical"
+        android:paddingEnd="@dimen/medium_padding"
         android:text="@string/dark_theme"
+        app:thumbTint="@color/switch_thumb_selector"
+        app:trackTint="@color/switch_track_selector"
         tools:ignore="RtlSymmetry" />
 
     <Button
@@ -54,6 +57,6 @@
         android:layout_gravity="start"
         android:gravity="start|center_vertical"
         android:text="@string/agreement_text"
-        app:icon="@drawable/agreement"/>
+        app:icon="@drawable/agreement" />
 
 </LinearLayout>

@@ -4,9 +4,11 @@
     <dimen name="medium_padding">16dp</dimen>
     <dimen name="half_medium_padding">8dp</dimen>
     <dimen name="radius_button">16dp</dimen>
-    <dimen name="def_text_size">22sp</dimen>
-    <dimen name="small_text_size">16sp</dimen>
     <dimen name="icon_padding">20dp</dimen>
     <dimen name="track_image_size">45dp</dimen>
     <dimen name="small_image_size">24dp</dimen>
+<!-- =============== TEXT SIZE ================== -->
+    <dimen name="def_text_size">22sp</dimen>
+    <dimen name="small_text_size">16sp</dimen>
+    <dimen name="xs_text_size">14sp</dimen>
 </resources>

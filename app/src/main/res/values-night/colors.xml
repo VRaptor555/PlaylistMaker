@@ -10,4 +10,7 @@
     <color name="color_srchField">#FFFFFF</color>
     <color name="color_refresh_btn">#FFFFFF</color>
     <color name="color_refresh_text">#1A1B22</color>
+    <color name="color_queue">#40FFFFFF</color>
+    <color name="color_head_track">#AEAFB4</color>
+    <color name="color_text_cursor">#3772E7</color>
 </resources>

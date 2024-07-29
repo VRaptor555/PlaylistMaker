@@ -24,4 +24,9 @@
     <string name="refresh_btn">Обновить</string>
     <string name="clear_his_btn">Очистить историю</string>
     <string name="you_search">Вы искали</string>
+    <string name="country_head">Страна</string>
+    <string name="genre_head">Жанр</string>
+    <string name="year_head">Год</string>
+    <string name="album_head">Альбом</string>
+    <string name="duration_head">Длительность</string>
 </resources>

@@ -33,7 +33,7 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildToolsVersion = "35.0.0 rc4"
+    buildToolsVersion = "34.0.0"
 }
 
 dependencies {
@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.convertergson)
     implementation(libs.glide)
+    implementation(libs.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
