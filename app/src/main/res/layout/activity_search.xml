@@ -60,6 +60,15 @@
         android:layout_height="match_parent"
         android:visibility="gone">
 
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="140dp"
+            android:theme="@style/CircularProgress"
+            android:visibility="invisible" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searching_list"
             android:layout_width="match_parent"
@@ -125,9 +134,9 @@
             style="@style/ErrorTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="@dimen/half_full_padding"
-            android:layout_gravity="center_horizontal"
             android:text="@string/you_search" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -137,17 +146,17 @@
             android:layout_marginTop="@dimen/half_medium_padding"
             android:layout_weight="1" />
 
-            <Button
-                android:id="@+id/btn_clear_history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/full_padding"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="10dp"
-                android:backgroundTint="@color/color_refresh_btn"
-                android:text="@string/clear_his_btn"
-                android:textColor="@color/color_refresh_text" />
+        <Button
+            android:id="@+id/btn_clear_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/full_padding"
+            android:backgroundTint="@color/color_refresh_btn"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp"
+            android:text="@string/clear_his_btn"
+            android:textColor="@color/color_refresh_text" />
 
     </LinearLayout>
 </LinearLayout>

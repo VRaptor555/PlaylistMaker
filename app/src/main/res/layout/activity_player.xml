@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="?attr/colorSecondary"
+    android:fitsSystemWindows="true"
     tools:context=".PlayerActivity">
 
     <androidx.constraintlayout.widget.Guideline
@@ -152,9 +152,9 @@
         style="@style/BackButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:navigationIcon="@drawable/arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:navigationIcon="@drawable/arrow_back"
         app:srcCompat="@drawable/arrow_back" />
 
     <ImageView
@@ -216,7 +216,6 @@
         style="@style/PlayBtnStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/medium_padding"
         app:layout_constraintBottom_toBottomOf="@id/barrier1"
         app:layout_constraintEnd_toStartOf="@id/favorite_btn"
         app:layout_constraintStart_toEndOf="@id/queue_btn"
@@ -240,8 +239,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/half_full_padding"
         android:textSize="@dimen/xs_text_size"
-        app:layout_constraintEnd_toStartOf="@id/right_border"
-        app:layout_constraintStart_toEndOf="@id/left_border"
+        app:layout_constraintEnd_toEndOf="@id/play_btn"
+        app:layout_constraintStart_toStartOf="@id/play_btn"
         app:layout_constraintTop_toBottomOf="@id/play_btn"
         tools:text="0:30" />
 

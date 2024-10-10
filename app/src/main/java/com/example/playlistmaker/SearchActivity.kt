@@ -10,13 +10,13 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -34,7 +34,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.Serializable
 
 class SearchActivity : AppCompatActivity() {
     private var textValue: String = TEXT_VALUE
@@ -55,6 +54,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackSeachHistoryList: RecyclerView
     private lateinit var placeholderConnect: LinearLayout
     private lateinit var placeholderFound: TextView
+    private lateinit var progressBar: ProgressBar
     private val retrofit = Retrofit.Builder()
         .baseUrl(apiURL)
         .addConverterFactory(GsonConverterFactory.create())
@@ -63,7 +63,6 @@ class SearchActivity : AppCompatActivity() {
 
     private var bStopHandler = true
     private var isClickAllowed = true
-    private var isFindAllowed = true
     private val handlerDebounce = Handler(Looper.getMainLooper())
     private val handlerFindDebounce = Handler(Looper.getMainLooper())
     companion object {
@@ -95,6 +94,7 @@ class SearchActivity : AppCompatActivity() {
         val backBtn = findViewById<TextView>(R.id.home)
         val refreshBtn = findViewById<Button>(R.id.btn_refresh)
         val clearHistoryBtn = findViewById<Button>(R.id.btn_clear_history)
+        progressBar = findViewById(R.id.progress_bar)
 
         val musicLayout = findViewById<FrameLayout>(R.id.music_layout)
         val searchHistoryLayout = findViewById<LinearLayout>(R.id.search_his_layout)
@@ -155,11 +155,15 @@ class SearchActivity : AppCompatActivity() {
                 var delay = FIND_DEBOUNCE_DELAY
                 bStopHandler = false
                 priorSearch = inputEditText.text.toString()
+                tracks.clear()
+                adapter.notifyDataSetChanged()
+                progressBar.visibility = ProgressBar.INVISIBLE
                 handlerFindDebounce.postDelayed(
                     object : Runnable {
                         override fun run() {
                             if (delay <= 0) {
                                 bStopHandler = true
+                                progressBar.visibility = ProgressBar.VISIBLE
                                 startSearch()
                             } else {
                                 delay--
@@ -244,6 +248,7 @@ class SearchActivity : AppCompatActivity() {
                 placeholderConnect.visibility = View.GONE
                 placeholderFound.visibility = View.VISIBLE
             }
+            progressBar.visibility = ProgressBar.INVISIBLE
             if (additionalMessage.isNotEmpty()) {
                 Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
                     .show()
