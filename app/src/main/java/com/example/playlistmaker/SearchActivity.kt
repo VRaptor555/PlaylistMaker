@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -39,9 +41,10 @@ class SearchActivity : AppCompatActivity() {
     private val apiURL = "https://itunes.apple.com"
     private val tracks: MutableList<Track> = mutableListOf()
     private val adapter = TrackAdapter{
-        clickTrack(it)
+        if (clickDebounce())
+            clickTrack(it)
     }
-
+    private var priorSearch: String = ""
     // TrackSearch
     private lateinit var sharedSearch: SharedPreferences
     private lateinit var searchHistory: SearchHistory
@@ -57,6 +60,19 @@ class SearchActivity : AppCompatActivity() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val trackService = retrofit.create(TracksApi::class.java)
+
+    private var bStopHandler = true
+    private var isClickAllowed = true
+    private var isFindAllowed = true
+    private val handlerDebounce = Handler(Looper.getMainLooper())
+    private val handlerFindDebounce = Handler(Looper.getMainLooper())
+    companion object {
+        private const val SEARCH_TEXT = "SEARCH_TEXT"
+        private const val TEXT_VALUE = ""
+        private const val CLICK_DEBOUNCE_DELAY = 1_000L
+        private const val FIND_DEBOUNCE_DELAY = 3
+        private const val REFRESH_DELAY = 1_000L
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,15 +125,6 @@ class SearchActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
 
-        inputEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                startSearch()
-                true
-            } else {
-                false
-            }
-        }
-
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
             searchHistoryLayout.visibility = if (
                 hasFocus &&
@@ -140,6 +147,33 @@ class SearchActivity : AppCompatActivity() {
                     searchHistory.tracks.size > 0
                     ) View.VISIBLE else View.GONE
                 musicLayout.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true) View.GONE else View.VISIBLE
+                if (
+                    !bStopHandler ||
+                    inputEditText.text.isEmpty() ||
+                    inputEditText.text.equals(priorSearch)
+                    ) return@onTextChanged
+                var delay = FIND_DEBOUNCE_DELAY
+                bStopHandler = false
+                priorSearch = inputEditText.text.toString()
+                handlerFindDebounce.postDelayed(
+                    object : Runnable {
+                        override fun run() {
+                            if (delay <= 0) {
+                                bStopHandler = true
+                                startSearch()
+                            } else {
+                                delay--
+                            }
+                            if (!bStopHandler) {
+                                handlerFindDebounce.postDelayed(
+                                    this,
+                                    REFRESH_DELAY
+                                )
+                            }
+                        }
+                    },
+                    REFRESH_DELAY
+                )
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -233,13 +267,18 @@ class SearchActivity : AppCompatActivity() {
         startActivity(playerIntent)
     }
 
-    companion object {
-        private const val SEARCH_TEXT = "SEARCH_TEXT"
-        private const val TEXT_VALUE = ""
-    }
 
     override fun onStop() {
         super.onStop()
         searchHistory.saveSearchingList()
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handlerDebounce.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
 }
