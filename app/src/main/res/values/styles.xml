@@ -98,4 +98,7 @@
         <item name="backgroundTint">?attr/colorOnSecondaryContainer</item>
         <item name="tint">?attr/colorOnPrimaryContainer</item>
     </style>
+    <style name="CircularProgress" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/color_circular_progress</item>
+    </style>
 </resources>
