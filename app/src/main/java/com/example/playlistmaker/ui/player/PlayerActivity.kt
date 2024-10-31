@@ -27,6 +27,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playBtn: ImageButton
     private lateinit var timeLeft: TextView
     private var mediaPlayer = MediaPlayer()
+
     companion object {
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
@@ -35,7 +36,7 @@ class PlayerActivity : AppCompatActivity() {
 
         private const val DALAY_TIMER = 250L
     }
-    private lateinit var handler: Handler
+
     private var playerState = STATE_DEFAULT
 
     @SuppressLint("MissingInflatedId")
@@ -82,7 +83,7 @@ class PlayerActivity : AppCompatActivity() {
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(
-            object: Runnable {
+            object : Runnable {
                 override fun run() {
                     if (playerState == STATE_PLAYING) {
                         setCurrentPosition(mediaPlayer.currentPosition)
@@ -119,13 +120,15 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun playbackControl() {
-        when(playerState) {
+        when (playerState) {
             STATE_PLAYING -> {
                 pausePlayer()
             }
+
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer()
             }
+
             STATE_DEFAULT -> {
                 startPlayer()
             }

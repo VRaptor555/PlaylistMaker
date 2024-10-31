@@ -9,7 +9,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -27,24 +26,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.dto.TracksSearchResponse
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.TrackAdapter
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.ui.tracks.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.utils.SearchHistory
-import java.io.Serializable
 
 class SearchActivity : AppCompatActivity() {
     private var textValue: String = TEXT_VALUE
     private val tracks: MutableList<Track> = mutableListOf()
-    private val adapter = TrackAdapter{
+    private val adapter = TrackAdapter {
         if (clickDebounce())
             clickTrack(it)
     }
     private val creator = Creator.provideTracksInteractor()
     private var priorSearch: String = ""
+
     // TrackSearch
     private lateinit var sharedSearch: SharedPreferences
     private lateinit var searchHistory: SearchHistory
@@ -61,6 +59,7 @@ class SearchActivity : AppCompatActivity() {
     private var isClickAllowed = true
     private val handlerDebounce = Handler(Looper.getMainLooper())
     private val handlerFindDebounce = Handler(Looper.getMainLooper())
+
     companion object {
         private const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val TEXT_VALUE = ""
@@ -77,7 +76,7 @@ class SearchActivity : AppCompatActivity() {
 
         sharedSearch = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedSearch)
-        adapterSearch = TrackAdapter{
+        adapterSearch = TrackAdapter {
             clickHistoryTrack(it)
         }
 
@@ -105,7 +104,7 @@ class SearchActivity : AppCompatActivity() {
         refreshBtn.setOnClickListener {
             startSearch()
         }
-        clearHistoryBtn.setOnClickListener{
+        clearHistoryBtn.setOnClickListener {
             searchHistory.clearTracks()
             adapterSearch.notifyDataSetChanged()
             searchHistoryLayout.visibility = View.GONE
@@ -126,8 +125,9 @@ class SearchActivity : AppCompatActivity() {
                 hasFocus &&
                 inputEditText.text.isEmpty() &&
                 searchHistory.tracks.size > 0
-                ) View.VISIBLE else View.GONE
-            musicLayout.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.GONE else View.VISIBLE
+            ) View.VISIBLE else View.GONE
+            musicLayout.visibility =
+                if (hasFocus && inputEditText.text.isEmpty()) View.GONE else View.VISIBLE
         }
 
         trackList.layoutManager = LinearLayoutManager(this)
@@ -146,13 +146,14 @@ class SearchActivity : AppCompatActivity() {
                     inputEditText.hasFocus() &&
                     s?.isEmpty() == true &&
                     searchHistory.tracks.size > 0
-                    ) View.VISIBLE else View.GONE
-                musicLayout.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true) View.GONE else View.VISIBLE
+                ) View.VISIBLE else View.GONE
+                musicLayout.visibility =
+                    if (inputEditText.hasFocus() && s?.isEmpty() == true) View.GONE else View.VISIBLE
                 if (
                     !bStopHandler ||
                     inputEditText.text.isEmpty() ||
                     inputEditText.text.equals(priorSearch)
-                    ) return@onTextChanged
+                ) return@onTextChanged
                 var delay = FIND_DEBOUNCE_DELAY
                 bStopHandler = false
                 priorSearch = inputEditText.text.toString()
@@ -205,23 +206,25 @@ class SearchActivity : AppCompatActivity() {
         val searchHandler = Handler(Looper.getMainLooper())
 
         if (inputEditText.text.isNotEmpty()) {
-            creator.searchTracks(inputEditText.text.toString(), object: TracksInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>) {
-                    tracks.clear()
-                    if (foundTracks.isNotEmpty()) {
-                        tracks.addAll(foundTracks)
-                        searchHandler.post {
-                            adapter.notifyDataSetChanged()
-                            showMessage()
-                        }
-                    } else {
-                        searchHandler.post {
-                            showMessage("", notFound = true)
+            creator.searchTracks(
+                inputEditText.text.toString(),
+                object : TracksInteractor.TracksConsumer {
+                    override fun consume(foundTracks: List<Track>) {
+                        tracks.clear()
+                        if (foundTracks.isNotEmpty()) {
+                            tracks.addAll(foundTracks)
+                            searchHandler.post {
+                                adapter.notifyDataSetChanged()
+                                showMessage()
+                            }
+                        } else {
+                            searchHandler.post {
+                                showMessage("", notFound = true)
+                            }
                         }
                     }
-                }
 
-            })
+                })
         }
     }
 
@@ -253,13 +256,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun clickTrack(track: Track){
+    private fun clickTrack(track: Track) {
         searchHistory.addToSavedTrackList(track)
         adapterSearch.notifyDataSetChanged()
         clickHistoryTrack(track)
     }
 
-    private fun clickHistoryTrack(track: Track){
+    private fun clickHistoryTrack(track: Track) {
         val playerIntent = Intent(this, PlayerActivity::class.java)
         playerIntent.putExtra("track", track)
         startActivity(playerIntent)
