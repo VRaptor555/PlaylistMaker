@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -24,25 +25,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.api.TrackResponse
-import com.example.playlistmaker.api.TracksApi
-import com.example.playlistmaker.tracks.Track
-import com.example.playlistmaker.tracks.TrackAdapter
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.dto.TracksSearchResponse
+import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.TrackAdapter
+import com.example.playlistmaker.ui.player.PlayerActivity
+import com.example.playlistmaker.ui.tracks.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.utils.SearchHistory
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import java.io.Serializable
 
 class SearchActivity : AppCompatActivity() {
     private var textValue: String = TEXT_VALUE
-    private val apiURL = "https://itunes.apple.com"
     private val tracks: MutableList<Track> = mutableListOf()
     private val adapter = TrackAdapter{
         if (clickDebounce())
             clickTrack(it)
     }
+    private val creator = Creator.provideTracksInteractor()
     private var priorSearch: String = ""
     // TrackSearch
     private lateinit var sharedSearch: SharedPreferences
@@ -55,11 +56,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeholderConnect: LinearLayout
     private lateinit var placeholderFound: TextView
     private lateinit var progressBar: ProgressBar
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(apiURL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    private val trackService = retrofit.create(TracksApi::class.java)
 
     private var bStopHandler = true
     private var isClickAllowed = true
@@ -134,6 +130,11 @@ class SearchActivity : AppCompatActivity() {
             musicLayout.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.GONE else View.VISIBLE
         }
 
+        trackList.layoutManager = LinearLayoutManager(this)
+        trackList.adapter = adapter
+        trackSeachHistoryList.layoutManager = LinearLayoutManager(this)
+        trackSeachHistoryList.adapter = adapterSearch
+
         val searchTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
@@ -178,6 +179,7 @@ class SearchActivity : AppCompatActivity() {
                     },
                     REFRESH_DELAY
                 )
+                adapter.notifyDataSetChanged()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -186,10 +188,6 @@ class SearchActivity : AppCompatActivity() {
         }
         inputEditText.addTextChangedListener(searchTextWatcher)
         inputEditText.setText(textValue)
-        trackList.layoutManager = LinearLayoutManager(this)
-        trackList.adapter = adapter
-        trackSeachHistoryList.layoutManager = LinearLayoutManager(this)
-        trackSeachHistoryList.adapter = adapterSearch
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -202,39 +200,34 @@ class SearchActivity : AppCompatActivity() {
         textValue = savedInstanceState.getString(SEARCH_TEXT, "")
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun startSearch() {
+        val searchHandler = Handler(Looper.getMainLooper())
+
         if (inputEditText.text.isNotEmpty()) {
-            trackService.search(inputEditText.text.toString())
-                .enqueue(object : Callback<TrackResponse> {
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onResponse(
-                        call: Call<TrackResponse>,
-                        response: Response<TrackResponse>
-                    ) {
-                        if (response.code() == 200) {
-                            tracks.clear()
-                            if (response.body()?.results?.isNotEmpty() == true) {
-                                tracks.addAll(response.body()?.results!!)
-                                adapter.notifyDataSetChanged()
-                                showMessage("")
-                            } else {
-                                showMessage("", notFound = true)
-                            }
-                        } else {
-                            showMessage(response.code().toString(), notConnect = true)
+            creator.searchTracks(inputEditText.text.toString(), object: TracksInteractor.TracksConsumer {
+                override fun consume(foundTracks: List<Track>) {
+                    tracks.clear()
+                    if (foundTracks.isNotEmpty()) {
+                        tracks.addAll(foundTracks)
+                        searchHandler.post {
+                            adapter.notifyDataSetChanged()
+                            showMessage()
+                        }
+                    } else {
+                        searchHandler.post {
+                            showMessage("", notFound = true)
                         }
                     }
+                }
 
-                    override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                        showMessage(t.message.toString(), notConnect = true)
-                    }
-                })
+            })
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun showMessage(
-        additionalMessage: String,
+        additionalMessage: String = "",
         notConnect: Boolean = false,
         notFound: Boolean = false
     ) {

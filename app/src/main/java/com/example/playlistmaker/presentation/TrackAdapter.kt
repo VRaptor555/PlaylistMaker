@@ -1,7 +1,8 @@
-package com.example.playlistmaker.tracks
+package com.example.playlistmaker.presentation
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.domain.models.Track
 
 class TrackAdapter(val clickListener: TrackClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
     var tracks: MutableList<Track> =  mutableListOf()
