@@ -3,7 +3,6 @@ package com.example.playlistmaker.ui.search
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -26,12 +25,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.TrackAdapter
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.ui.tracks.PLAYLIST_MAKER_PREFERENCES
-import com.example.playlistmaker.utils.SearchHistory
 
 class SearchActivity : AppCompatActivity() {
     private var textValue: String = TEXT_VALUE
@@ -44,13 +43,12 @@ class SearchActivity : AppCompatActivity() {
     private var priorSearch: String = ""
 
     // TrackSearch
-    private lateinit var sharedSearch: SharedPreferences
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var searchHistory: TracksHistoryInteractor
     private lateinit var adapterSearch: TrackAdapter
 
     private lateinit var inputEditText: EditText
     private lateinit var trackList: RecyclerView
-    private lateinit var trackSeachHistoryList: RecyclerView
+    private lateinit var trackSearchHistoryList: RecyclerView
     private lateinit var placeholderConnect: LinearLayout
     private lateinit var placeholderFound: TextView
     private lateinit var progressBar: ProgressBar
@@ -68,21 +66,19 @@ class SearchActivity : AppCompatActivity() {
         private const val REFRESH_DELAY = 1_000L
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
 
-        sharedSearch = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-        searchHistory = SearchHistory(sharedSearch)
         adapterSearch = TrackAdapter {
             clickHistoryTrack(it)
         }
 
         inputEditText = findViewById(R.id.input_search_text)
         trackList = findViewById(R.id.searching_list)
-        trackSeachHistoryList = findViewById(R.id.searching_history_list)
+        trackSearchHistoryList = findViewById(R.id.searching_history_list)
         placeholderConnect = findViewById(R.id.placeholder_connect)
         placeholderFound = findViewById(R.id.placeholder_found)
         val clearButton = findViewById<ImageView>(R.id.clear_icon)
@@ -96,6 +92,7 @@ class SearchActivity : AppCompatActivity() {
 
         adapter.tracks = tracks
 
+        searchHistory = Creator.provideHistory(getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE), SEARCH_TEXT)
         adapterSearch.tracks = searchHistory.tracks
 
         backBtn.setOnClickListener {
@@ -132,8 +129,8 @@ class SearchActivity : AppCompatActivity() {
 
         trackList.layoutManager = LinearLayoutManager(this)
         trackList.adapter = adapter
-        trackSeachHistoryList.layoutManager = LinearLayoutManager(this)
-        trackSeachHistoryList.adapter = adapterSearch
+        trackSearchHistoryList.layoutManager = LinearLayoutManager(this)
+        trackSearchHistoryList.adapter = adapterSearch
 
         val searchTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -257,7 +254,7 @@ class SearchActivity : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun clickTrack(track: Track) {
-        searchHistory.addToSavedTrackList(track)
+        searchHistory.addToSavedTracksList(track)
         adapterSearch.notifyDataSetChanged()
         clickHistoryTrack(track)
     }
@@ -271,7 +268,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        searchHistory.saveSearchingList()
+        searchHistory.saveTracksList()
     }
 
     private fun clickDebounce(): Boolean {

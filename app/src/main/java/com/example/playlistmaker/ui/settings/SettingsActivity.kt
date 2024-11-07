@@ -1,15 +1,15 @@
 package com.example.playlistmaker.ui.settings
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import com.example.playlistmaker.ui.tracks.App
 import com.example.playlistmaker.R
+import com.example.playlistmaker.presentation.SettingsActionImpl
+import com.example.playlistmaker.ui.tracks.App
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -34,27 +34,24 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         shareBtn.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.setType("text/plain")
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message))
-            shareIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.share_message_subj))
-            startActivity(Intent.createChooser(shareIntent, null))
+            startActivity(
+                Intent.createChooser(
+                    SettingsActionImpl().share(getString(R.string.share_message),
+                        getString(R.string.share_message_subj)),
+                    null)
+            )
         }
         supportBtn.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SENDTO)
-            shareIntent.data = Uri.parse("mailto:")
-            shareIntent.putExtra(
-                Intent.EXTRA_EMAIL,
-                arrayOf(getString(R.string.support_message_email))
+            startActivity(SettingsActionImpl().sendEmail(
+                arrayOf(getString(R.string.support_message_email)),
+                getString(R.string.support_message_subj),
+                getString(R.string.support_message_text),
+                "mailto:"
             )
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_message_subj))
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.support_message_text))
-            startActivity(shareIntent)
+            )
         }
         agreementBtn.setOnClickListener {
-            val browserIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.agreement_url)))
-            startActivity(browserIntent)
+            startActivity(SettingsActionImpl().sendUrl(getString(R.string.agreement_url)))
         }
     }
 }
