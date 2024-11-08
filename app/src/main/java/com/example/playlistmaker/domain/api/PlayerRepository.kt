@@ -1,8 +1,8 @@
 package com.example.playlistmaker.domain.api
 
-import android.media.MediaPlayer
 
 interface PlayerRepository {
-    var mediaPlayer: MediaPlayer
-
+    fun playback()
+    fun currentTime(): Int
+    fun state(): Int
 }
