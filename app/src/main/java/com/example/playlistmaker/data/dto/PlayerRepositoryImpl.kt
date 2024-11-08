@@ -20,11 +20,9 @@ class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer, url: String?): 
             state = STATE_PREPARED
             mediaPlayer.setOnCompletionListener {
                 state = STATE_PREPARED
-                state()
             }
             mediaPlayer.setOnPreparedListener {
                 state = STATE_PREPARED
-                state()
             }
         }
     }

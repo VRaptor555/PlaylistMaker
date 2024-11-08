@@ -30,7 +30,11 @@ class PlayerActivity : AppCompatActivity() {
 
     companion object {
         private const val DALAY_TIMER = 250L
+
+        private const val PLAYER_BUTTON_PLAY = 0
+        private const val PLAYER_BUTTON_PAUSE = 1
     }
+    var playerButtonState = PLAYER_BUTTON_PLAY
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,16 +100,25 @@ class PlayerActivity : AppCompatActivity() {
             override fun showTime(currentPosition: Int, currentState: Int) {
                 when (currentState) {
                     PlayerRepositoryImpl.STATE_PLAYING -> {
-                        playBtn.setImageResource(R.drawable.pause_btn)
+                        if (playerButtonState == PLAYER_BUTTON_PLAY) {
+                            playBtn.setImageResource(R.drawable.pause_btn)
+                            playerButtonState = PLAYER_BUTTON_PAUSE
+                        }
                         timeLeft.text = timeMillisToMin(currentPosition)
                     }
                     PlayerRepositoryImpl.STATE_PREPARED,
                     PlayerRepositoryImpl.STATE_DEFAULT -> {
-                        playBtn.setImageResource(R.drawable.play_btn)
+                        if (playerButtonState == PLAYER_BUTTON_PAUSE) {
+                            playBtn.setImageResource(R.drawable.play_btn)
+                            playerButtonState = PLAYER_BUTTON_PLAY
+                        }
                         timeLeft.text = timeMillisToMin(0)
                     }
                     PlayerRepositoryImpl.STATE_PAUSED -> {
-                        playBtn.setImageResource(R.drawable.play_btn)
+                        if (playerButtonState == PLAYER_BUTTON_PAUSE) {
+                            playBtn.setImageResource(R.drawable.play_btn)
+                            playerButtonState = PLAYER_BUTTON_PLAY
+                        }
                         timeLeft.text = timeMillisToMin(currentPosition)
                     }
                 }
