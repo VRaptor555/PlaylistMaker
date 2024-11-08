@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.api
 
-interface History {
+interface HistoryRepository {
     fun read(): Any
     fun write(writeList: Any)
 }

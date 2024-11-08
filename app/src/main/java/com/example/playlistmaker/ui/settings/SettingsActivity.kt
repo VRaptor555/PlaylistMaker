@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.example.playlistmaker.R
-import com.example.playlistmaker.presentation.SettingsActionImpl
 import com.example.playlistmaker.ui.tracks.App
 
 
@@ -42,7 +41,8 @@ class SettingsActivity : AppCompatActivity() {
             )
         }
         supportBtn.setOnClickListener {
-            startActivity(SettingsActionImpl().sendEmail(
+            startActivity(
+                SettingsActionImpl().sendEmail(
                 arrayOf(getString(R.string.support_message_email)),
                 getString(R.string.support_message_subj),
                 getString(R.string.support_message_text),

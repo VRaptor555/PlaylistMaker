@@ -1,14 +1,13 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.ui.settings
 
 import android.content.Intent
 import android.net.Uri
 import com.example.playlistmaker.domain.api.SettingsIntent
 import com.example.playlistmaker.domain.models.IntentExtra
 import com.example.playlistmaker.domain.models.IntentExtraStr
-import com.example.playlistmaker.domain.models.SettingAction
 
 class SettingsIntentImpl(action: SettingAction, uri: String = ""): SettingsIntent {
-    override var intent: Intent = if (action == SettingAction.SETTING_VIEW) {
+    private var intent: Intent = if (action == SettingAction.SETTING_VIEW) {
         Intent(action.value, Uri.parse(uri))
     } else {
         Intent(action.value)
@@ -34,4 +33,7 @@ class SettingsIntentImpl(action: SettingAction, uri: String = ""): SettingsInten
         intent.data = Uri.parse(data)
     }
 
+    override fun getIntent(): Intent {
+        return intent
+    }
 }

@@ -1,10 +1,8 @@
-package com.example.playlistmaker.presentation
+package com.example.playlistmaker.ui.settings
 
 import android.content.Intent
-import com.example.playlistmaker.domain.impl.SettingsIntentImpl
 import com.example.playlistmaker.domain.models.IntentExtra
 import com.example.playlistmaker.domain.models.IntentExtraStr
-import com.example.playlistmaker.domain.models.SettingAction
 
 class SettingsActionImpl {
 
@@ -16,7 +14,7 @@ class SettingsActionImpl {
             IntentExtraStr(Intent.EXTRA_SUBJECT, messageSubj)
             )
         settingSend.putExtra(listIntentValue)
-        return settingSend.intent
+        return settingSend.getIntent()
     }
 
     fun sendEmail(mailbox: Array<String>, subj: String, text: String, data: String): Intent {
@@ -28,10 +26,10 @@ class SettingsActionImpl {
             IntentExtra(Intent.EXTRA_EMAIL, mailbox)
         )
         sending.putExtra(listIntentValue)
-        return sending.intent
+        return sending.getIntent()
     }
 
     fun sendUrl(url: String): Intent {
-        return SettingsIntentImpl(SettingAction.SETTING_VIEW, url).intent
+        return SettingsIntentImpl(SettingAction.SETTING_VIEW, url).getIntent()
     }
 }

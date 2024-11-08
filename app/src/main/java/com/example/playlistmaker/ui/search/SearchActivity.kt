@@ -28,7 +28,6 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.TrackAdapter
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.ui.tracks.PLAYLIST_MAKER_PREFERENCES
 
@@ -93,7 +92,7 @@ class SearchActivity : AppCompatActivity() {
         adapter.tracks = tracks
 
         searchHistory = Creator.provideHistory(getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE), SEARCH_TEXT)
-        adapterSearch.tracks = searchHistory.tracks
+        adapterSearch.tracks = searchHistory.getSavedTracksList()
 
         backBtn.setOnClickListener {
             this.finish()
@@ -121,7 +120,7 @@ class SearchActivity : AppCompatActivity() {
             searchHistoryLayout.visibility = if (
                 hasFocus &&
                 inputEditText.text.isEmpty() &&
-                searchHistory.tracks.size > 0
+                searchHistory.size() > 0
             ) View.VISIBLE else View.GONE
             musicLayout.visibility =
                 if (hasFocus && inputEditText.text.isEmpty()) View.GONE else View.VISIBLE
@@ -142,7 +141,7 @@ class SearchActivity : AppCompatActivity() {
                 searchHistoryLayout.visibility = if (
                     inputEditText.hasFocus() &&
                     s?.isEmpty() == true &&
-                    searchHistory.tracks.size > 0
+                    searchHistory.size() > 0
                 ) View.VISIBLE else View.GONE
                 musicLayout.visibility =
                     if (inputEditText.hasFocus() && s?.isEmpty() == true) View.GONE else View.VISIBLE
