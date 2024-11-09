@@ -1,12 +1,11 @@
 package com.example.playlistmaker.domain.impl
 
-import com.example.playlistmaker.data.dto.TrackDto
 import com.example.playlistmaker.domain.api.HistoryRepository
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 
 class TracksHistoryInteractorImpl(private val sharedHistory: HistoryRepository): TracksHistoryInteractor {
-    private var tracks: MutableList<Track> = (sharedHistory.read() as Array<Track>).toMutableList()
+    private var tracks: MutableList<Track> = sharedHistory.read().toMutableList()
 
     override fun addToSavedTracksList(track: Track){
         val findIndex = tracks.indexOfFirst { it.trackId == track.trackId }
@@ -24,20 +23,7 @@ class TracksHistoryInteractorImpl(private val sharedHistory: HistoryRepository):
 
 
     override fun saveTracksList(){
-        sharedHistory.write(tracks.map {
-            TrackDto(
-                trackId = it.trackId,
-                trackName = it.trackName,
-                artistName = it.artistName,
-                collectionName = it.collectionName,
-                releaseDate = it.releaseDate,
-                primaryGenreName = it.primaryGenreName,
-                country = it.country,
-                trackTimeMillis = it.trackTimeMillis,
-                artworkUrl100 = it.artworkUrl100,
-                previewUrl = it.previewUrl
-            )
-        }.toTypedArray())
+        sharedHistory.write(tracks.toTypedArray())
     }
 
     override fun getSavedTracksList(): MutableList<Track> {
