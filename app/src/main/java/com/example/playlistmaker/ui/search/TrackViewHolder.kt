@@ -1,4 +1,4 @@
-package com.example.playlistmaker.tracks
+package com.example.playlistmaker.ui.search
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.utils.dpToPx
 import com.example.playlistmaker.utils.timeMillisToMin
 

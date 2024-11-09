@@ -1,9 +1,8 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,47 +23,40 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.api.TrackResponse
-import com.example.playlistmaker.api.TracksApi
-import com.example.playlistmaker.tracks.Track
-import com.example.playlistmaker.tracks.TrackAdapter
-import com.example.playlistmaker.utils.SearchHistory
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
+import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.player.PlayerActivity
+import com.example.playlistmaker.ui.tracks.PLAYLIST_MAKER_PREFERENCES
 
 class SearchActivity : AppCompatActivity() {
     private var textValue: String = TEXT_VALUE
-    private val apiURL = "https://itunes.apple.com"
     private val tracks: MutableList<Track> = mutableListOf()
-    private val adapter = TrackAdapter{
+    private val adapter = TrackAdapter {
         if (clickDebounce())
             clickTrack(it)
     }
+    private val creator = Creator.provideTracksInteractor()
     private var priorSearch: String = ""
+
     // TrackSearch
-    private lateinit var sharedSearch: SharedPreferences
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var searchHistory: TracksHistoryInteractor
     private lateinit var adapterSearch: TrackAdapter
 
     private lateinit var inputEditText: EditText
     private lateinit var trackList: RecyclerView
-    private lateinit var trackSeachHistoryList: RecyclerView
+    private lateinit var trackSearchHistoryList: RecyclerView
     private lateinit var placeholderConnect: LinearLayout
     private lateinit var placeholderFound: TextView
     private lateinit var progressBar: ProgressBar
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(apiURL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    private val trackService = retrofit.create(TracksApi::class.java)
 
     private var bStopHandler = true
     private var isClickAllowed = true
     private val handlerDebounce = Handler(Looper.getMainLooper())
     private val handlerFindDebounce = Handler(Looper.getMainLooper())
+
     companion object {
         private const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val TEXT_VALUE = ""
@@ -73,21 +65,19 @@ class SearchActivity : AppCompatActivity() {
         private const val REFRESH_DELAY = 1_000L
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
 
-        sharedSearch = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-        searchHistory = SearchHistory(sharedSearch)
-        adapterSearch = TrackAdapter{
+        adapterSearch = TrackAdapter {
             clickHistoryTrack(it)
         }
 
         inputEditText = findViewById(R.id.input_search_text)
         trackList = findViewById(R.id.searching_list)
-        trackSeachHistoryList = findViewById(R.id.searching_history_list)
+        trackSearchHistoryList = findViewById(R.id.searching_history_list)
         placeholderConnect = findViewById(R.id.placeholder_connect)
         placeholderFound = findViewById(R.id.placeholder_found)
         val clearButton = findViewById<ImageView>(R.id.clear_icon)
@@ -101,7 +91,8 @@ class SearchActivity : AppCompatActivity() {
 
         adapter.tracks = tracks
 
-        adapterSearch.tracks = searchHistory.tracks
+        searchHistory = Creator.provideHistory(getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE), SEARCH_TEXT)
+        adapterSearch.tracks = searchHistory.getSavedTracksList()
 
         backBtn.setOnClickListener {
             this.finish()
@@ -109,7 +100,7 @@ class SearchActivity : AppCompatActivity() {
         refreshBtn.setOnClickListener {
             startSearch()
         }
-        clearHistoryBtn.setOnClickListener{
+        clearHistoryBtn.setOnClickListener {
             searchHistory.clearTracks()
             adapterSearch.notifyDataSetChanged()
             searchHistoryLayout.visibility = View.GONE
@@ -129,10 +120,16 @@ class SearchActivity : AppCompatActivity() {
             searchHistoryLayout.visibility = if (
                 hasFocus &&
                 inputEditText.text.isEmpty() &&
-                searchHistory.tracks.size > 0
-                ) View.VISIBLE else View.GONE
-            musicLayout.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.GONE else View.VISIBLE
+                searchHistory.size() > 0
+            ) View.VISIBLE else View.GONE
+            musicLayout.visibility =
+                if (hasFocus && inputEditText.text.isEmpty()) View.GONE else View.VISIBLE
         }
+
+        trackList.layoutManager = LinearLayoutManager(this)
+        trackList.adapter = adapter
+        trackSearchHistoryList.layoutManager = LinearLayoutManager(this)
+        trackSearchHistoryList.adapter = adapterSearch
 
         val searchTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -144,14 +141,15 @@ class SearchActivity : AppCompatActivity() {
                 searchHistoryLayout.visibility = if (
                     inputEditText.hasFocus() &&
                     s?.isEmpty() == true &&
-                    searchHistory.tracks.size > 0
-                    ) View.VISIBLE else View.GONE
-                musicLayout.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true) View.GONE else View.VISIBLE
+                    searchHistory.size() > 0
+                ) View.VISIBLE else View.GONE
+                musicLayout.visibility =
+                    if (inputEditText.hasFocus() && s?.isEmpty() == true) View.GONE else View.VISIBLE
                 if (
                     !bStopHandler ||
                     inputEditText.text.isEmpty() ||
                     inputEditText.text.equals(priorSearch)
-                    ) return@onTextChanged
+                ) return@onTextChanged
                 var delay = FIND_DEBOUNCE_DELAY
                 bStopHandler = false
                 priorSearch = inputEditText.text.toString()
@@ -178,6 +176,7 @@ class SearchActivity : AppCompatActivity() {
                     },
                     REFRESH_DELAY
                 )
+                adapter.notifyDataSetChanged()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -186,10 +185,6 @@ class SearchActivity : AppCompatActivity() {
         }
         inputEditText.addTextChangedListener(searchTextWatcher)
         inputEditText.setText(textValue)
-        trackList.layoutManager = LinearLayoutManager(this)
-        trackList.adapter = adapter
-        trackSeachHistoryList.layoutManager = LinearLayoutManager(this)
-        trackSeachHistoryList.adapter = adapterSearch
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -202,39 +197,36 @@ class SearchActivity : AppCompatActivity() {
         textValue = savedInstanceState.getString(SEARCH_TEXT, "")
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun startSearch() {
+        val searchHandler = Handler(Looper.getMainLooper())
+
         if (inputEditText.text.isNotEmpty()) {
-            trackService.search(inputEditText.text.toString())
-                .enqueue(object : Callback<TrackResponse> {
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onResponse(
-                        call: Call<TrackResponse>,
-                        response: Response<TrackResponse>
-                    ) {
-                        if (response.code() == 200) {
-                            tracks.clear()
-                            if (response.body()?.results?.isNotEmpty() == true) {
-                                tracks.addAll(response.body()?.results!!)
+            creator.searchTracks(
+                inputEditText.text.toString(),
+                object : TracksInteractor.TracksConsumer {
+                    override fun consume(foundTracks: List<Track>) {
+                        tracks.clear()
+                        if (foundTracks.isNotEmpty()) {
+                            tracks.addAll(foundTracks)
+                            searchHandler.post {
                                 adapter.notifyDataSetChanged()
-                                showMessage("")
-                            } else {
-                                showMessage("", notFound = true)
+                                showMessage()
                             }
                         } else {
-                            showMessage(response.code().toString(), notConnect = true)
+                            searchHandler.post {
+                                showMessage("", notFound = true)
+                            }
                         }
                     }
 
-                    override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                        showMessage(t.message.toString(), notConnect = true)
-                    }
                 })
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun showMessage(
-        additionalMessage: String,
+        additionalMessage: String = "",
         notConnect: Boolean = false,
         notFound: Boolean = false
     ) {
@@ -260,13 +252,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun clickTrack(track: Track){
-        searchHistory.addToSavedTrackList(track)
+    private fun clickTrack(track: Track) {
+        searchHistory.addToSavedTracksList(track)
         adapterSearch.notifyDataSetChanged()
         clickHistoryTrack(track)
     }
 
-    private fun clickHistoryTrack(track: Track){
+    private fun clickHistoryTrack(track: Track) {
         val playerIntent = Intent(this, PlayerActivity::class.java)
         playerIntent.putExtra("track", track)
         startActivity(playerIntent)
@@ -275,7 +267,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        searchHistory.saveSearchingList()
+        searchHistory.saveTracksList()
     }
 
     private fun clickDebounce(): Boolean {

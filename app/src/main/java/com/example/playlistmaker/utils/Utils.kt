@@ -28,5 +28,13 @@ fun <T : Serializable?> getSerializable(activity: Activity, name: String, clazz:
 
 fun timeMillisToMin(timeMillis: String): String {
     val trackTime: Long = java.lang.Long.parseLong(timeMillis)
-    return SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTime)
+    return timeMillisToMin(trackTime)
+}
+
+fun timeMillisToMin(timeMillis: Long): String {
+    return SimpleDateFormat("mm:ss", Locale.getDefault()).format(timeMillis)
+}
+
+fun timeMillisToMin(timeMillis: Int): String {
+    return SimpleDateFormat("mm:ss", Locale.getDefault()).format(timeMillis)
 }

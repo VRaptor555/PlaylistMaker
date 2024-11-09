@@ -1,7 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.player
 
 import android.annotation.SuppressLint
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,30 +11,30 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.tracks.Track
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.dto.PlayerRepositoryImpl
+import com.example.playlistmaker.domain.api.PlayerInteractor
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.utils.dpToPx
 import com.example.playlistmaker.utils.getSerializable
 import com.example.playlistmaker.utils.getURLImage500
 import com.example.playlistmaker.utils.timeMillisToMin
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var playBtn: ImageButton
     private lateinit var timeLeft: TextView
-    private var mediaPlayer = MediaPlayer()
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
+    private lateinit var player: PlayerInteractor
 
+    companion object {
         private const val DALAY_TIMER = 250L
+
+        private const val PLAYER_BUTTON_PLAY = 0
+        private const val PLAYER_BUTTON_PAUSE = 1
     }
-    private lateinit var handler: Handler
-    private var playerState = STATE_DEFAULT
+    var playerButtonState = PLAYER_BUTTON_PLAY
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,8 +59,9 @@ class PlayerActivity : AppCompatActivity() {
             this.finish()
         }
 
-        val track: Track = getSerializable(this, "track", Track::class.java)
-        preparePlayer(track.previewUrl)
+        val track = getSerializable(this, "track", Track::class.java)
+
+        player = Creator.providePlayer(track.previewUrl)
 
         timeLeft.text = timeMillisToMin(track.trackTimeMillis)
         durationInfo.text = timeMillisToMin(track.trackTimeMillis)
@@ -81,80 +81,60 @@ class PlayerActivity : AppCompatActivity() {
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(
-            object: Runnable {
+            object : Runnable {
                 override fun run() {
-                    if (playerState == STATE_PLAYING) {
-                        setCurrentPosition(mediaPlayer.currentPosition)
-                    }
+                    setCurrentPosition()
                     handler.postDelayed(this, DALAY_TIMER)
                 }
             },
             DALAY_TIMER
         )
         playBtn.setOnClickListener {
-            playbackControl()
+            player.playback()
         }
-        mediaPlayer.setOnCompletionListener {
-            stoppedPlayer()
-            setCurrentPosition(0)
-        }
+
     }
 
-    private fun preparePlayer(url: String) {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playBtn.setImageResource(R.drawable.play_btn)
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playBtn.setImageResource(R.drawable.play_btn)
-            playerState = STATE_PREPARED
-        }
-    }
-
-    private fun setCurrentPosition(currPosition: Int) {
-        timeLeft.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currPosition)
-    }
-
-    private fun playbackControl() {
-        when(playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
+    private fun setCurrentPosition() {
+        player.preparePlayer(object : PlayerInteractor.PlayerConsumer {
+            override fun showTime(currentPosition: Int, currentState: Int) {
+                when (currentState) {
+                    PlayerRepositoryImpl.STATE_PLAYING -> {
+                        if (playerButtonState == PLAYER_BUTTON_PLAY) {
+                            playBtn.setImageResource(R.drawable.pause_btn)
+                            playerButtonState = PLAYER_BUTTON_PAUSE
+                        }
+                        timeLeft.text = timeMillisToMin(currentPosition)
+                    }
+                    PlayerRepositoryImpl.STATE_PREPARED,
+                    PlayerRepositoryImpl.STATE_DEFAULT -> {
+                        if (playerButtonState == PLAYER_BUTTON_PAUSE) {
+                            playBtn.setImageResource(R.drawable.play_btn)
+                            playerButtonState = PLAYER_BUTTON_PLAY
+                        }
+                        timeLeft.text = timeMillisToMin(0)
+                    }
+                    PlayerRepositoryImpl.STATE_PAUSED -> {
+                        if (playerButtonState == PLAYER_BUTTON_PAUSE) {
+                            playBtn.setImageResource(R.drawable.play_btn)
+                            playerButtonState = PLAYER_BUTTON_PLAY
+                        }
+                        timeLeft.text = timeMillisToMin(currentPosition)
+                    }
+                }
             }
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-            STATE_DEFAULT -> {
-                startPlayer()
-            }
-        }
+        })
     }
 
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playBtn.setImageResource(R.drawable.pause_btn)
-        playerState = STATE_PLAYING
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playBtn.setImageResource(R.drawable.play_btn)
-        playerState = STATE_PAUSED
-    }
-
-    private fun stoppedPlayer() {
-        playBtn.setImageResource(R.drawable.play_btn)
-        playerState = STATE_PREPARED
-    }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        if (player.state() == PlayerRepositoryImpl.STATE_PLAYING) {
+            player.playback()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
     }
 }

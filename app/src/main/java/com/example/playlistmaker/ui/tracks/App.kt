@@ -1,9 +1,8 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.tracks
 
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-
 
 
 class App: Application() {
