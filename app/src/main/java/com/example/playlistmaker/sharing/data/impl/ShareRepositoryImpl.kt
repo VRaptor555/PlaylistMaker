@@ -1,20 +1,26 @@
-package com.example.playlistmaker.settings.ui
+package com.example.playlistmaker.sharing.data.impl
 
 import android.content.Intent
 import android.net.Uri
-import com.example.playlistmaker.settings.domain.SettingsIntent
-import com.example.playlistmaker.settings.domain.model.IntentExtra
-import com.example.playlistmaker.settings.domain.model.IntentExtraStr
+import com.example.playlistmaker.sharing.data.dto.ShareRepository
+import com.example.playlistmaker.sharing.domain.model.IntentExtra
+import com.example.playlistmaker.sharing.domain.model.IntentExtraStr
+import com.example.playlistmaker.sharing.domain.model.SharingAction
 
-class SettingsIntentImpl(action: SettingAction, uri: String = ""): SettingsIntent {
-    private var intent: Intent = if (action == SettingAction.SETTING_VIEW) {
+class ShareRepositoryImpl(
+    private val action: SharingAction,
+    private val uri: String = ""
+): ShareRepository {
+
+    private var intent: Intent = if (action == SharingAction.SETTING_VIEW) {
         Intent(action.value, Uri.parse(uri))
     } else {
         Intent(action.value)
     }
 
-    override fun setType(typeIntent: String) {
-        intent.setType(typeIntent)
+
+    override fun getIntent(): Intent {
+        return intent
     }
 
     override fun putExtra(extra: List<Any>) {
@@ -33,7 +39,7 @@ class SettingsIntentImpl(action: SettingAction, uri: String = ""): SettingsInten
         intent.data = Uri.parse(data)
     }
 
-    override fun getIntent(): Intent {
-        return intent
+    override fun setType(typeIntent: String) {
+        intent.setType(typeIntent)
     }
 }

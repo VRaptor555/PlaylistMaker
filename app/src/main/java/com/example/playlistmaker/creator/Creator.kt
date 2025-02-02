@@ -18,11 +18,12 @@ import com.example.playlistmaker.player.domain.impl.PlayerInteractorImpl
 import com.example.playlistmaker.search.data.dto.TracksListHistoryStorage
 import com.example.playlistmaker.search.domain.impl.TracksInteractorImpl
 import com.example.playlistmaker.search.domain.impl.TracksHistoryInteractorImpl
-import com.example.playlistmaker.settings.data.SettingsRepository
-import com.example.playlistmaker.settings.data.dto.SettingsStorage
-import com.example.playlistmaker.settings.data.impl.SettingsRepositoryImpl
+import com.example.playlistmaker.settings.data.dto.SettingsRepository
+import com.example.playlistmaker.settings.data.impl.SettingsStorageRepository
 import com.example.playlistmaker.settings.domain.SettingsInteractor
 import com.example.playlistmaker.settings.domain.impl.SettingsInteractorImpl
+import com.example.playlistmaker.sharing.domain.SharingInteractor
+import com.example.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 
 object Creator {
     private fun getTracksRepository(context: Context): TracksRepository {
@@ -31,33 +32,37 @@ object Creator {
         )
     }
 
-    fun provideTracksInteractor(context: Context): TracksInteractor {
-        return TracksInteractorImpl(getTracksRepository(context))
-    }
-
     private fun getSharedHistory(context: Context): HistoryRepository {
         return HistoryRepositoryImpl(TracksListHistoryStorage(
             context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, Context.MODE_PRIVATE)
         ))
     }
 
-    fun provideHistoryInteractor(context: Context): TracksHistoryInteractor {
-        return TracksHistoryInteractorImpl(getSharedHistory(context))
-    }
-
     private fun getPlayerRepository(url: String?): PlayerRepository {
         return PlayerRepositoryImpl(MediaPlayer(), url)
     }
 
-    fun providePlayer(url: String?): PlayerInteractor {
+    private fun getSettings(application: Application): SettingsRepository {
+        return SettingsStorageRepository(application)
+    }
+
+    fun provideTracksInteractor(context: Context): TracksInteractor {
+        return TracksInteractorImpl(getTracksRepository(context))
+    }
+
+    fun provideHistoryInteractor(context: Context): TracksHistoryInteractor {
+        return TracksHistoryInteractorImpl(getSharedHistory(context))
+    }
+
+    fun providePlayerInteractor(url: String?): PlayerInteractor {
         return PlayerInteractorImpl(getPlayerRepository(url))
     }
 
-    private fun getSettings(application: Application): SettingsRepository {
-        return SettingsRepositoryImpl(SettingsStorage(application))
+    fun provideSettingsInteractor(application: Application): SettingsInteractor {
+        return SettingsInteractorImpl(getSettings(application))
     }
 
-    fun provideSettings(application: Application): SettingsInteractor {
-        return SettingsInteractorImpl(getSettings(application))
+    fun provideSharingInteractor(): SharingInteractor {
+        return SharingInteractorImpl()
     }
 }

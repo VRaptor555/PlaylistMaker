@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.data.dto
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.search.data.Converter
+import com.example.playlistmaker.search.data.SearchConverter
 import com.example.playlistmaker.search.data.TrackDto
 import com.example.playlistmaker.search.domain.model.Track
 import com.google.gson.Gson
@@ -19,7 +19,7 @@ class TracksListHistoryStorage(private val sharedPreferences: SharedPreferences)
         }
         tracks.add(0, track)
         if (tracks.size > 10)
-            tracks.removeLast()
+            tracks.removeAt(tracks.lastIndex)
         changeSavedList(tracks)
     }
 
@@ -29,11 +29,11 @@ class TracksListHistoryStorage(private val sharedPreferences: SharedPreferences)
 
     fun getSavedList(): List<Track> {
         val json = sharedPreferences.getString(HISTORY_LIST_KEY, null) ?: return emptyList<Track>()
-        return Converter.dtoToTrack(Gson().fromJson(json, Array<TrackDto>::class.java))
+        return SearchConverter.dtoToTrack(Gson().fromJson(json, Array<TrackDto>::class.java))
     }
 
     private fun changeSavedList(tracks: List<Track>) {
-        val json = Gson().toJson(Converter.trackToDto(tracks))
+        val json = Gson().toJson(SearchConverter.trackToDto(tracks))
         sharedPreferences.edit()
             .putString(HISTORY_LIST_KEY, json)
             .apply()

@@ -2,7 +2,7 @@ package com.example.playlistmaker.search.data
 
 import com.example.playlistmaker.search.domain.model.Track
 
-object Converter {
+object SearchConverter {
     fun trackToDto(trackArray: List<Track>): List<TrackDto> {
         return trackArray.map {
             TrackDto(

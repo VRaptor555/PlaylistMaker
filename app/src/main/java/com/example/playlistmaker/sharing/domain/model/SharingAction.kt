@@ -1,8 +1,8 @@
-package com.example.playlistmaker.settings.ui
+package com.example.playlistmaker.sharing.domain.model
 
 import android.content.Intent
 
-enum class SettingAction(val value: String) {
+enum class SharingAction(val value: String) {
     SETTING_SEND(Intent.ACTION_SEND),
     SETTING_SEND_TO(Intent.ACTION_SENDTO),
     SETTING_VIEW(Intent.ACTION_VIEW)

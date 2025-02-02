@@ -1,10 +1,8 @@
 package com.example.playlistmaker.search.data.impl
 
-import com.example.playlistmaker.search.data.Converter
 import com.example.playlistmaker.search.data.HistoryRepository
 import com.example.playlistmaker.search.data.dto.TracksListHistoryStorage
 import com.example.playlistmaker.search.domain.model.Track
-import com.google.gson.Gson
 
 class HistoryRepositoryImpl(
     private val localStorage: TracksListHistoryStorage,

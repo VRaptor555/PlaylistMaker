@@ -61,7 +61,7 @@ class PlayerActivity : AppCompatActivity() {
 
         val track = getSerializable(this, "track", Track::class.java)
 
-        player = Creator.providePlayer(track.previewUrl)
+        player = Creator.providePlayerInteractor(track.previewUrl)
 
         timeLeft.text = timeMillisToMin(track.trackTimeMillis)
         durationInfo.text = timeMillisToMin(track.trackTimeMillis)

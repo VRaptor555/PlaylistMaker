@@ -1,33 +1,39 @@
 package com.example.playlistmaker.sharing.domain.impl
 
-import com.example.playlistmaker.sharing.data.ExternalNavigator
-import com.example.playlistmaker.settings.domain.model.EmailData
+import android.content.Intent
+import com.example.playlistmaker.sharing.data.impl.ShareRepositoryImpl
+import com.example.playlistmaker.sharing.domain.model.EmailData
+import com.example.playlistmaker.sharing.domain.model.IntentExtra
+import com.example.playlistmaker.sharing.domain.model.IntentExtraStr
+import com.example.playlistmaker.sharing.domain.model.SharingAction
 import com.example.playlistmaker.sharing.domain.SharingInteractor
 
-class SharingInteractorImpl(
-    private val externalNavigator: ExternalNavigator,
-): SharingInteractor {
-    override fun shareApp() {
-        externalNavigator.shareLink(getShareAppLink())
+class SharingInteractorImpl(): SharingInteractor {
+
+    override fun sendEmail(mailData: EmailData): Intent {
+        val share = ShareRepositoryImpl(SharingAction.SETTING_SEND_TO)
+        share.setData(mailData.data)
+        val listIntentValue = listOf(
+            IntentExtraStr(Intent.EXTRA_SUBJECT, mailData.subj),
+            IntentExtraStr(Intent.EXTRA_TEXT, mailData.text),
+            IntentExtra(Intent.EXTRA_EMAIL, mailData.mailBox)
+        )
+        share.putExtra(listIntentValue)
+        return share.getIntent()
     }
 
-    override fun openTerms() {
-        externalNavigator.openLink(getTermsLink())
+    override fun sendUrl(url: String): Intent {
+        return ShareRepositoryImpl(SharingAction.SETTING_VIEW, url).getIntent()
     }
 
-    override fun openSupport() {
-        externalNavigator.openEmail(getSupportEmailData())
-    }
-
-    private fun getShareAppLink(): String {
-        TODO("Not yet implemented")
-    }
-
-    private fun getTermsLink(): String {
-        TODO("Not yet implemented")
-    }
-
-    private fun getSupportEmailData(): EmailData {
-        TODO("Not yet implemented")
+    override fun share(message: String, messageSubj: String): Intent {
+        val share = ShareRepositoryImpl(SharingAction.SETTING_SEND)
+        share.setType("text/plain")
+        val listIntentValue = listOf(
+            IntentExtraStr(Intent.EXTRA_TEXT, message),
+            IntentExtraStr(Intent.EXTRA_SUBJECT, messageSubj)
+        )
+        share.putExtra(listIntentValue)
+        return share.getIntent()
     }
 }

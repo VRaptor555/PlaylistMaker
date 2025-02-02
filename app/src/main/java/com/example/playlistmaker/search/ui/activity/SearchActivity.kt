@@ -9,7 +9,6 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +17,6 @@ import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.PlayerActivity
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TrackAdapter
-import com.example.playlistmaker.search.ui.models.TracksHistoryState
 import com.example.playlistmaker.search.ui.models.TracksState
 import com.example.playlistmaker.search.ui.view_model.TrackSearchViewModel
 
@@ -83,7 +81,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.btnRefresh.setOnClickListener {
-            if (!binding.inputSearchText.text.isEmpty()) {
+            if (binding.inputSearchText.text.isNotEmpty()) {
                 viewModel.restartSearch()
             }
         }
@@ -120,7 +118,7 @@ class SearchActivity : AppCompatActivity() {
                 textValue = s.toString()
             }
         }
-        textWatcher?.let { binding.inputSearchText.addTextChangedListener(it)}
+        textWatcher.let { binding.inputSearchText.addTextChangedListener(it)}
         binding.inputSearchText.setText(textValue)
     }
 
@@ -136,7 +134,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        textWatcher?.let { binding.inputSearchText.removeTextChangedListener(it) }
+        textWatcher.let { binding.inputSearchText.removeTextChangedListener(it) }
     }
 
     private fun clickTrack(track: Track) {
@@ -168,38 +166,46 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showLoading() {
-        binding.tracksLayout.isVisible = true
-        binding.searchHisLayout.isVisible = false
-        binding.progressBar.isVisible = true
-        binding.placeholderFound.isVisible = false
-        binding.placeholderConnect.isVisible = false
+        with(binding) {
+            tracksLayout.isVisible = true
+            searchHisLayout.isVisible = false
+            progressBar.isVisible = true
+            placeholderFound.isVisible = false
+            placeholderConnect.isVisible = false
+        }
         refreshSearchAdapter(emptyList())
     }
 
     private fun showError(errorMessage: String) {
-        binding.tracksLayout.isVisible = true
-        binding.searchHisLayout.isVisible = false
-        binding.progressBar.isVisible = false
-        binding.placeholderFound.isVisible = false
-        binding.placeholderConnect.isVisible = true
+        with(binding) {
+            tracksLayout.isVisible = true
+            searchHisLayout.isVisible = false
+            progressBar.isVisible = false
+            placeholderFound.isVisible = false
+            placeholderConnect.isVisible = true
+        }
         refreshSearchAdapter(emptyList())
     }
 
     private fun showEmpty(message: String) {
-        binding.tracksLayout.isVisible = true
-        binding.searchHisLayout.isVisible = false
-        binding.progressBar.isVisible = false
-        binding.placeholderFound.isVisible = true
-        binding.placeholderConnect.isVisible = false
+        with(binding) {
+            tracksLayout.isVisible = true
+            searchHisLayout.isVisible = false
+            progressBar.isVisible = false
+            placeholderFound.isVisible = true
+            placeholderConnect.isVisible = false
+        }
         refreshSearchAdapter(emptyList())
     }
 
     private fun showContent(tracks: List<Track>) {
-        binding.tracksLayout.isVisible = true
-        binding.searchHisLayout.isVisible = false
-        binding.progressBar.isVisible = false
-        binding.placeholderFound.isVisible = false
-        binding.placeholderConnect.isVisible = false
+        with(binding) {
+            tracksLayout.isVisible = true
+            searchHisLayout.isVisible = false
+            progressBar.isVisible = false
+            placeholderFound.isVisible = false
+            placeholderConnect.isVisible = false
+        }
         refreshSearchAdapter(tracks)
     }
 
@@ -222,7 +228,7 @@ class SearchActivity : AppCompatActivity() {
         refreshHistoryAdapter(tracks)
     }
 
-    fun render(state: TracksState) {
+    private fun render(state: TracksState) {
         when(state) {
             is TracksState.Loading -> showLoading()
             is TracksState.Content -> showContent(state.tracks)

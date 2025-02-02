@@ -1,4 +1,4 @@
-package com.example.playlistmaker.settings.domain.model
+package com.example.playlistmaker.sharing.domain.model
 
 data class IntentExtra(
     val typeIntent: String,
