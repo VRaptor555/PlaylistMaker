@@ -14,7 +14,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.player.ui.PlayerActivity
+import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TrackAdapter
 import com.example.playlistmaker.search.ui.models.TracksState

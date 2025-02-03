@@ -12,13 +12,13 @@ class SharingInteractorImpl(): SharingInteractor {
 
     override fun sendEmail(mailData: EmailData): Intent {
         val share = ShareRepositoryImpl(SharingAction.SETTING_SEND_TO)
-        share.setData(mailData.data)
         val listIntentValue = listOf(
             IntentExtraStr(Intent.EXTRA_SUBJECT, mailData.subj),
             IntentExtraStr(Intent.EXTRA_TEXT, mailData.text),
-            IntentExtra(Intent.EXTRA_EMAIL, mailData.mailBox)
+            IntentExtra(Intent.EXTRA_EMAIL, mailData.mailBox),
         )
         share.putExtra(listIntentValue)
+        share.setData(mailData.data)
         return share.getIntent()
     }
 
@@ -31,7 +31,7 @@ class SharingInteractorImpl(): SharingInteractor {
         share.setType("text/plain")
         val listIntentValue = listOf(
             IntentExtraStr(Intent.EXTRA_TEXT, message),
-            IntentExtraStr(Intent.EXTRA_SUBJECT, messageSubj)
+            IntentExtraStr(Intent.EXTRA_SUBJECT, messageSubj),
         )
         share.putExtra(listIntentValue)
         return share.getIntent()
