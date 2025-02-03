@@ -19,64 +19,74 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class PlayerActivity : AppCompatActivity() {
-    private lateinit var viewModel: PlayerViewModel
-    private lateinit var binding: ActivityPlayerBinding
+    private var viewModel: PlayerViewModel? = null
+    private var binding: ActivityPlayerBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding?.root)
 
 
-        binding.btnBack.setOnClickListener {
+        binding?.btnBack?.setOnClickListener {
             this.finish()
         }
 
         val track = getSerializable(this, "track", Track::class.java)
 
         viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory(track.previewUrl)) [PlayerViewModel::class.java]
-        viewModel.observeState().observe(this) {
-            render(it)
+        viewModel?.let { model ->
+            model.observeState().observe(this) {
+                render(it)
+            }
         }
 
-        binding.timeLeft.text = timeMillisToMin(track.trackTimeMillis)
-        binding.durationInfo.text = timeMillisToMin(track.trackTimeMillis)
-        binding.albumInfo.text = track.collectionName
-        binding.yearInfo.text =
-            LocalDate.parse(track.releaseDate, DateTimeFormatter.ISO_DATE_TIME).year.toString()
-        binding.genreInfo.text = track.primaryGenreName
-        binding.countryInfo.text = track.country
-        binding.trackTitle.text = track.trackName
-        binding.trackArtist.text = track.artistName
+        binding?.let {
+            it.timeLeft.text = timeMillisToMin(track.trackTimeMillis)
+            it.durationInfo.text = timeMillisToMin(track.trackTimeMillis)
+            it.albumInfo.text = track.collectionName
+            it.yearInfo.text =
+                LocalDate.parse(track.releaseDate, DateTimeFormatter.ISO_DATE_TIME).year.toString()
+            it.genreInfo.text = track.primaryGenreName
+            it.countryInfo.text = track.country
+            it.trackTitle.text = track.trackName
+            it.trackArtist.text = track.artistName
 
-        Glide.with(baseContext)
-            .load(getURLImage500(track.artworkUrl100))
-            .placeholder(R.drawable.player_placeholder)
-            .transform(RoundedCorners(dpToPx(8f, baseContext)))
-            .into(binding.imageTrack)
+            Glide.with(baseContext)
+                .load(getURLImage500(track.artworkUrl100))
+                .placeholder(R.drawable.player_placeholder)
+                .transform(RoundedCorners(dpToPx(8f, baseContext)))
+                .into(it.imageTrack)
 
-        binding.playBtn.setOnClickListener {
-            viewModel.play()
+            it.playBtn.setOnClickListener {
+                viewModel?.play()
+            }
         }
 
-        viewModel.initPlayer()
+        viewModel?.initPlayer()
     }
 
     private fun loading() {
-        binding.playBtn.isVisible = false
-        binding.timeLeft.text = "-:--"
+        binding?.let {
+            it.playBtn.isVisible = false
+            it.timeLeft.text = "-:--"
+        }
     }
 
     private fun setPaused(timecode: String) {
-        binding.playBtn.isVisible = true
-        binding.playBtn.setImageResource(R.drawable.play_btn)
-        binding.timeLeft.text = timecode
+        binding?.let {
+            it.playBtn.isVisible = true
+            it.playBtn.setImageResource(R.drawable.play_btn)
+            it.timeLeft.text = timecode
+        }
     }
 
     private fun setPlaying(timecode: String) {
-        binding.playBtn.isVisible = true
-        binding.playBtn.setImageResource(R.drawable.pause_btn)
-        binding.timeLeft.text = timecode
+        binding?.let {
+            it.playBtn.isVisible = true
+            it.playBtn.setImageResource(R.drawable.pause_btn)
+            it.timeLeft.text = timecode
+        }
     }
 
     private fun render(state: PlayerState) {

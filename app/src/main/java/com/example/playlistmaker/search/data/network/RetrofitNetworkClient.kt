@@ -25,9 +25,9 @@ class RetrofitNetworkClient(
             return Response().apply { resultCode = -1 }
         }
         if (dto is TracksSearchRequest) {
-            val resp = trackService.searchTracks(dto.text).execute()
-            val body = resp.body()
-            return body?.apply { resultCode = resp.code() } ?: Response().apply { resultCode = resp.code() }
+            val response = trackService.searchTracks(dto.text).execute()
+            val body = response.body()
+            return body?.apply { resultCode = response.code() } ?: Response().apply { resultCode = response.code() }
         } else {
             return Response().apply { resultCode = 400 }
         }

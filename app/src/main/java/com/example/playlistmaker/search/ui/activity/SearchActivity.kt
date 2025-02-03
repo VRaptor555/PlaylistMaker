@@ -41,8 +41,8 @@ class SearchActivity : AppCompatActivity() {
         }
     )
 
-    private lateinit var viewModel: TrackSearchViewModel
-    private lateinit var binding: ActivitySearchBinding
+    private var viewModel: TrackSearchViewModel? = null
+    private var binding: ActivitySearchBinding? = null
 
     private var isClickAllowed = true
     private val handlerDebounce = Handler(Looper.getMainLooper())
@@ -53,54 +53,51 @@ class SearchActivity : AppCompatActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1_000L
     }
 
-    private lateinit var textWatcher: TextWatcher
+    private var textWatcher: TextWatcher? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding?.root)
 
         viewModel = ViewModelProvider(this, TrackSearchViewModel.getViewModelFactory()) [TrackSearchViewModel::class.java]
-        viewModel.observeState().observe(this) {
-            render(it)
-        }
-
-        binding.searchingList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.searchingList.adapter = searchingAdapter
-        binding.searchingHistoryList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.searchingHistoryList.adapter = historyAdapter
-
-
-        binding.home.setOnClickListener {
-            this.finish()
-        }
-
-        binding.btnClearHistory.setOnClickListener {
-            viewModel.clearHistoryList()
-        }
-
-        binding.btnRefresh.setOnClickListener {
-            if (binding.inputSearchText.text.isNotEmpty()) {
-                viewModel.restartSearch()
+        viewModel?.let { model ->
+            model.observeState().observe(this) {
+                render(it)
             }
         }
 
-        binding.clearIcon.setOnClickListener {
-            binding.inputSearchText.setText("")
-            searchingAdapter.tracks.clear()
-            searchingAdapter.notifyDataSetChanged()
-            val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(binding.inputSearchText.windowToken, 0)
-            viewModel.getHistoryTrackList()
-        }
+        binding?.let { bind ->
+            bind.searchingList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            bind.searchingList.adapter = searchingAdapter
+            bind.searchingHistoryList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            bind.searchingHistoryList.adapter = historyAdapter
 
-        binding.inputSearchText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && binding.inputSearchText.text.isEmpty()) {
-                viewModel.getHistoryTrackList()
+            bind.home.setOnClickListener { this.finish() }
+            bind.btnClearHistory.setOnClickListener { viewModel?.clearHistoryList() }
+            bind.btnRefresh.setOnClickListener {
+                if (bind.inputSearchText.text.isNotEmpty()) {
+                    viewModel?.restartSearch()
+                }
+            }
+            bind.clearIcon.setOnClickListener {
+                bind.inputSearchText.setText("")
+                searchingAdapter.tracks.clear()
+                searchingAdapter.notifyDataSetChanged()
+                val inputMethodManager =
+                    getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                inputMethodManager?.hideSoftInputFromWindow(bind.inputSearchText.windowToken, 0)
+                viewModel?.getHistoryTrackList()
+
+            }
+            bind.inputSearchText.setOnFocusChangeListener { view, hasFocus ->
+                if (hasFocus && bind.inputSearchText.text.isEmpty()) {
+                    viewModel?.getHistoryTrackList()
+                }
             }
         }
+
 
 
         textWatcher = object : TextWatcher {
@@ -109,17 +106,20 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.searchDebounce(
+                viewModel?.searchDebounce(
                     searchText = s?.toString() ?: ""
                 )
+                if ((s?.toString() ?: "") == "") {
+                    viewModel?.getHistoryTrackList()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
                 textValue = s.toString()
             }
         }
-        textWatcher.let { binding.inputSearchText.addTextChangedListener(it)}
-        binding.inputSearchText.setText(textValue)
+        textWatcher?.let { binding?.inputSearchText?.addTextChangedListener(it)}
+        binding?.inputSearchText?.setText(textValue)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -134,11 +134,11 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        textWatcher.let { binding.inputSearchText.removeTextChangedListener(it) }
+        textWatcher.let { binding?.inputSearchText?.removeTextChangedListener(it) }
     }
 
     private fun clickTrack(track: Track) {
-        viewModel.addTrackToHistory(track)
+        viewModel?.addTrackToHistory(track)
         clickHistoryTrack(track)
     }
 
@@ -166,45 +166,45 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showLoading() {
-        with(binding) {
-            tracksLayout.isVisible = true
-            searchHisLayout.isVisible = false
-            progressBar.isVisible = true
-            placeholderFound.isVisible = false
-            placeholderConnect.isVisible = false
+        binding?.let {
+            it.tracksLayout.isVisible = true
+            it.searchHisLayout.isVisible = false
+            it.progressBar.isVisible = true
+            it.placeholderFound.isVisible = false
+            it.placeholderConnect.isVisible = false
         }
         refreshSearchAdapter(emptyList())
     }
 
     private fun showError(errorMessage: String) {
-        with(binding) {
-            tracksLayout.isVisible = true
-            searchHisLayout.isVisible = false
-            progressBar.isVisible = false
-            placeholderFound.isVisible = false
-            placeholderConnect.isVisible = true
+        binding?.let {
+            it.tracksLayout.isVisible = true
+            it.searchHisLayout.isVisible = false
+            it.progressBar.isVisible = false
+            it.placeholderFound.isVisible = false
+            it.placeholderConnect.isVisible = true
         }
         refreshSearchAdapter(emptyList())
     }
 
     private fun showEmpty(message: String) {
-        with(binding) {
-            tracksLayout.isVisible = true
-            searchHisLayout.isVisible = false
-            progressBar.isVisible = false
-            placeholderFound.isVisible = true
-            placeholderConnect.isVisible = false
+        binding?.let {
+            it.tracksLayout.isVisible = true
+            it.searchHisLayout.isVisible = false
+            it.progressBar.isVisible = false
+            it.placeholderFound.isVisible = true
+            it.placeholderConnect.isVisible = false
         }
         refreshSearchAdapter(emptyList())
     }
 
     private fun showContent(tracks: List<Track>) {
-        with(binding) {
-            tracksLayout.isVisible = true
-            searchHisLayout.isVisible = false
-            progressBar.isVisible = false
-            placeholderFound.isVisible = false
-            placeholderConnect.isVisible = false
+        binding?.let {
+            it.tracksLayout.isVisible = true
+            it.searchHisLayout.isVisible = false
+            it.progressBar.isVisible = false
+            it.placeholderFound.isVisible = false
+            it.placeholderConnect.isVisible = false
         }
         refreshSearchAdapter(tracks)
     }
@@ -217,14 +217,18 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showHistoryEmpty() {
-        binding.searchHisLayout.isVisible = false
-        binding.tracksLayout.isVisible = false
+        binding?.let {
+            it.searchHisLayout.isVisible = false
+            it.tracksLayout.isVisible = false
+        }
         refreshHistoryAdapter(emptyList())
     }
 
     private fun showHistoryContent(tracks: List<Track>) {
-        binding.searchHisLayout.isVisible = true
-        binding.tracksLayout.isVisible = false
+        binding?.let {
+            it.searchHisLayout.isVisible = true
+            it.tracksLayout.isVisible = false
+        }
         refreshHistoryAdapter(tracks)
     }
 

@@ -14,48 +14,52 @@ import com.example.playlistmaker.sharing.domain.model.EmailData
 
 
 class SettingsActivity : AppCompatActivity() {
-    private lateinit var viewModel: SettingsViewModel
-    private lateinit var binding: ActivitySettingsBinding
+    private var viewModel: SettingsViewModel? = null
+    private var binding: ActivitySettingsBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding?.root)
 
         viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory()) [SettingsViewModel::class.java]
-        viewModel.observeState().observe(this) {
-            render(it)
+        viewModel?.let { model ->
+            model.observeState().observe(this) {
+                render(it)
+            }
         }
 
-        binding.themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
-            viewModel.setSettings(AppSettings(darkTheme = isChecked))
-        }
+        binding?.let {
+            it.themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
+                viewModel?.setSettings(AppSettings(darkTheme = isChecked))
+            }
 
-        binding.home.setOnClickListener {
-            this.finish()
-        }
+            it.home.setOnClickListener {
+                this.finish()
+            }
 
-        viewModel.getSettings()
 
-        binding.shareBtn.setOnClickListener {
-            viewModel.sendShare(
-                getString(R.string.share_message),
-                getString(R.string.share_message_subj)
-            )
-        }
-        binding.supportBtn.setOnClickListener {
-            viewModel.sendEmail(
-                EmailData(
-                    mailBox = arrayOf(getString(R.string.support_message_email)),
-                    subj = getString(R.string.support_message_subj),
-                    text = getString(R.string.support_message_text),
-                    data = "mailto:"
+            it.shareBtn.setOnClickListener {
+                viewModel?.sendShare(
+                    getString(R.string.share_message),
+                    getString(R.string.share_message_subj)
                 )
-            )
+            }
+            it.supportBtn.setOnClickListener {
+                viewModel?.sendEmail(
+                    EmailData(
+                        mailBox = arrayOf(getString(R.string.support_message_email)),
+                        subj = getString(R.string.support_message_subj),
+                        text = getString(R.string.support_message_text),
+                        data = "mailto:"
+                    )
+                )
+            }
+            it.agreementBtn.setOnClickListener {
+                viewModel?.sendUrl(getString(R.string.agreement_url))
+            }
         }
-        binding.agreementBtn.setOnClickListener {
-            viewModel.sendUrl(getString(R.string.agreement_url))
-        }
+        viewModel?.getSettings()
     }
 
     private fun settingValuesSet(setting: AppSettings) {
@@ -63,7 +67,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun settingValuesGet(setting: AppSettings) {
-        binding.themeSwitcher.isChecked = setting.darkTheme
+        binding?.themeSwitcher?.isChecked = setting.darkTheme
         (applicationContext as App).switchTheme(setting.darkTheme)
     }
 

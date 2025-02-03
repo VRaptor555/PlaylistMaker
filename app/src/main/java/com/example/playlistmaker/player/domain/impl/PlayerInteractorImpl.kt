@@ -2,9 +2,10 @@ package com.example.playlistmaker.player.domain.impl
 
 import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.data.PlayerRepository
+import com.example.playlistmaker.player.domain.PlayerConsumer
 
 class PlayerInteractorImpl(private val repository: PlayerRepository): PlayerInteractor {
-    override fun preparePlayer(consumer: PlayerInteractor.PlayerConsumer) {
+    override fun preparePlayer(consumer: PlayerConsumer) {
         consumer.showTime(repository.currentTime(), repository.state())
     }
 

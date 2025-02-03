@@ -21,7 +21,7 @@
             android:layout_width="@dimen/track_image_size"
             android:layout_height="@dimen/track_image_size"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="13dp"
+            android:layout_marginStart="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:importantForAccessibility="no"
             android:scaleType="fitCenter"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/half_medium_padding"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:ellipsize="end"
                 android:gravity="start"
                 android:maxLines="1"
@@ -51,7 +51,7 @@
             <TableLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="14dp"
+                android:layout_marginBottom="12dp"
                 android:orientation="horizontal"
                 android:shrinkColumns="0, true">
 

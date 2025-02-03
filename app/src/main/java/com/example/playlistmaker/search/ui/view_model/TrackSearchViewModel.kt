@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.search.domain.TracksConsumer
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.models.TracksState
@@ -97,7 +98,7 @@ class TrackSearchViewModel(
 
             trackInteractor.searchTracks(
                 searchTracks,
-                object : TracksInteractor.TracksConsumer {
+                object : TracksConsumer {
                     override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                         if (foundTracks != null) {
                             tracks.clear()

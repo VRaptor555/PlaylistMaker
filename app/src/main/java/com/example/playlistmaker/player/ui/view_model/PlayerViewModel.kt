@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.data.impl.PlayerRepositoryImpl
+import com.example.playlistmaker.player.domain.PlayerConsumer
 import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.ui.models.PlayerState
 import com.example.playlistmaker.utils.timeMillisToMin
@@ -21,16 +22,6 @@ class PlayerViewModel(
     application: Application,
     urlPreview: String?,
 ): AndroidViewModel(application) {
-    companion object {
-        private const val DALAY_TIMER = 250L
-        private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getViewModelFactory(url: String?): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(this[APPLICATION_KEY] as Application, url)
-            }
-        }
-    }
     private val playerInteractor = Creator.providePlayerInteractor(urlPreview)
 
     private val handler = Handler(Looper.getMainLooper())
@@ -70,7 +61,7 @@ class PlayerViewModel(
     }
 
     private fun setCurrentPosition() {
-        playerInteractor.preparePlayer(object : PlayerInteractor.PlayerConsumer {
+        playerInteractor.preparePlayer(object : PlayerConsumer {
             override fun showTime(currentPosition: Int, currentState: Int) {
                 when (currentState) {
                     PlayerRepositoryImpl.STATE_PLAYING -> {
@@ -88,10 +79,19 @@ class PlayerViewModel(
         })
     }
 
-
-
     private fun renderState(state: PlayerState) {
         stateLiveData.postValue(state)
+    }
+
+    companion object {
+        private const val DALAY_TIMER = 250L
+        private val SEARCH_REQUEST_TOKEN = Any()
+
+        fun getViewModelFactory(url: String?): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                PlayerViewModel(this[APPLICATION_KEY] as Application, url)
+            }
+        }
     }
 
 }
