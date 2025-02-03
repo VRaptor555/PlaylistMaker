@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSecondary"
     android:fitsSystemWindows="true"
-    tools:context=".ui.player.PlayerActivity">
+    tools:context=".player.ui.activity.PlayerActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/left_border"

@@ -7,6 +7,10 @@ android {
     namespace = "com.example.playlistmaker"
     compileSdk = 34
 
+    buildFeatures {
+        viewBinding = true
+    }
+    
     defaultConfig {
         applicationId = "com.example.playlistmaker"
         minSdk = 29
@@ -34,6 +38,7 @@ android {
         jvmTarget = "17"
     }
     buildToolsVersion = "34.0.0"
+
 }
 
 dependencies {
