@@ -3,7 +3,7 @@ package com.example.playlistmaker.creator
 import android.app.Application
 import android.content.Context
 import android.media.MediaPlayer
-import com.example.playlistmaker.main.ui.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.main.ui.activity.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.search.data.HistoryRepository
 import com.example.playlistmaker.search.data.impl.TracksRepositoryImpl
 import com.example.playlistmaker.search.data.network.RetrofitNetworkClient

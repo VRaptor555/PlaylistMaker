@@ -4,7 +4,7 @@ import android.app.Application
 import android.app.Application.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import com.example.playlistmaker.main.ui.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.main.ui.activity.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.settings.data.dto.SettingsRepository
 import com.example.playlistmaker.settings.data.model.AppSettingsDto
 import com.google.gson.Gson

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".library.ui.LibraryActivity">
+    tools:context=".library.ui.activity.LibraryActivity">
 
     <TextView
         android:id="@+id/message"
