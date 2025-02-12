@@ -1,14 +1,15 @@
 package com.example.playlistmaker.search.data.dto
 
-import android.content.Context
+import android.content.SharedPreferences
 import com.example.playlistmaker.search.data.SearchConverter
 import com.example.playlistmaker.search.data.TrackDto
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.utils.PLAYLIST_MAKER_PREFERENCES
 import com.google.gson.Gson
 
-class TracksListHistoryStorage(context: Context) {
-    val sharedPreferences = context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, Context.MODE_PRIVATE)
+class TracksListHistoryStorage(
+    private val sharedPreferences: SharedPreferences
+) {
+
 
     private companion object{
         const val HISTORY_LIST_KEY = "HISTORY_LIST"
