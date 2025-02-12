@@ -11,7 +11,6 @@ import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
@@ -19,9 +18,12 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TrackAdapter
 import com.example.playlistmaker.search.ui.models.TracksState
 import com.example.playlistmaker.search.ui.view_model.TrackSearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchActivity : AppCompatActivity() {
+    private val viewModel: TrackSearchViewModel by viewModel()
+
     private var textValue: String = TEXT_VALUE
     private val historyAdapter = TrackAdapter(
         object : TrackAdapter.TrackClickListener {
@@ -41,7 +43,6 @@ class SearchActivity : AppCompatActivity() {
         }
     )
 
-    private var viewModel: TrackSearchViewModel? = null
     private var binding: ActivitySearchBinding? = null
 
     private var isClickAllowed = true
@@ -61,11 +62,8 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        viewModel = ViewModelProvider(this, TrackSearchViewModel.getViewModelFactory()) [TrackSearchViewModel::class.java]
-        viewModel?.let { model ->
-            model.observeState().observe(this) {
-                render(it)
-            }
+        viewModel.observeState().observe(this) {
+            render(it)
         }
 
         binding?.let { bind ->
@@ -75,10 +73,10 @@ class SearchActivity : AppCompatActivity() {
             bind.searchingHistoryList.adapter = historyAdapter
 
             bind.home.setOnClickListener { this.finish() }
-            bind.btnClearHistory.setOnClickListener { viewModel?.clearHistoryList() }
+            bind.btnClearHistory.setOnClickListener { viewModel.clearHistoryList() }
             bind.btnRefresh.setOnClickListener {
                 if (bind.inputSearchText.text.isNotEmpty()) {
-                    viewModel?.restartSearch()
+                    viewModel.restartSearch()
                 }
             }
             bind.clearIcon.setOnClickListener {
@@ -88,12 +86,12 @@ class SearchActivity : AppCompatActivity() {
                 val inputMethodManager =
                     getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 inputMethodManager?.hideSoftInputFromWindow(bind.inputSearchText.windowToken, 0)
-                viewModel?.getHistoryTrackList()
+                viewModel.getHistoryTrackList()
 
             }
             bind.inputSearchText.setOnFocusChangeListener { view, hasFocus ->
                 if (hasFocus && bind.inputSearchText.text.isEmpty()) {
-                    viewModel?.getHistoryTrackList()
+                    viewModel.getHistoryTrackList()
                 }
             }
         }
@@ -106,11 +104,11 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel?.searchDebounce(
+                viewModel.searchDebounce(
                     searchText = s?.toString() ?: ""
                 )
                 if ((s?.toString() ?: "") == "") {
-                    viewModel?.getHistoryTrackList()
+                    viewModel.getHistoryTrackList()
                 }
             }
 
@@ -138,7 +136,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun clickTrack(track: Track) {
-        viewModel?.addTrackToHistory(track)
+        viewModel.addTrackToHistory(track)
         clickHistoryTrack(track)
     }
 

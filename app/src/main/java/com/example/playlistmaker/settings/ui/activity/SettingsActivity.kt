@@ -3,7 +3,6 @@ package com.example.playlistmaker.settings.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.main.ui.App
@@ -11,10 +10,11 @@ import com.example.playlistmaker.settings.domain.model.AppSettings
 import com.example.playlistmaker.settings.ui.models.SettingsState
 import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 import com.example.playlistmaker.sharing.domain.model.EmailData
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SettingsActivity : AppCompatActivity() {
-    private var viewModel: SettingsViewModel? = null
+    private val viewModel: SettingsViewModel by viewModel()
     private var binding: ActivitySettingsBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,16 +22,13 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory()) [SettingsViewModel::class.java]
-        viewModel?.let { model ->
-            model.observeState().observe(this) {
-                render(it)
-            }
+        viewModel.observeState().observe(this) {
+            render(it)
         }
 
         binding?.let {
             it.themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
-                viewModel?.setSettings(AppSettings(darkTheme = isChecked))
+                viewModel.setSettings(AppSettings(darkTheme = isChecked))
             }
 
             it.home.setOnClickListener {
@@ -40,13 +37,13 @@ class SettingsActivity : AppCompatActivity() {
 
 
             it.shareBtn.setOnClickListener {
-                viewModel?.sendShare(
+                viewModel.sendShare(
                     getString(R.string.share_message),
                     getString(R.string.share_message_subj)
                 )
             }
             it.supportBtn.setOnClickListener {
-                viewModel?.sendEmail(
+                viewModel.sendEmail(
                     EmailData(
                         mailBox = arrayOf(getString(R.string.support_message_email)),
                         subj = getString(R.string.support_message_subj),
@@ -56,10 +53,10 @@ class SettingsActivity : AppCompatActivity() {
                 )
             }
             it.agreementBtn.setOnClickListener {
-                viewModel?.sendUrl(getString(R.string.agreement_url))
+                viewModel.sendUrl(getString(R.string.agreement_url))
             }
         }
-        viewModel?.getSettings()
+        viewModel.getSettings()
     }
 
     private fun settingValuesSet(setting: AppSettings) {

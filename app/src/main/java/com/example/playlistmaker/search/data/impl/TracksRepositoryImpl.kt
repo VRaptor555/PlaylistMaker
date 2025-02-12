@@ -2,10 +2,9 @@ package com.example.playlistmaker.search.data.impl
 
 import com.example.playlistmaker.search.data.TracksSearchRequest
 import com.example.playlistmaker.search.data.TracksSearchResponse
-import com.example.playlistmaker.search.data.dto.TracksListHistoryStorage
+import com.example.playlistmaker.search.data.network.NetworkClient
 import com.example.playlistmaker.search.domain.TracksRepository
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.search.data.network.NetworkClient
 import com.example.playlistmaker.utils.Resource
 
 class TracksRepositoryImpl(

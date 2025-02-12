@@ -7,22 +7,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.data.impl.PlayerRepositoryImpl
 import com.example.playlistmaker.player.domain.PlayerConsumer
 import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.ui.models.PlayerState
 import com.example.playlistmaker.utils.timeMillisToMin
+import org.koin.core.component.KoinComponent
 
 class PlayerViewModel(
+    private val urlPreview: String?,
+    private val playerInteractor: PlayerInteractor,
     application: Application,
-    urlPreview: String?,
-): AndroidViewModel(application) {
-    private val playerInteractor = Creator.providePlayerInteractor(urlPreview)
+): AndroidViewModel(application), KoinComponent {
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -44,6 +40,7 @@ class PlayerViewModel(
 
 
     fun initPlayer() {
+        playerInteractor.setUrl(urlPreview)
         renderState(PlayerState.Loading)
         handler.postDelayed(
             object : Runnable {
@@ -67,8 +64,9 @@ class PlayerViewModel(
                     PlayerRepositoryImpl.STATE_PLAYING -> {
                         renderState(PlayerState.IsPlay(timeMillisToMin(currentPosition)))
                     }
-                    PlayerRepositoryImpl.STATE_PREPARED,
-                    PlayerRepositoryImpl.STATE_DEFAULT -> {
+                    PlayerRepositoryImpl.STATE_DEFAULT ->
+                        renderState(PlayerState.Loading)
+                    PlayerRepositoryImpl.STATE_PREPARED -> {
                         renderState(PlayerState.IsPause("0:00"))
                     }
                     PlayerRepositoryImpl.STATE_PAUSED -> {
@@ -86,12 +84,6 @@ class PlayerViewModel(
     companion object {
         private const val DALAY_TIMER = 250L
         private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getViewModelFactory(url: String?): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(this[APPLICATION_KEY] as Application, url)
-            }
-        }
     }
 
 }

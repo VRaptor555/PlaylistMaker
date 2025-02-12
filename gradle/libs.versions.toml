@@ -13,6 +13,7 @@ glide = "4.16.0"
 retrofit = "2.9.0"
 converter-gson = "2.9.0"
 gson = "2.10.1"
+koin = "3.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -27,6 +28,7 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 convertergson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converter-gson" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 
 
 
