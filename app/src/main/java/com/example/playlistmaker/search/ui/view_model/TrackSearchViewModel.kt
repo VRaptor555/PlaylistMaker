@@ -17,8 +17,8 @@ import com.example.playlistmaker.search.ui.models.TracksState
 
 class TrackSearchViewModel(
     application: Application,
-    val trackInteractor: TracksInteractor,
-    val searchHistoryInteractor: TracksHistoryInteractor,
+    private val trackInteractor: TracksInteractor,
+    private val searchHistoryInteractor: TracksHistoryInteractor,
 ): AndroidViewModel(application) {
     private val tracks = ArrayList<Track>()
 

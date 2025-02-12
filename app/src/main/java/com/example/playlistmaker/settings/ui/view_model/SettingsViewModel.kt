@@ -13,8 +13,8 @@ import com.example.playlistmaker.sharing.domain.model.EmailData
 
 class SettingsViewModel(
     application: Application,
-    val settingsInteractor: SettingsInteractor,
-    val sharedInteractor: SharingInteractor
+    private val settingsInteractor: SettingsInteractor,
+    private val sharedInteractor: SharingInteractor
 ): AndroidViewModel(application) {
 
     private val settingsLiveData = MutableLiveData<SettingsState>()

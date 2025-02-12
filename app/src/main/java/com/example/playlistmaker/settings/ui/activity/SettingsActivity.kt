@@ -2,7 +2,7 @@ package com.example.playlistmaker.settings.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.main.ui.App
@@ -13,12 +13,13 @@ import com.example.playlistmaker.sharing.domain.model.EmailData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : ComponentActivity() {
     private val viewModel: SettingsViewModel by viewModel()
     private var binding: ActivitySettingsBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
@@ -85,4 +86,5 @@ class SettingsActivity : AppCompatActivity() {
             is SettingsState.UrlIntent -> sendToAction(state.url)
         }
     }
+
 }

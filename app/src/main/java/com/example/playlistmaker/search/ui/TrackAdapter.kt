@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.search.domain.model.Track
 
-class TrackAdapter(val clickListener: TrackClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val clickListener: TrackClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
     var tracks: MutableList<Track> =  mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
