@@ -2,11 +2,11 @@ package com.example.playlistmaker.sharing.domain.impl
 
 import android.content.Intent
 import com.example.playlistmaker.sharing.data.impl.ShareRepositoryImpl
+import com.example.playlistmaker.sharing.domain.SharingInteractor
 import com.example.playlistmaker.sharing.domain.model.EmailData
 import com.example.playlistmaker.sharing.domain.model.IntentExtra
 import com.example.playlistmaker.sharing.domain.model.IntentExtraStr
 import com.example.playlistmaker.sharing.domain.model.SharingAction
-import com.example.playlistmaker.sharing.domain.SharingInteractor
 
 class SharingInteractorImpl(): SharingInteractor {
 

@@ -3,7 +3,6 @@ package com.example.playlistmaker.player.ui.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -15,11 +14,13 @@ import com.example.playlistmaker.utils.dpToPx
 import com.example.playlistmaker.utils.getSerializable
 import com.example.playlistmaker.utils.getURLImage500
 import com.example.playlistmaker.utils.timeMillisToMin
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class PlayerActivity : AppCompatActivity() {
-    private var viewModel: PlayerViewModel? = null
+
     private var binding: ActivityPlayerBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,12 +34,11 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         val track = getSerializable(this, "track", Track::class.java)
-
-        viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory(track.previewUrl)) [PlayerViewModel::class.java]
-        viewModel?.let { model ->
-            model.observeState().observe(this) {
-                render(it)
-            }
+        val viewModel: PlayerViewModel by viewModel() {
+            parametersOf(track.previewUrl)
+        }
+        viewModel.observeState().observe(this) {
+            render(it)
         }
 
         binding?.let {
@@ -59,11 +59,11 @@ class PlayerActivity : AppCompatActivity() {
                 .into(it.imageTrack)
 
             it.playBtn.setOnClickListener {
-                viewModel?.play()
+                viewModel.play()
             }
         }
 
-        viewModel?.initPlayer()
+        viewModel.initPlayer()
     }
 
     private fun loading() {

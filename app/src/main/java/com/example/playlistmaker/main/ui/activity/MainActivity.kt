@@ -11,8 +11,6 @@ import com.example.playlistmaker.library.ui.activity.LibraryActivity
 import com.example.playlistmaker.search.ui.activity.SearchActivity
 import com.example.playlistmaker.settings.ui.activity.SettingsActivity
 
-const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
-
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

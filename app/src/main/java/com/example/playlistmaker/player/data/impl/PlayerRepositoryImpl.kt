@@ -2,22 +2,18 @@ package com.example.playlistmaker.player.data.impl
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.player.data.PlayerRepository
+import org.koin.core.component.KoinComponent
 
-class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer, url: String?): PlayerRepository {
-    companion object {
-        const val STATE_DEFAULT = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
-    }
+class PlayerRepositoryImpl(
+    private val mediaPlayer: MediaPlayer,
+): PlayerRepository, KoinComponent {
 
-    private var state = STATE_DEFAULT
-
-    init {
-        url?.let {
+    override fun initUrlPreview(urlPreview: String?) {
+        urlPreview?.let {
+            mediaPlayer.reset()
             mediaPlayer.setDataSource(it)
             mediaPlayer.prepareAsync()
-            state = STATE_PREPARED
+            state = STATE_DEFAULT
             mediaPlayer.setOnCompletionListener {
                 state = STATE_PREPARED
             }
@@ -26,6 +22,15 @@ class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer, url: String?): 
             }
         }
     }
+
+    companion object {
+        const val STATE_DEFAULT = 0
+        const val STATE_PREPARED = 1
+        const val STATE_PLAYING = 2
+        const val STATE_PAUSED = 3
+    }
+
+    private var state = STATE_DEFAULT
 
     override fun playback() {
         when (state) {

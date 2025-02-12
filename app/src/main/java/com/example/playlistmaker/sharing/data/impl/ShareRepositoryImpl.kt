@@ -8,8 +8,8 @@ import com.example.playlistmaker.sharing.domain.model.IntentExtraStr
 import com.example.playlistmaker.sharing.domain.model.SharingAction
 
 class ShareRepositoryImpl(
-    private val action: SharingAction,
-    private val uri: String = ""
+    action: SharingAction,
+    uri: String = ""
 ): ShareRepository {
 
     private var intent: Intent = if (action == SharingAction.SETTING_VIEW) {

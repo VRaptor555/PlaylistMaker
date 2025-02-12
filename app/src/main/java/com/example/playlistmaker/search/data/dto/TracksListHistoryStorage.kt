@@ -6,7 +6,11 @@ import com.example.playlistmaker.search.data.TrackDto
 import com.example.playlistmaker.search.domain.model.Track
 import com.google.gson.Gson
 
-class TracksListHistoryStorage(private val sharedPreferences: SharedPreferences) {
+class TracksListHistoryStorage(
+    private val sharedPreferences: SharedPreferences
+) {
+
+
     private companion object{
         const val HISTORY_LIST_KEY = "HISTORY_LIST"
     }

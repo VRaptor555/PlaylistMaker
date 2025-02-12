@@ -5,28 +5,17 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.settings.domain.SettingsInteractor
 import com.example.playlistmaker.settings.domain.model.AppSettings
 import com.example.playlistmaker.settings.ui.models.SettingsState
+import com.example.playlistmaker.sharing.domain.SharingInteractor
 import com.example.playlistmaker.sharing.domain.model.EmailData
 
 class SettingsViewModel(
-    application: Application
+    application: Application,
+    private val settingsInteractor: SettingsInteractor,
+    private val sharedInteractor: SharingInteractor
 ): AndroidViewModel(application) {
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SettingsViewModel(this[APPLICATION_KEY] as Application)
-            }
-        }
-    }
-
-    private val settingsInteractor = Creator.provideSettingsInteractor(getApplication())
-    private val sharedInteractor = Creator.provideSharingInteractor()
 
     private val settingsLiveData = MutableLiveData<SettingsState>()
     private val mediatorSettingsStateLiveData = MediatorLiveData<SettingsState>().also { liveData ->
