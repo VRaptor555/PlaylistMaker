@@ -11,6 +11,7 @@ import com.example.playlistmaker.search.data.network.TracksApiService
 import com.example.playlistmaker.search.domain.TracksRepository
 import com.example.playlistmaker.utils.API_URL
 import com.example.playlistmaker.utils.PLAYLIST_MAKER_PREFERENCES
+import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -37,12 +38,16 @@ val searchDataModule = module {
     }
 
     single<TracksListHistoryStorage> {
-        TracksListHistoryStorage(get())
+        TracksListHistoryStorage(get(), get())
     }
 
     single {
         androidContext()
             .getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, Context.MODE_PRIVATE)
+    }
+
+    single {
+        Gson()
     }
 
 }

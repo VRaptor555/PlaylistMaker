@@ -2,7 +2,7 @@ package com.example.playlistmaker.settings.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.main.ui.App
@@ -13,7 +13,7 @@ import com.example.playlistmaker.sharing.domain.model.EmailData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SettingsActivity : ComponentActivity() {
+class SettingsActivity : AppCompatActivity() {
     private val viewModel: SettingsViewModel by viewModel()
     private var binding: ActivitySettingsBinding? = null
 
