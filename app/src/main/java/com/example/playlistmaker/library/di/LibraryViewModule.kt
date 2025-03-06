@@ -1,4 +1,4 @@
-package com.example.playlistmaker.di
+package com.example.playlistmaker.library.di
 
 import com.example.playlistmaker.library.ui.view_model.FavoriteViewModel
 import com.example.playlistmaker.library.ui.view_model.PlaylistViewModel
