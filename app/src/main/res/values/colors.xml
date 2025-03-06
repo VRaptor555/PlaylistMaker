@@ -2,7 +2,7 @@
 <resources>
     <color name="color_background_main">#3772E7</color>
     <color name="color_background_other">#FFFFFFFF</color>
-    <color  name="color_button_main">#FFFFFFFF</color>
+    <color name="color_button_main">#FFFFFFFF</color>
     <color name="color_text">#1A1B22</color>
     <color name="color_text2">#FF000000</color>
     <color name="color_settings_icon">#AEAFB4</color>

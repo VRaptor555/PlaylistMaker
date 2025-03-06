@@ -29,4 +29,9 @@
     <string name="year_head">Год</string>
     <string name="album_head">Альбом</string>
     <string name="duration_head">Длительность</string>
+    <string name="favorite_tab">Избранные треки</string>
+    <string name="playlist_tab">Плейлисты</string>
+    <string name="library_empty">Ваша медиатека пуста</string>
+    <string name="playlist_empty">Вы не создали\n ни одного плейлиста</string>
+    <string name="playlist_add_btn">Новый плейлист</string>
 </resources>
