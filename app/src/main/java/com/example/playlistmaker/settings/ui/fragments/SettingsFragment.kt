@@ -1,49 +1,48 @@
-package com.example.playlistmaker.settings.ui.activity
+package com.example.playlistmaker.settings.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.main.ui.App
+import com.example.playlistmaker.main.ui.fragments.BindingFragments
 import com.example.playlistmaker.settings.domain.model.AppSettings
 import com.example.playlistmaker.settings.ui.models.SettingsState
 import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 import com.example.playlistmaker.sharing.domain.model.EmailData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment: BindingFragments<FragmentSettingsBinding>() {
     private val viewModel: SettingsViewModel by viewModel()
-    private var binding: ActivitySettingsBinding? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentSettingsBinding {
+        return FragmentSettingsBinding.inflate(inflater, container, false)
+    }
 
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
-
-        viewModel.observeState().observe(this) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
 
-        binding?.let {
-            it.themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
+        with(binding) {
+            themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
                 viewModel.setSettings(AppSettings(darkTheme = isChecked))
             }
 
-            it.home.setOnClickListener {
-                this.finish()
-            }
-
-
-            it.shareBtn.setOnClickListener {
+            shareBtn.setOnClickListener {
                 viewModel.sendShare(
                     getString(R.string.share_message),
                     getString(R.string.share_message_subj)
                 )
             }
-            it.supportBtn.setOnClickListener {
+            supportBtn.setOnClickListener {
                 viewModel.sendEmail(
                     EmailData(
                         mailBox = arrayOf(getString(R.string.support_message_email)),
@@ -53,7 +52,7 @@ class SettingsActivity : AppCompatActivity() {
                     )
                 )
             }
-            it.agreementBtn.setOnClickListener {
+            agreementBtn.setOnClickListener {
                 viewModel.sendUrl(getString(R.string.agreement_url))
             }
         }
@@ -61,12 +60,12 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun settingValuesSet(setting: AppSettings) {
-        (applicationContext as App).switchTheme(setting.darkTheme)
+        (requireContext().applicationContext as App).switchTheme(setting.darkTheme)
     }
 
     private fun settingValuesGet(setting: AppSettings) {
-        binding?.themeSwitcher?.isChecked = setting.darkTheme
-        (applicationContext as App).switchTheme(setting.darkTheme)
+        binding.themeSwitcher.isChecked = setting.darkTheme
+        (requireContext().applicationContext as App).switchTheme(setting.darkTheme)
     }
 
     private fun shareAction(share: Intent) {
@@ -86,5 +85,4 @@ class SettingsActivity : AppCompatActivity() {
             is SettingsState.UrlIntent -> sendToAction(state.url)
         }
     }
-
 }

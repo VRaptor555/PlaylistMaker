@@ -5,7 +5,7 @@
     style="@style/SettingsWindowStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".settings.ui.activity.SettingsActivity">
+    tools:context=".settings.ui.fragments.SettingsFragment">
 
     <TextView
         android:id="@+id/home"

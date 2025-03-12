@@ -40,7 +40,6 @@
         <item name="android:padding">@dimen/half_full_padding</item>
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textSize">@dimen/def_text_size</item>
-        <item name="drawableStartCompat">@drawable/arrow_back</item>
         <item name="drawableTint">?attr/colorOnSecondary</item>
         <item name="android:paddingStart">@dimen/medium_padding</item>
     </style>

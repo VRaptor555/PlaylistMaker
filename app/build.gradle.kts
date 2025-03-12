@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.playlistmaker"
-    compileSdk = 34
+    compileSdk = 35
 
     buildFeatures {
         viewBinding = true
@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId = "com.example.playlistmaker"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -37,7 +37,7 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildToolsVersion = "34.0.0"
+    buildToolsVersion = "35.0.0"
 
 }
 
@@ -53,6 +53,10 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.gson)
     implementation(libs.koin)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.vievpager2)
+    implementation(libs.androidx.nav.fragment)
+    implementation(libs.androidx.nav.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
