@@ -14,4 +14,5 @@
     <color name="color_head_track">#AEAFB4</color>
     <color name="color_text_cursor">#3772E7</color>
     <color name="color_circular_progress">#3772E7</color>
+    <color name="color_divline">#E6E8EB</color>
 </resources>

@@ -27,9 +27,11 @@ class MainActivity : AppCompatActivity() {
                 when(destination.id) {
                     R.id.playerActivity -> {
                         bottomNavigationView.visibility = View.GONE
+                        binding.divLine.visibility = View.GONE
                     }
                     else -> {
                         bottomNavigationView.visibility = View.VISIBLE
+                        binding.divLine.visibility = View.VISIBLE
                     }
                 }
             }
