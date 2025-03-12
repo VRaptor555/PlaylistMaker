@@ -2,7 +2,7 @@ package com.example.playlistmaker.main.ui
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.di.libraryModules
+import com.example.playlistmaker.library.di.libraryModules
 import com.example.playlistmaker.player.di.playerModules
 import com.example.playlistmaker.search.di.searchModules
 import com.example.playlistmaker.settings.data.impl.SettingsStorageRepository
