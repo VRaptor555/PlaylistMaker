@@ -68,6 +68,8 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun changeStatePlaying(playBtnVisible: Boolean, hint: String, progress: String) {
         binding?.playBtn?.isVisible = playBtnVisible
+        binding?.progressBar?.isVisible = !playBtnVisible
+        binding?.timeLeft?.isVisible = playBtnVisible
         binding?.timeLeft?.text = progress
         if (hint == "PLAY") {
             binding?.playBtn?.setImageResource(R.drawable.play_btn)

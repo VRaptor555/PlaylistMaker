@@ -1,7 +1,7 @@
 package com.example.playlistmaker.player.data.impl
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.player.data.PlayerRepository
+import com.example.playlistmaker.player.domain.PlayerRepository
 import org.koin.core.component.KoinComponent
 
 class PlayerRepositoryImpl(

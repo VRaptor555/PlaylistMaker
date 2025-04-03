@@ -2,10 +2,11 @@ package com.example.playlistmaker.sharing.data.impl
 
 import android.content.Intent
 import android.net.Uri
-import com.example.playlistmaker.sharing.data.dto.ShareRepository
+import com.example.playlistmaker.sharing.domain.ShareRepository
 import com.example.playlistmaker.sharing.domain.model.IntentExtra
 import com.example.playlistmaker.sharing.domain.model.IntentExtraStr
 import com.example.playlistmaker.sharing.domain.model.SharingAction
+import androidx.core.net.toUri
 
 class ShareRepositoryImpl(
     action: SharingAction,
@@ -13,7 +14,7 @@ class ShareRepositoryImpl(
 ): ShareRepository {
 
     private var intent: Intent = if (action == SharingAction.SETTING_VIEW) {
-        Intent(action.value, Uri.parse(uri))
+        Intent(action.value, uri.toUri())
     } else {
         Intent(action.value)
     }
@@ -33,7 +34,7 @@ class ShareRepositoryImpl(
     }
 
     override fun setData(data: String) {
-        intent.data = Uri.parse(data)
+        intent.data = data.toUri()
     }
 
     override fun setType(typeIntent: String) {

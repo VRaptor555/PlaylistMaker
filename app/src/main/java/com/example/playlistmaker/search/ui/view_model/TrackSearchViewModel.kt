@@ -24,8 +24,14 @@ class TrackSearchViewModel(
     private val onTrackSearchDebounce = debounce<String>(
         SEARCH_DEBOUNCE_DELAY,
         viewModelScope,
-        false
-    ) { srchString -> startSearch(srchString) }
+        true
+    ) { searchString -> startSearch(searchString) }
+
+    private val onTrackResearchDebounce = debounce<String>(
+        RESEARCH_DEBOUNCE_DELAY,
+        viewModelScope,
+        true
+    ) { researchString -> startSearch(researchString) }
 
     private val stateLiveData = MutableLiveData<TracksState>()
     private val mediatorTracksStateLiveData = MediatorLiveData<TracksState>().also { liveData ->
@@ -94,7 +100,7 @@ class TrackSearchViewModel(
     }
 
     fun searchTracks(searchTracks: String) {
-        if (searchTracks.isNotEmpty()) {
+        if (searchTracks.isNotEmpty() && latestSearchText != searchTracks) {
             latestSearchText = searchTracks
             onTrackSearchDebounce(searchTracks)
         }
@@ -104,7 +110,7 @@ class TrackSearchViewModel(
         if (latestSearchText == null || latestSearchText?.length == 0) {
             return
         }
-        startSearch(latestSearchText!!)
+        onTrackResearchDebounce(latestSearchText!!)
     }
 
     fun addTrackToHistory(track: Track) {
@@ -130,6 +136,7 @@ class TrackSearchViewModel(
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2_000L
+        private const val RESEARCH_DEBOUNCE_DELAY = 500L
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.sharing.data.dto
+package com.example.playlistmaker.sharing.domain
 
 import android.content.Intent
 

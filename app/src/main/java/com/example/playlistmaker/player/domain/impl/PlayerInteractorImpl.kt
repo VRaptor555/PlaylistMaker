@@ -1,6 +1,6 @@
 package com.example.playlistmaker.player.domain.impl
 
-import com.example.playlistmaker.player.data.PlayerRepository
+import com.example.playlistmaker.player.domain.PlayerRepository
 import com.example.playlistmaker.player.domain.PlayerInteractor
 import org.koin.core.component.KoinComponent
 
