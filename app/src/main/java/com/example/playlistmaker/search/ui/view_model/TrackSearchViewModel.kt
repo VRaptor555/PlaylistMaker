@@ -1,9 +1,6 @@
 package com.example.playlistmaker.search.ui.view_model
 
 import android.app.Application
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -14,6 +11,7 @@ import com.example.playlistmaker.search.domain.TracksHistoryInteractor
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.models.TracksState
+import com.example.playlistmaker.utils.debounce
 import kotlinx.coroutines.launch
 
 class TrackSearchViewModel(
@@ -23,7 +21,11 @@ class TrackSearchViewModel(
 ) : AndroidViewModel(application) {
     private val tracks = ArrayList<Track>()
 
-    private val handler = Handler(Looper.getMainLooper())
+    private val onTrackSearchDebounce = debounce<String>(
+        SEARCH_DEBOUNCE_DELAY,
+        viewModelScope,
+        false
+    ) { srchString -> startSearch(srchString) }
 
     private val stateLiveData = MutableLiveData<TracksState>()
     private val mediatorTracksStateLiveData = MediatorLiveData<TracksState>().also { liveData ->
@@ -44,14 +46,12 @@ class TrackSearchViewModel(
     private var latestSearchText: String? = null
 
     private fun startSearch(searchTracks: String) {
-        if (searchTracks.isNotEmpty()) {
-            renderState(TracksState.Loading)
+        renderState(TracksState.Loading)
 
-            viewModelScope.launch {
-                trackInteractor
-                    .searchTracks(searchTracks)
-                    .collect { pair -> processResult(pair.first, pair.second) }
-            }
+        viewModelScope.launch {
+            trackInteractor
+                .searchTracks(searchTracks)
+                .collect { pair -> processResult(pair.first, pair.second) }
         }
     }
 
@@ -93,35 +93,18 @@ class TrackSearchViewModel(
         stateLiveData.postValue(state)
     }
 
-    fun searchDebounce(searchText: String) {
-        if (latestSearchText == searchText) {
-            return
+    fun searchTracks(searchTracks: String) {
+        if (searchTracks.isNotEmpty()) {
+            latestSearchText = searchTracks
+            onTrackSearchDebounce(searchTracks)
         }
-        this.latestSearchText = searchText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
-        val searchRunnable = Runnable { startSearch(searchText) }
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
     }
 
     fun restartSearch() {
         if (latestSearchText == null || latestSearchText?.length == 0) {
             return
         }
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
-        val searchRunnable = Runnable { startSearch(latestSearchText!!) }
-        val postTime = SystemClock.uptimeMillis()
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        startSearch(latestSearchText!!)
     }
 
     fun addTrackToHistory(track: Track) {
@@ -147,7 +130,6 @@ class TrackSearchViewModel(
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2_000L
-        private val SEARCH_REQUEST_TOKEN = Any()
     }
 
 }

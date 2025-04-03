@@ -109,9 +109,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.searchDebounce(
-                    searchText = s?.toString() ?: ""
-                )
+                viewModel.searchTracks(s?.toString() ?: "")
                 if ((s?.toString() ?: "") == "") {
                     viewModel.getHistoryTrackList()
                 }
