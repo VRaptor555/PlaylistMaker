@@ -57,6 +57,9 @@ dependencies {
     implementation(libs.androidx.vievpager2)
     implementation(libs.androidx.nav.fragment)
     implementation(libs.androidx.nav.ui)
+    implementation(libs.coroutines)
+    implementation(libs.lifecycle.vm)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

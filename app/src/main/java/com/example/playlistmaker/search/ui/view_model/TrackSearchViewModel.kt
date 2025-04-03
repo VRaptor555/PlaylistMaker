@@ -8,18 +8,19 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
-import com.example.playlistmaker.search.domain.TracksConsumer
 import com.example.playlistmaker.search.domain.TracksHistoryInteractor
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.models.TracksState
+import kotlinx.coroutines.launch
 
 class TrackSearchViewModel(
     application: Application,
     private val trackInteractor: TracksInteractor,
     private val searchHistoryInteractor: TracksHistoryInteractor,
-): AndroidViewModel(application) {
+) : AndroidViewModel(application) {
     private val tracks = ArrayList<Track>()
 
     private val handler = Handler(Looper.getMainLooper())
@@ -27,7 +28,7 @@ class TrackSearchViewModel(
     private val stateLiveData = MutableLiveData<TracksState>()
     private val mediatorTracksStateLiveData = MediatorLiveData<TracksState>().also { liveData ->
         liveData.addSource(stateLiveData) { trackState ->
-            liveData.value = when(trackState) {
+            liveData.value = when (trackState) {
                 is TracksState.Content -> TracksState.Content(trackState.tracks)
                 is TracksState.Empty -> trackState
                 is TracksState.Error -> trackState
@@ -37,48 +38,54 @@ class TrackSearchViewModel(
             }
         }
     }
+
     fun observeState(): LiveData<TracksState> = mediatorTracksStateLiveData
 
     private var latestSearchText: String? = null
-
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-    }
 
     private fun startSearch(searchTracks: String) {
         if (searchTracks.isNotEmpty()) {
             renderState(TracksState.Loading)
 
-            trackInteractor.searchTracks(
-                searchTracks,
-                object : TracksConsumer {
-                    override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                        if (foundTracks != null) {
-                            tracks.clear()
-                            tracks.addAll(foundTracks)
-                        }
-                        when {
-                            errorMessage != null -> {
-                                renderState(TracksState.Error(
-                                    errorMessage = getApplication<Application>().getString(
-                                    R.string.something_went_wrong)))
-                            }
-                            tracks.isEmpty() -> {
-                                renderState(TracksState.Empty(
-                                    message = getApplication<Application>().getString(
-                                        R.string.nothing_found
-                                    )
-                                ))
-                            }
-                            else -> renderState(
-                                TracksState.Content(
-                                    tracks = tracks
-                                )
-                            )
-                        }
-                    }
+            viewModelScope.launch {
+                trackInteractor
+                    .searchTracks(searchTracks)
+                    .collect { pair -> processResult(pair.first, pair.second) }
+            }
+        }
+    }
 
-                })
+    private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
+        if (foundTracks != null) {
+            tracks.clear()
+            tracks.addAll(foundTracks)
+        }
+        when {
+            errorMessage != null -> {
+                renderState(
+                    TracksState.Error(
+                        errorMessage = getApplication<Application>().getString(
+                            R.string.something_went_wrong
+                        )
+                    )
+                )
+            }
+
+            tracks.isEmpty() -> {
+                renderState(
+                    TracksState.Empty(
+                        message = getApplication<Application>().getString(
+                            R.string.nothing_found
+                        )
+                    )
+                )
+            }
+
+            else -> renderState(
+                TracksState.Content(
+                    tracks = tracks
+                )
+            )
         }
     }
 

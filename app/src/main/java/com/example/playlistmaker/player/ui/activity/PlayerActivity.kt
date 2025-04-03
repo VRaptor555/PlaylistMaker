@@ -66,34 +66,17 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.initPlayer()
     }
 
-    private fun loading() {
-        binding?.let {
-            it.playBtn.isVisible = false
-            it.timeLeft.text = "-:--"
-        }
-    }
-
-    private fun setPaused(timecode: String) {
-        binding?.let {
-            it.playBtn.isVisible = true
-            it.playBtn.setImageResource(R.drawable.play_btn)
-            it.timeLeft.text = timecode
-        }
-    }
-
-    private fun setPlaying(timecode: String) {
-        binding?.let {
-            it.playBtn.isVisible = true
-            it.playBtn.setImageResource(R.drawable.pause_btn)
-            it.timeLeft.text = timecode
+    private fun changeStatePlaying(playBtnVisible: Boolean, hint: String, progress: String) {
+        binding?.playBtn?.isVisible = playBtnVisible
+        binding?.timeLeft?.text = progress
+        if (hint == "PLAY") {
+            binding?.playBtn?.setImageResource(R.drawable.play_btn)
+        } else {
+            binding?.playBtn?.setImageResource(R.drawable.pause_btn)
         }
     }
 
     private fun render(state: PlayerState) {
-        when(state) {
-            is PlayerState.IsPause -> setPaused(state.timeCode)
-            is PlayerState.IsPlay -> setPlaying(state.timeCode)
-            is PlayerState.Loading -> loading()
-        }
+        changeStatePlaying(state.isPlayButtonEnable, state.buttonText, state.progress)
     }
 }
