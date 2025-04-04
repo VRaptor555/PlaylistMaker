@@ -1,6 +1,6 @@
 [versions]
 agp = "8.8.2"
-kotlin = "1.9.24"
+kotlin = "2.0.21"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -14,9 +14,11 @@ retrofit = "2.9.0"
 converter-gson = "2.9.0"
 gson = "2.10.1"
 koin = "3.3.0"
-navigation = "2.8.8"
+navigation = "2.8.9"
 fragment = "1.8.6"
 viewpager2 = "1.1.0"
+coroutine = "1.10.1"
+lifeviewmodel = "2.8.7"
 
 
 [libraries]
@@ -37,6 +39,8 @@ androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", versio
 androidx-vievpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 androidx-nav-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
 androidx-nav-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutine" }
+lifecycle-vm = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifeviewmodel" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

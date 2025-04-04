@@ -34,4 +34,6 @@
     <string name="library_empty">Ваша медиатека пуста</string>
     <string name="playlist_empty">Вы не создали\n ни одного плейлиста</string>
     <string name="playlist_add_btn">Новый плейлист</string>
+    <string name="button_play">Проиграть</string>
+    <string name="button_pause">Пауза</string>
 </resources>

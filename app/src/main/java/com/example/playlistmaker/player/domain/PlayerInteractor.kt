@@ -1,8 +1,8 @@
 package com.example.playlistmaker.player.domain
 
 interface PlayerInteractor {
-    fun setUrl(url: String?)
-    fun preparePlayer(consumer: PlayerConsumer)
+    fun prepareUrl(url: String?)
     fun playback()
+    fun currentPosition(): Int
     fun state(): Int
 }

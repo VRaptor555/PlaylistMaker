@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.di
 
 import android.content.Context
-import com.example.playlistmaker.search.data.HistoryRepository
+import com.example.playlistmaker.search.domain.HistoryRepository
 import com.example.playlistmaker.search.data.dto.TracksListHistoryStorage
 import com.example.playlistmaker.search.data.impl.HistoryRepositoryImpl
 import com.example.playlistmaker.search.data.impl.TracksRepositoryImpl
