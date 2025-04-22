@@ -1,7 +1,7 @@
 [versions]
 agp = "8.8.2"
 kotlin = "2.0.21"
-coreKtx = "1.15.0"
+coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -19,6 +19,7 @@ fragment = "1.8.6"
 viewpager2 = "1.1.0"
 coroutine = "1.10.1"
 lifeviewmodel = "2.8.7"
+room = "2.7.0"
 
 
 [libraries]
@@ -41,6 +42,10 @@ androidx-nav-fragment = { group = "androidx.navigation", name = "navigation-frag
 androidx-nav-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
 coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutine" }
 lifecycle-vm = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifeviewmodel" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler",  version.ref = "room"}
+room-ktx = { group = "androidx.room", name = "room-ktx",  version.ref = "room"}
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -15,11 +15,11 @@ class TracksHistoryInteractorImpl(private val sharedHistory: HistoryRepository):
         sharedHistory.clear()
     }
 
-    override fun getSavedTracksList(): MutableList<Track> {
+    override suspend fun getSavedTracksList(): MutableList<Track> {
         return sharedHistory.read().toMutableList()
     }
 
-    override fun size(): Int {
+    override suspend fun size(): Int {
         return sharedHistory.read().size
     }
 }

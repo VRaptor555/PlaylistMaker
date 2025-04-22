@@ -1,13 +1,13 @@
 package com.example.playlistmaker.search.di
 
 import android.content.Context
-import com.example.playlistmaker.search.domain.HistoryRepository
 import com.example.playlistmaker.search.data.dto.TracksListHistoryStorage
 import com.example.playlistmaker.search.data.impl.HistoryRepositoryImpl
 import com.example.playlistmaker.search.data.impl.TracksRepositoryImpl
 import com.example.playlistmaker.search.data.network.NetworkClient
 import com.example.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.search.data.network.TracksApiService
+import com.example.playlistmaker.search.domain.HistoryRepository
 import com.example.playlistmaker.search.domain.TracksRepository
 import com.example.playlistmaker.utils.API_URL
 import com.example.playlistmaker.utils.PLAYLIST_MAKER_PREFERENCES
@@ -30,11 +30,11 @@ val searchDataModule = module {
     }
 
     single<TracksRepository> {
-        TracksRepositoryImpl(get())
+        TracksRepositoryImpl(get(), get())
     }
 
     single<HistoryRepository> {
-        HistoryRepositoryImpl(get())
+        HistoryRepositoryImpl(get(), get())
     }
 
     single<TracksListHistoryStorage> {
@@ -49,5 +49,4 @@ val searchDataModule = module {
     single {
         Gson()
     }
-
 }

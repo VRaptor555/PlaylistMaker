@@ -2,6 +2,7 @@ package com.example.playlistmaker.player.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -32,10 +33,9 @@ class PlayerActivity : AppCompatActivity() {
         binding?.btnBack?.setOnClickListener {
             this.finish()
         }
-
-        val track = getSerializable(this, "track", Track::class.java)
+        val track = getSerializable(this, ARGS_TRACK, Track::class.java)
         val viewModel: PlayerViewModel by viewModel() {
-            parametersOf(track.previewUrl)
+            parametersOf(track)
         }
         viewModel.observeState().observe(this) {
             render(it)
@@ -61,6 +61,9 @@ class PlayerActivity : AppCompatActivity() {
             it.playBtn.setOnClickListener {
                 viewModel.play()
             }
+            it.favoriteBtn.setOnClickListener {
+                viewModel.onFavoriteClicked()
+            }
         }
 
         viewModel.initPlayer()
@@ -78,7 +81,24 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun changeFavorite(favorite: Boolean) {
+        if (favorite) {
+            binding?.favoriteBtn?.setImageResource(R.drawable.favorite_active_btn)
+        } else {
+            binding?.favoriteBtn?.setImageResource(R.drawable.favorite_btn)
+        }
+    }
+
     private fun render(state: PlayerState) {
         changeStatePlaying(state.isPlayButtonEnable, state.buttonText, state.progress)
+        changeFavorite(state.isFavorite)
+    }
+
+    companion object {
+        private const val ARGS_TRACK = "track"
+
+        fun createArgs(track: Track): Bundle = bundleOf(
+            ARGS_TRACK to track,
+        )
     }
 }

@@ -120,11 +120,13 @@ class TrackSearchViewModel(
     fun getHistoryTrackList() {
         renderState(TracksState.Loading)
         tracks.clear()
-        tracks.addAll(searchHistoryInteractor.getSavedTracksList())
-        if (tracks.isEmpty()) {
-            renderState(TracksState.EmptyHistory)
-        } else {
-            renderState(TracksState.ContentHistory(tracks = tracks))
+        viewModelScope.launch {
+            tracks.addAll(searchHistoryInteractor.getSavedTracksList())
+            if (tracks.isEmpty()) {
+                renderState(TracksState.EmptyHistory)
+            } else {
+                renderState(TracksState.ContentHistory(tracks))
+            }
         }
     }
 

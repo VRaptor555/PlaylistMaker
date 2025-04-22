@@ -2,6 +2,7 @@ package com.example.playlistmaker.search.data.impl
 
 import com.example.playlistmaker.search.data.TracksSearchRequest
 import com.example.playlistmaker.search.data.TracksSearchResponse
+import com.example.playlistmaker.search.data.db.AppDatabase
 import com.example.playlistmaker.search.data.network.NetworkClient
 import com.example.playlistmaker.search.domain.TracksRepository
 import com.example.playlistmaker.search.domain.model.Track
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.flow
 
 class TracksRepositoryImpl(
     private val networkClient: NetworkClient,
+    private val appDatabase: AppDatabase,
 ) : TracksRepository {
     override fun searchTracks(text: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TracksSearchRequest(text))
@@ -18,6 +20,7 @@ class TracksRepositoryImpl(
             -1 -> emit(Resource.Error("Проверьте подключение к интернету"))
             200 -> {
                 with(response as TracksSearchResponse) {
+                    val favoriteList = appDatabase.favoriteDao().getIdFavorite()
                     val data = results.map {
                         Track(
                             trackId = it.trackId,
@@ -29,7 +32,8 @@ class TracksRepositoryImpl(
                             country = it.country,
                             trackTimeMillis = it.trackTimeMillis,
                             artworkUrl100 = it.artworkUrl100,
-                            previewUrl = it.previewUrl
+                            previewUrl = it.previewUrl,
+                            isFavorite = it.trackId in favoriteList
                         )
                     }
                     emit(Resource.Success(data))

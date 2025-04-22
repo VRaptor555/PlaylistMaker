@@ -8,7 +8,7 @@ import org.koin.dsl.module
 val libraryView = module {
 
     viewModel {
-        FavoriteViewModel()
+        FavoriteViewModel(get())
     }
 
     viewModel {
