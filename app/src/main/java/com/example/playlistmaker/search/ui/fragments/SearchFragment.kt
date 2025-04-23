@@ -45,6 +45,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         onTrackClickDebounce = debounce<Track>(
             CLICK_DEBOUNCE_DELAY,
             viewLifecycleOwner.lifecycleScope,
@@ -121,6 +122,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
         }
         textWatcher?.let { binding.inputSearchText.addTextChangedListener(it)}
         binding.inputSearchText.setText(textValue)
+
     }
 
     private fun clickTrack(track: Track) {
@@ -228,6 +230,11 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         textValue = savedInstanceState?.getString(SEARCH_TEXT, "") ?: ""
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshFavorite()
     }
 
     companion object {

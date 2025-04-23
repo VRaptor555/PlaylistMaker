@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.search.domain.TracksHistoryInteractor
 import com.example.playlistmaker.search.domain.TracksInteractor
+import com.example.playlistmaker.search.domain.db.FavoriteInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.models.TracksState
 import com.example.playlistmaker.utils.debounce
@@ -18,6 +19,7 @@ class TrackSearchViewModel(
     application: Application,
     private val trackInteractor: TracksInteractor,
     private val searchHistoryInteractor: TracksHistoryInteractor,
+    private val favoriteInteractor: FavoriteInteractor,
 ) : AndroidViewModel(application) {
     private val tracks = ArrayList<Track>()
 
@@ -134,6 +136,41 @@ class TrackSearchViewModel(
         tracks.clear()
         searchHistoryInteractor.clearTracks()
         renderState(TracksState.EmptyHistory)
+    }
+
+    fun refreshFavorite() {
+        viewModelScope.launch {
+            favoriteInteractor.getTracks()
+                .collect { tracks -> reloadFavoriteList(tracks) }
+        }
+    }
+
+    private fun reloadFavoriteList(tracksFavorite: List<Track>) {
+        val indexesOfTrack = tracksFavorite.map {
+            it.trackId
+        }
+        val tracksTmp = tracks.map {
+            Track(
+                trackId = it.trackId,
+                trackName = it.trackName,
+                artistName = it.artistName,
+                collectionName = it.collectionName,
+                releaseDate = it.releaseDate,
+                primaryGenreName = it.primaryGenreName,
+                country = it.country,
+                trackTimeMillis = it.trackTimeMillis,
+                artworkUrl100 = it.artworkUrl100,
+                previewUrl = it.previewUrl,
+                isFavorite = it.trackId in indexesOfTrack
+            )
+        }
+        tracks.clear()
+        tracks.addAll(tracksTmp)
+        if (tracks.isEmpty()) {
+            renderState(TracksState.EmptyHistory)
+        } else {
+            renderState(TracksState.ContentHistory(tracks))
+        }
     }
 
     companion object {

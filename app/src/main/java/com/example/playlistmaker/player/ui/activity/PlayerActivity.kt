@@ -23,17 +23,18 @@ import java.time.format.DateTimeFormatter
 class PlayerActivity : AppCompatActivity() {
 
     private var binding: ActivityPlayerBinding? = null
+    private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-
         binding?.btnBack?.setOnClickListener {
             this.finish()
         }
         val track = getSerializable(this, ARGS_TRACK, Track::class.java)
+        isFavorite = track.isFavorite
         val viewModel: PlayerViewModel by viewModel() {
             parametersOf(track)
         }
@@ -82,6 +83,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun changeFavorite(favorite: Boolean) {
+        isFavorite = favorite
         if (favorite) {
             binding?.favoriteBtn?.setImageResource(R.drawable.favorite_active_btn)
         } else {
@@ -91,7 +93,9 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun render(state: PlayerState) {
         changeStatePlaying(state.isPlayButtonEnable, state.buttonText, state.progress)
-        changeFavorite(state.isFavorite)
+        if (isFavorite != state.isFavorite) {
+            changeFavorite(state.isFavorite)
+        }
     }
 
     companion object {
