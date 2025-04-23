@@ -25,6 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     private val viewModel: TrackSearchViewModel by viewModel()
     private var textValue: String = TEXT_VALUE
+    private var isHistory: Boolean = false
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
     private lateinit var onHistoryTrackClickDebounce: (Track) -> Unit
@@ -62,7 +63,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
             HIST_DEBOUNCE_DELAY,
             viewLifecycleOwner.lifecycleScope,
             false
-        ) { viewModel.getHistoryTrackList()}
+        ) { viewModel.getHistoryTrackList() }
 
         searchingAdapter = TrackAdapter(
             object : TrackAdapter.TrackClickListener {
@@ -167,6 +168,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     }
 
     private fun showEmpty(message: String) {
+        isHistory = false
         with(binding) {
             tracksLayout.isVisible = true
             searchHisLayout.isVisible = false
@@ -178,6 +180,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     }
 
     private fun showContent(tracks: List<Track>) {
+        isHistory = false
         with(binding) {
             tracksLayout.isVisible = true
             searchHisLayout.isVisible = false
@@ -196,6 +199,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     }
 
     private fun showHistoryEmpty() {
+        isHistory = true
         with(binding) {
             searchHisLayout.isVisible = false
             tracksLayout.isVisible = false
@@ -204,6 +208,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     }
 
     private fun showHistoryContent(tracks: List<Track>) {
+        isHistory = true
         with(binding) {
             searchHisLayout.isVisible = true
             tracksLayout.isVisible = false
@@ -234,7 +239,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.refreshFavorite()
+        viewModel.refreshFavorite(isHistory)
     }
 
     companion object {

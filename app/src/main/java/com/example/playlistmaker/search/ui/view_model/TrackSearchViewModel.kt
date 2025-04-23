@@ -138,14 +138,14 @@ class TrackSearchViewModel(
         renderState(TracksState.EmptyHistory)
     }
 
-    fun refreshFavorite() {
+    fun refreshFavorite(history: Boolean) {
         viewModelScope.launch {
             favoriteInteractor.getTracks()
-                .collect { tracks -> reloadFavoriteList(tracks) }
+                .collect { tracks -> reloadFavoriteList(tracks, history) }
         }
     }
 
-    private fun reloadFavoriteList(tracksFavorite: List<Track>) {
+    private fun reloadFavoriteList(tracksFavorite: List<Track>, history: Boolean) {
         val indexesOfTrack = tracksFavorite.map {
             it.trackId
         }
@@ -167,9 +167,20 @@ class TrackSearchViewModel(
         tracks.clear()
         tracks.addAll(tracksTmp)
         if (tracks.isEmpty()) {
-            renderState(TracksState.EmptyHistory)
+            if (history) {
+                renderState(TracksState.EmptyHistory)
+            } else {
+                renderState(TracksState.Empty(message = getApplication<Application>().getString(
+                    R.string.nothing_found
+                )))
+            }
         } else {
-            renderState(TracksState.ContentHistory(tracks))
+            if (history) {
+                renderState(TracksState.ContentHistory(tracks))
+            } else {
+                renderState(TracksState.Content(tracks))
+            }
+
         }
     }
 
