@@ -13,14 +13,6 @@
         <action
             android:id="@+id/action_searchFragment_to_playerActivity"
             app:destination="@id/playerActivity" />
-        <argument
-            android:name="track_id"
-            app:argType="long"
-            android:defaultValue="-1L" />
-        <argument
-            android:name="is_favorite"
-            app:argType="boolean"
-            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/libraryFragment"
