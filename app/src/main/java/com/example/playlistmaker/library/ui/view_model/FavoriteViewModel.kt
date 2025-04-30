@@ -1,6 +1,5 @@
 package com.example.playlistmaker.library.ui.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,7 +31,6 @@ class FavoriteViewModel(
 
     private fun showContent(tracks: List<Track>) {
         if (tracks.isEmpty()) {
-            Log.d("ROOM_TEST", "List empty")
             stateLiveData.postValue(FavoriteState.Empty)
         } else {
             stateLiveData.postValue(FavoriteState.Content(tracks))

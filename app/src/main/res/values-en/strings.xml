@@ -38,4 +38,6 @@
     <string name="playlist_name_text">Name*</string>
     <string name="playlist_description_text">Description</string>
     <string name="playlist_image">Cover</string>
+    <string name="playlist_count_tracks">%1$d tracks</string>
+    <string name="playlist_error">Playlists couldn\'t be loaded %1$s</string>
 </resources>

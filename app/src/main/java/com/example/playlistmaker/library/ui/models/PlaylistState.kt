@@ -1,13 +1,13 @@
 package com.example.playlistmaker.library.ui.models
 
-import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.library.domain.model.Playlist
 
 sealed interface PlaylistState {
     data object Loading: PlaylistState
     data object Empty: PlaylistState
 
     data class Content(
-        val tracks: List<Track>
+        val playlist: List<Playlist>
     ): PlaylistState
 
     data class Error(

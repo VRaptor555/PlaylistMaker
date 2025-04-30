@@ -41,4 +41,6 @@
     <string name="playlist_name_text">Название*</string>
     <string name="playlist_description_text">Описание</string>
     <string name="playlist_image">Обложка</string>
+    <string name="playlist_count_tracks">%1$d треков</string>
+    <string name="playlist_error">Не удалось загрузить плейлисты %1$s</string>
 </resources>

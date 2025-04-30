@@ -42,7 +42,14 @@
                 android:visibility="visible"
                 app:drawableTopCompat="?attr/not_found_icon" />
         </LinearLayout>
-
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="144dp"
+            android:theme="@style/CircularProgress"
+            android:visibility="gone" />
         <LinearLayout
             android:id="@+id/playlist"
             android:layout_width="match_parent"
@@ -50,6 +57,10 @@
             android:orientation="vertical"
             android:visibility="gone"
             >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
     </FrameLayout>
