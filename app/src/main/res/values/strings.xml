@@ -6,6 +6,8 @@
     <string name="library_button">Медиатека</string>
     <string name="search_button">Поиск</string>
     <string name="settings_button">Настройки</string>
+    <string name="new_playlist_button">Новый плейлист</string>
+    <string name="create_playlist_button">Создать</string>
     <string name="dark_theme">Темная тема</string>
     <string name="share_app">Поделиться приложением</string>
     <string name="support_text">Написать в поддержку</string>
@@ -36,4 +38,7 @@
     <string name="playlist_add_btn">Новый плейлист</string>
     <string name="button_play">Проиграть</string>
     <string name="button_pause">Пауза</string>
+    <string name="playlist_name_text">Название*</string>
+    <string name="playlist_description_text">Описание</string>
+    <string name="playlist_image">Обложка</string>
 </resources>

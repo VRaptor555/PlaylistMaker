@@ -29,6 +29,10 @@ class MainActivity : AppCompatActivity() {
                         bottomNavigationView.visibility = View.GONE
                         binding.divLine.visibility = View.GONE
                     }
+                    R.id.playlistAddFragment -> {
+                        bottomNavigationView.visibility = View.GONE
+                        binding.divLine.visibility = View.GONE
+                    }
                     else -> {
                         bottomNavigationView.visibility = View.VISIBLE
                         binding.divLine.visibility = View.VISIBLE

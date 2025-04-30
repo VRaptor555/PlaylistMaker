@@ -1,0 +1,14 @@
+package com.example.playlistmaker.library.domain.db
+
+import com.example.playlistmaker.library.domain.model.Playlist
+import com.example.playlistmaker.search.domain.model.Track
+import kotlinx.coroutines.flow.Flow
+
+interface PlaylistInteractor {
+    suspend fun addPlaylist(playlist: Playlist)
+    suspend fun deletePlaylist(playlist: Playlist)
+    fun getPlaylists(): Flow<List<Playlist>>
+    fun getTracksFromPlaylist(tracksId: String): Flow<Pair<List<Track>?, String?>>
+    suspend fun updatePlaylist(playlist: Playlist)
+
+}

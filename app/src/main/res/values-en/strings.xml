@@ -6,6 +6,8 @@
     <string name="library_button">Library</string>
     <string name="search_button">Search</string>
     <string name="settings_button">Settings</string>
+    <string name="new_playlist_button">New playlist</string>
+    <string name="create_playlist_button">Create</string>
     <string name="dark_theme">Dark theme</string>
     <string name="share_app">Share the app</string>
     <string name="support_text">Write to support</string>
@@ -33,4 +35,7 @@
     <string name="playlist_add_btn">New playlist</string>
     <string name="button_play">PLAY</string>
     <string name="button_pause">PAUSE</string>
+    <string name="playlist_name_text">Name*</string>
+    <string name="playlist_description_text">Description</string>
+    <string name="playlist_image">Cover</string>
 </resources>

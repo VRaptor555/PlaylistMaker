@@ -1,6 +1,7 @@
 package com.example.playlistmaker.library.di
 
 import com.example.playlistmaker.library.ui.view_model.FavoriteViewModel
+import com.example.playlistmaker.library.ui.view_model.PlaylistAddViewModel
 import com.example.playlistmaker.library.ui.view_model.PlaylistViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -12,11 +13,15 @@ val libraryView = module {
     }
 
     viewModel {
-        PlaylistViewModel()
+        PlaylistViewModel(get())
+    }
+
+    viewModel {
+        PlaylistAddViewModel(get())
     }
 
 }
 
 val libraryModules = module {
-    includes(libraryView)
+    includes(libraryDbModule, libraryView)
 }
