@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_background_other"
     android:orientation="vertical"
-    tools:context=".library.ui.fragments.PlaylistAddFragment">
+    tools:context=".library.ui.fragments.PlaylistCreateFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -69,9 +69,10 @@
             android:textCursorDrawable="@drawable/cursor_color" />
 
         <Button
-            style="@style/PlaylistButtonStyle"
+            android:id="@+id/create_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/PlaylistButtonStyle"
             android:layout_marginHorizontal="@dimen/medium_padding"
             android:layout_marginBottom="@dimen/full32_padding"
             android:background="@drawable/playlist_create_button"

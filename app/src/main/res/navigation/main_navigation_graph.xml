@@ -52,7 +52,7 @@
         tools:layout="@layout/fragment_playlist" />
     <fragment
         android:id="@+id/playlistAddFragment"
-        android:name="com.example.playlistmaker.library.ui.fragments.PlaylistAddFragment"
+        android:name="com.example.playlistmaker.library.ui.fragments.PlaylistCreateFragment"
         android:label="fragment_playlist_add"
-        tools:layout="@layout/fragment_playlist_add" />
+        tools:layout="@layout/fragment_playlist_create" />
 </navigation>

@@ -7,7 +7,7 @@ import com.example.playlistmaker.library.db.converters.ListConverter
 
 @Entity(tableName = "playlists") @TypeConverters(ListConverter::class)
 data class PlaylistEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Long,
     val name: String,
     val description: String?,
