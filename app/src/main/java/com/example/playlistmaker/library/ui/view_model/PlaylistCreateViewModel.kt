@@ -4,57 +4,50 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.sqlite.SQLiteException
 import com.example.playlistmaker.library.domain.db.PlaylistInteractor
 import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.models.PlaylistCreateState
-import kotlinx.coroutines.launch
 
 class PlaylistCreateViewModel(
     private val playlistInteractor: PlaylistInteractor,
-): ViewModel() {
-    private var playlistName = ""
-    private var playlistImage: String? = null
-    private var playlistDescription: String? = null
+) : ViewModel() {
+    private var playlist: Playlist = Playlist(
+        0,
+        "",
+        null,
+        null,
+        listOf(),
+        0
+    )
 
     private val stateLiveData = MutableLiveData<PlaylistCreateState>()
     fun observeState(): LiveData<PlaylistCreateState> = stateLiveData
 
     init {
-        stateLiveData.postValue(PlaylistCreateState.Filled(false))
+        stateLiveData.postValue(PlaylistCreateState.ChangePlaylist(playlist))
     }
 
     fun changeName(name: String?) {
-        playlistName = name ?: ""
-        if (playlistName.isEmpty()) {
-            stateLiveData.postValue(PlaylistCreateState.Filled(false))
-        } else {
-            stateLiveData.postValue(PlaylistCreateState.Filled(true))
-        }
+        playlist.name = name ?: ""
+        stateLiveData.postValue(PlaylistCreateState.ChangePlaylist(playlist))
     }
 
     fun changeDescription(description: String?) {
-        playlistDescription = description
+        playlist.description = description
     }
 
     fun changeImage(uri: Uri) {
-        playlistImage = uri.toString()
-        stateLiveData.postValue(PlaylistCreateState.ChangeImage(uri))
+        playlist.imagePath = uri.toString()
+        stateLiveData.postValue(PlaylistCreateState.ChangePlaylist(playlist))
     }
 
-    fun savePlaylistToDB() {
-        if (playlistName.isNotEmpty()) {
-            val playlist = Playlist(
-                id = 0,
-                name = playlistName,
-                description = playlistDescription,
-                imagePath = playlistImage,
-                tracksId = listOf(),
-                countTracks = 0
-            )
-            viewModelScope.launch {
-                playlistInteractor.addPlaylist(playlist)
-            }
+    suspend fun savePlaylistToDb(): Boolean {
+        try {
+            playlistInteractor.addPlaylist(playlist)
+            return true
+        } catch (_: SQLiteException) {
+            return false
         }
     }
 

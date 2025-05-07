@@ -10,14 +10,21 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistCreateBinding
 import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.models.PlaylistCreateState
 import com.example.playlistmaker.library.ui.view_model.PlaylistCreateViewModel
 import com.example.playlistmaker.main.ui.fragments.BindingFragments
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -28,6 +35,16 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
     private val playlistCreateViewModel: PlaylistCreateViewModel by viewModel()
     private var nameTextWatcher: TextWatcher? = null
     private var descriptionTextWatcher: TextWatcher? = null
+
+    private var playlistName: String = ""
+    private var playlistImageUrl: String? = null
+    lateinit var confirmDialog: MaterialAlertDialogBuilder
+
+    private val backPressCallback: OnBackPressedCallback = object: OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            showConfirmDialog()
+        }
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -41,12 +58,10 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
 
         playlistCreateViewModel.observeState().observe(viewLifecycleOwner) {
             when(it) {
-                is PlaylistCreateState.Cancel -> cancelCreatePlaylist()
-                is PlaylistCreateState.ChangeImage -> changeImage(it.imagePath)
-                is PlaylistCreateState.Filled -> filledName(it.filled)
-                is PlaylistCreateState.SavePlaylist -> savePlayList(it.playlist)
+                is PlaylistCreateState.ChangePlaylist -> changePlaylist(it.playlist)
             }
         }
+
         nameTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
@@ -85,10 +100,55 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
         binding.placeholderImage.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
-        binding.createButton.setOnClickListener {
-            playlistCreateViewModel.savePlaylistToDB()
 
+        binding.createButton.setOnClickListener {
+            lifecycleScope.launch {
+                if (playlistCreateViewModel.savePlaylistToDb()) {
+                    backPressCallback.isEnabled = false
+                    findNavController().popBackStack()
+                } else {
+                    Toast.makeText(requireContext(), "Такое имя уже есть!", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
+
+        confirmDialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.playlist_confirm))
+            .setMessage(R.string.playlist_confirm_message)
+            .setNegativeButton(resources.getString(R.string.confirm_yes)) { _, _ ->
+                backPressCallback.isEnabled = false
+                findNavController().popBackStack()
+            }
+            .setPositiveButton(resources.getString(R.string.confirm_no)) { _, _ ->
+
+            }
+        activity?.onBackPressedDispatcher?.addCallback(backPressCallback)
+        backPressCallback.isEnabled = false
+    }
+
+    private fun showConfirmDialog() {
+        if (playlistName.isNotEmpty()) {
+            confirmDialog.show()
+        }
+    }
+
+    private fun changePlaylist(playlist: Playlist) {
+        if (playlist.name != playlistName) {
+            playlistName = playlist.name
+            binding.createButton.isEnabled = playlistName.isNotEmpty()
+        }
+        if (playlist.imagePath != playlistImageUrl) {
+            playlistImageUrl = playlist.imagePath
+            if (playlistImageUrl != null) {
+                binding.placeholderImage.setImageURI(playlistImageUrl?.toUri())
+            } else {
+                binding.placeholderImage.setImageResource(R.drawable.playlist_add_placeholder)
+            }
+        }
+        backPressCallback.isEnabled =
+            playlist.name.isNotEmpty()
+                    || playlist.imagePath != null
+                    || playlist.description != null
     }
 
     @OptIn(ExperimentalUuidApi::class)
@@ -104,21 +164,5 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
         return file.toUri()
-    }
-
-    private fun cancelCreatePlaylist() {
-
-    }
-
-    private fun changeImage(imagePath: Uri) {
-        binding.placeholderImage.setImageURI(imagePath)
-    }
-
-    private fun filledName(filled: Boolean) {
-        binding.createButton.isEnabled = filled
-    }
-
-    private fun savePlayList(playlist: Playlist) {
-
     }
 }

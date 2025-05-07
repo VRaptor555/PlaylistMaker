@@ -43,4 +43,8 @@
     <string name="playlist_image">Обложка</string>
     <string name="playlist_count_tracks">%1$d треков</string>
     <string name="playlist_error">Не удалось загрузить плейлисты %1$s</string>
+    <string name="playlist_confirm">Завершить создание плейлиста?</string>
+    <string name="playlist_confirm_message">Все несохраненные данные будут потеряны</string>
+    <string name="confirm_yes">Завершить</string>
+    <string name="confirm_no">Отмена</string>
 </resources>

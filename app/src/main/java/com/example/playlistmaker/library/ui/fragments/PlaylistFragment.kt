@@ -73,17 +73,17 @@ class PlaylistFragment: BindingFragments<FragmentPlaylistBinding>() {
 
     private fun showEmpty() {
         binding.apply {
-            placeholder.visibility = View.VISIBLE
+            placeholderFound.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
-            playlist.visibility = View.GONE
+            recyclerView.visibility = View.GONE
         }
     }
 
     private fun showLoading() {
         binding.apply {
-            placeholder.visibility = View.GONE
+            placeholderFound.visibility = View.GONE
             progressBar.visibility = View.VISIBLE
-            playlist.visibility = View.GONE
+            recyclerView.visibility = View.GONE
         }
     }
 
@@ -105,9 +105,9 @@ class PlaylistFragment: BindingFragments<FragmentPlaylistBinding>() {
     @SuppressLint("NotifyDataSetChanged")
     private fun showContent(content: List<Playlist>) {
         binding.apply {
-            placeholder.visibility = View.GONE
+            placeholderFound.visibility = View.GONE
             progressBar.visibility = View.GONE
-            playlist.visibility = View.VISIBLE
+            recyclerView.visibility = View.VISIBLE
         }
         adapter?.playlist?.clear()
         adapter?.playlist?.addAll(content)

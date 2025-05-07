@@ -40,4 +40,8 @@
     <string name="playlist_image">Cover</string>
     <string name="playlist_count_tracks">%1$d tracks</string>
     <string name="playlist_error">Playlists couldn\'t be loaded %1$s</string>
+    <string name="playlist_confirm">Complete creating a playlist?</string>
+    <string name="playlist_confirm_message">All unsaved data will be lost.</string>
+    <string name="confirm_yes">Complete</string>
+    <string name="confirm_no">No</string>
 </resources>

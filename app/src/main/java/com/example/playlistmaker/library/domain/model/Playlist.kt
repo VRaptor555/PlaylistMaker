@@ -2,9 +2,9 @@ package com.example.playlistmaker.library.domain.model
 
 data class Playlist(
     val id: Long,
-    val name: String,
-    val description: String?,
-    val imagePath: String?,
+    var name: String,
+    var description: String?,
+    var imagePath: String?,
     val tracksId: List<Long>,
-    val countTracks: Int
+    var countTracks: Int
 )

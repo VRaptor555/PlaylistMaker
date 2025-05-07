@@ -6,11 +6,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.sqlite.SQLiteException
 import com.example.playlistmaker.library.db.entity.PlaylistEntity
+import kotlin.jvm.Throws
 
 @Dao
 interface PlaylistDao {
-    @Insert(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.ABORT)
+    @Throws(SQLiteException::class)
     suspend fun insertPlaylist(playlist: PlaylistEntity)
 
     @Delete(entity = PlaylistEntity::class)

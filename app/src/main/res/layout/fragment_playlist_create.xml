@@ -26,11 +26,12 @@
 
         <ImageView
             android:id="@+id/placeholder_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="312dp"
+            android:layout_height="312dp"
             android:layout_margin="26dp"
             android:background="@drawable/playlist_add_placeholder"
             android:clickable="true"
+            android:scaleType="fitCenter"
             android:contentDescription="@string/playlist_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
