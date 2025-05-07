@@ -1,18 +1,17 @@
 package com.example.playlistmaker.search.ui.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.main.ui.fragments.BindingFragments
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
@@ -26,9 +25,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     private val viewModel: TrackSearchViewModel by viewModel()
     private var textValue: String = TEXT_VALUE
+    private var isHistory: Boolean = false
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
     private lateinit var onHistoryTrackClickDebounce: (Track) -> Unit
+    private lateinit var onHistoryGet: (Int) -> Unit
 
     private var searchingAdapter: TrackAdapter? = null
     private var historyAdapter: TrackAdapter? = null
@@ -45,6 +46,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         onTrackClickDebounce = debounce<Track>(
             CLICK_DEBOUNCE_DELAY,
             viewLifecycleOwner.lifecycleScope,
@@ -56,6 +58,12 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
             viewLifecycleOwner.lifecycleScope,
             false
         ) { track -> clickHistoryTrack(track) }
+
+        onHistoryGet = debounce (
+            HIST_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope,
+            false
+        ) { viewModel.getHistoryTrackList() }
 
         searchingAdapter = TrackAdapter(
             object : TrackAdapter.TrackClickListener {
@@ -89,17 +97,11 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
         }
         binding.clearIcon.setOnClickListener {
             binding.inputSearchText.setText("")
-            searchingAdapter?.tracks?.clear()
-            searchingAdapter?.notifyDataSetChanged()
-            val inputMethodManager =
-                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(binding.inputSearchText.windowToken, 0)
-            viewModel.getHistoryTrackList()
-
         }
+
         binding.inputSearchText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.inputSearchText.text.isEmpty()) {
-                viewModel.getHistoryTrackList()
+                onHistoryGet(1)
             }
         }
 
@@ -111,7 +113,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 viewModel.searchTracks(s?.toString() ?: "")
                 if ((s?.toString() ?: "") == "") {
-                    viewModel.getHistoryTrackList()
+                    onHistoryGet(1)
                 }
             }
 
@@ -121,6 +123,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
         }
         textWatcher?.let { binding.inputSearchText.addTextChangedListener(it)}
         binding.inputSearchText.setText(textValue)
+
     }
 
     private fun clickTrack(track: Track) {
@@ -129,9 +132,10 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     }
 
     private fun clickHistoryTrack(track: Track) {
-        val playerIntent = Intent(requireContext(), PlayerActivity::class.java)
-        playerIntent.putExtra("track", track)
-        startActivity(playerIntent)
+        findNavController().navigate(
+            R.id.action_searchFragment_to_playerActivity,
+            PlayerActivity.createArgs(track)
+        )
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -164,6 +168,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     }
 
     private fun showEmpty(message: String) {
+        isHistory = false
         with(binding) {
             tracksLayout.isVisible = true
             searchHisLayout.isVisible = false
@@ -175,6 +180,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     }
 
     private fun showContent(tracks: List<Track>) {
+        isHistory = false
         with(binding) {
             tracksLayout.isVisible = true
             searchHisLayout.isVisible = false
@@ -193,6 +199,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     }
 
     private fun showHistoryEmpty() {
+        isHistory = true
         with(binding) {
             searchHisLayout.isVisible = false
             tracksLayout.isVisible = false
@@ -201,6 +208,7 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
     }
 
     private fun showHistoryContent(tracks: List<Track>) {
+        isHistory = true
         with(binding) {
             searchHisLayout.isVisible = true
             tracksLayout.isVisible = false
@@ -229,9 +237,15 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
         textValue = savedInstanceState?.getString(SEARCH_TEXT, "") ?: ""
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshFavorite(isHistory)
+    }
+
     companion object {
         private const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val TEXT_VALUE = ""
         private const val CLICK_DEBOUNCE_DELAY = 1_000L
+        private const val HIST_DEBOUNCE_DELAY = 100L
     }
 }

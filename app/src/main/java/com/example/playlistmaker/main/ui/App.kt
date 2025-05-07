@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.library.di.libraryModules
 import com.example.playlistmaker.player.di.playerModules
+import com.example.playlistmaker.search.di.historyDataModule
 import com.example.playlistmaker.search.di.searchModules
 import com.example.playlistmaker.settings.data.impl.SettingsStorageRepository
 import com.example.playlistmaker.settings.di.settingsModules
@@ -22,6 +23,7 @@ class App: Application() {
                 searchModules,
                 playerModules,
                 libraryModules,
+                historyDataModule,
             )
         }
         val settings = SettingsInteractorImpl(SettingsStorageRepository(this)).getSettings()

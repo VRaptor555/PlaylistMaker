@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.playlistmaker.search.data.Response
+import com.example.playlistmaker.search.data.TracksLookupRequest
 import com.example.playlistmaker.search.data.TracksSearchRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,6 +23,10 @@ class RetrofitNetworkClient(
                 when(dto) {
                     is TracksSearchRequest -> {
                         val response = trackService.searchTracks(dto.text)
+                        response.apply { resultCode = 200 }
+                    }
+                    is TracksLookupRequest -> {
+                        val response = trackService.getTracksById(dto.text)
                         response.apply { resultCode = 200 }
                     }
                     else -> Response().apply { resultCode = 400 }

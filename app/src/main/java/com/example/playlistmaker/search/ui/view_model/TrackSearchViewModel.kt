@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.search.domain.TracksHistoryInteractor
 import com.example.playlistmaker.search.domain.TracksInteractor
+import com.example.playlistmaker.search.domain.db.FavoriteInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.models.TracksState
 import com.example.playlistmaker.utils.debounce
@@ -18,6 +19,7 @@ class TrackSearchViewModel(
     application: Application,
     private val trackInteractor: TracksInteractor,
     private val searchHistoryInteractor: TracksHistoryInteractor,
+    private val favoriteInteractor: FavoriteInteractor,
 ) : AndroidViewModel(application) {
     private val tracks = ArrayList<Track>()
 
@@ -120,11 +122,13 @@ class TrackSearchViewModel(
     fun getHistoryTrackList() {
         renderState(TracksState.Loading)
         tracks.clear()
-        tracks.addAll(searchHistoryInteractor.getSavedTracksList())
-        if (tracks.isEmpty()) {
-            renderState(TracksState.EmptyHistory)
-        } else {
-            renderState(TracksState.ContentHistory(tracks = tracks))
+        viewModelScope.launch {
+            tracks.addAll(searchHistoryInteractor.getSavedTracksList())
+            if (tracks.isEmpty()) {
+                renderState(TracksState.EmptyHistory)
+            } else {
+                renderState(TracksState.ContentHistory(tracks))
+            }
         }
     }
 
@@ -132,6 +136,52 @@ class TrackSearchViewModel(
         tracks.clear()
         searchHistoryInteractor.clearTracks()
         renderState(TracksState.EmptyHistory)
+    }
+
+    fun refreshFavorite(history: Boolean) {
+        viewModelScope.launch {
+            favoriteInteractor.getTracks()
+                .collect { tracks -> reloadFavoriteList(tracks, history) }
+        }
+    }
+
+    private fun reloadFavoriteList(tracksFavorite: List<Track>, history: Boolean) {
+        val indexesOfTrack = tracksFavorite.map {
+            it.trackId
+        }
+        val tracksTmp = tracks.map {
+            Track(
+                trackId = it.trackId,
+                trackName = it.trackName,
+                artistName = it.artistName,
+                collectionName = it.collectionName,
+                releaseDate = it.releaseDate,
+                primaryGenreName = it.primaryGenreName,
+                country = it.country,
+                trackTimeMillis = it.trackTimeMillis,
+                artworkUrl100 = it.artworkUrl100,
+                previewUrl = it.previewUrl,
+                isFavorite = it.trackId in indexesOfTrack
+            )
+        }
+        tracks.clear()
+        tracks.addAll(tracksTmp)
+        if (tracks.isEmpty()) {
+            if (history) {
+                renderState(TracksState.EmptyHistory)
+            } else {
+                renderState(TracksState.Empty(message = getApplication<Application>().getString(
+                    R.string.nothing_found
+                )))
+            }
+        } else {
+            if (history) {
+                renderState(TracksState.ContentHistory(tracks))
+            } else {
+                renderState(TracksState.Content(tracks))
+            }
+
+        }
     }
 
     companion object {
