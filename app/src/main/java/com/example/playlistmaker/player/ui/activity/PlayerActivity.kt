@@ -35,7 +35,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         val track = getSerializable(this, ARGS_TRACK, Track::class.java)
         isFavorite = track.isFavorite
-        val viewModel: PlayerViewModel by viewModel() {
+        val viewModel: PlayerViewModel by viewModel {
             parametersOf(track)
         }
         viewModel.observeState().observe(this) {
@@ -64,6 +64,9 @@ class PlayerActivity : AppCompatActivity() {
             }
             it.favoriteBtn.setOnClickListener {
                 viewModel.onFavoriteClicked()
+            }
+            it.queueBtn.setOnClickListener {
+                addTrackToPlaylist()
             }
         }
 
@@ -96,6 +99,10 @@ class PlayerActivity : AppCompatActivity() {
         if (isFavorite != state.isFavorite) {
             changeFavorite(state.isFavorite)
         }
+    }
+
+    private fun addTrackToPlaylist() {
+
     }
 
     companion object {

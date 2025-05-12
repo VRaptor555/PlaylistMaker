@@ -5,6 +5,6 @@ data class Playlist(
     var name: String,
     var description: String?,
     var imagePath: String?,
-    val tracksId: List<Long>,
+    var tracksId: List<Long>,
     var countTracks: Int
 )

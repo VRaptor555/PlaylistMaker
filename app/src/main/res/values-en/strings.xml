@@ -35,6 +35,7 @@
     <string name="playlist_add_btn">New playlist</string>
     <string name="button_play">PLAY</string>
     <string name="button_pause">PAUSE</string>
+    <string name="button_add_remove_favorite">Add/Remove to favorite</string>
     <string name="playlist_name_text">Name*</string>
     <string name="playlist_description_text">Description</string>
     <string name="playlist_image">Cover</string>
@@ -44,4 +45,5 @@
     <string name="playlist_confirm_message">All unsaved data will be lost.</string>
     <string name="confirm_yes">Complete</string>
     <string name="confirm_no">No</string>
+    <string name="button_add_to_playlist">Add to playlist</string>
 </resources>

@@ -38,6 +38,8 @@
     <string name="playlist_add_btn">Новый плейлист</string>
     <string name="button_play">Проиграть</string>
     <string name="button_pause">Пауза</string>
+    <string name="button_add_to_playlist">Добавить в плейлист</string>
+    <string name="button_add_remove_favorite">Добавить/удалить в избранное</string>
     <string name="playlist_name_text">Название*</string>
     <string name="playlist_description_text">Описание</string>
     <string name="playlist_image">Обложка</string>

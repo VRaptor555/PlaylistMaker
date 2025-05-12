@@ -32,6 +32,11 @@ class PlaylistRepositoryImpl(
         appDatabase.playlistDao().updatePlaylist(playlistEntity)
     }
 
+    override fun getPlaylistById(idPlaylist: Long): Flow<Playlist> = flow {
+        val playlist = appDatabase.playlistDao().getPlaylistById(idPlaylist)
+        emit(converter.map(playlist))
+    }
+
     private fun convertFromEntityList(playlistEntitys: List<PlaylistEntity>): List<Playlist> {
         return playlistEntitys.map {
             playlist -> converter.map(playlist)

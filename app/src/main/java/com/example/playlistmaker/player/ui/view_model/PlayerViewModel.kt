@@ -5,6 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.library.domain.db.PlaylistInteractor
+import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.player.data.impl.PlayerRepositoryImpl
 import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.ui.models.PlayerState
@@ -21,6 +23,7 @@ class PlayerViewModel(
     private val track: Track,
     private val playerInteractor: PlayerInteractor,
     private val favoriteInteractor: FavoriteInteractor,
+    private val playlistInteractor: PlaylistInteractor,
     application: Application,
 ) : AndroidViewModel(application), KoinComponent {
 
@@ -93,6 +96,12 @@ class PlayerViewModel(
                 track.isFavorite = true
             }
             showCurrentStatus()
+        }
+    }
+
+    fun onAddToPlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.addTrackToPlaylist(playlist, track)
         }
     }
 

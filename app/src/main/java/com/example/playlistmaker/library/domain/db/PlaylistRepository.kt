@@ -9,4 +9,5 @@ interface PlaylistRepository {
     suspend fun deletePlaylist(playlist: Playlist)
     fun getPlaylists(): Flow<List<Playlist>>
     suspend fun updatePlaylist(playlist: Playlist)
+    fun getPlaylistById(idPlaylist: Long): Flow<Playlist>
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSecondary"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/half_medium_padding">
+
+        <ImageView
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginHorizontal="@dimen/half_medium_padding"
+        android:layout_marginVertical="@dimen/half_medium_padding"
+        tools:src="@tools:sample/avatars"
+        />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Best song 2025"
+                android:textSize="@dimen/small_text_size"
+                android:textColor="@color/color_text2"
+                android:layout_marginTop="@dimen/playlist_card_margin"
+                android:ellipsize="end"
+                android:maxLines="1"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="198 треков"
+                android:textSize="@dimen/playlist_count_text"
+                android:textColor="@color/color_settings_icon"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
