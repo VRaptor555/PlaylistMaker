@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.library.domain.db.PlaylistInteractor
 import com.example.playlistmaker.library.domain.model.Playlist
+import com.example.playlistmaker.library.ui.models.PlaylistState
 import com.example.playlistmaker.player.data.impl.PlayerRepositoryImpl
 import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.ui.models.PlayerState
@@ -42,6 +43,9 @@ class PlayerViewModel(
             renderState(PlayerState.Prepared(track.isFavorite))
         }
     }
+
+    private val playlistState = MutableLiveData<PlaylistState>(PlaylistState.Empty)
+    fun observePlaylistState(): LiveData<PlaylistState> = playlistState
 
     private fun startTimer() {
         timerJob = viewModelScope.launch {
@@ -102,6 +106,15 @@ class PlayerViewModel(
     fun onAddToPlaylist(playlist: Playlist) {
         viewModelScope.launch {
             playlistInteractor.addTrackToPlaylist(playlist, track)
+        }
+    }
+
+    fun playlistLoad() {
+        playlistState.postValue(PlaylistState.Loading)
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists().collect { playlist ->
+                playlistState.postValue(PlaylistState.Content(playlist))
+            }
         }
     }
 

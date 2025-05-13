@@ -13,8 +13,8 @@
     <dimen name="library_top_pl">18dp</dimen>
     <dimen name="bottom_navigate_h">56dp</dimen>
     <dimen name="bottom_navigate_margin">72dp</dimen>
-    <dimen name="playlist_card_margin">14dp</dimen>
-    <dimen name="playlist_top_margin">18dp</dimen>
+    <dimen name="card_margin_playlist">14dp</dimen>
+    <dimen name="top_margin_playlist">18dp</dimen>
 <!-- =============== TEXT SIZE ================== -->
     <dimen name="def_text_size">22sp</dimen>
     <dimen name="small_text_size">16sp</dimen>

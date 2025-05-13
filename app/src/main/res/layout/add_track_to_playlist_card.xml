@@ -16,34 +16,36 @@
         android:paddingHorizontal="@dimen/half_medium_padding">
 
         <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginHorizontal="@dimen/half_medium_padding"
-        android:layout_marginVertical="@dimen/half_medium_padding"
-        tools:src="@tools:sample/avatars"
-        />
+            android:id="@+id/image_playlist"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginHorizontal="@dimen/half_medium_padding"
+            android:layout_marginVertical="@dimen/half_medium_padding"
+            tools:src="@tools:sample/avatars" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/name_playlist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Best song 2025"
-                android:textSize="@dimen/small_text_size"
-                android:textColor="@color/color_text2"
-                android:layout_marginTop="@dimen/playlist_card_margin"
+                android:layout_marginTop="@dimen/card_margin_playlist"
                 android:ellipsize="end"
                 android:maxLines="1"
-                />
+                android:textColor="@color/color_text2"
+                android:textSize="@dimen/small_text_size"
+                tools:text="Best song 2025" />
+
             <TextView
+                android:id="@+id/count_playlist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="198 треков"
-                android:textSize="@dimen/playlist_count_text"
                 android:textColor="@color/color_settings_icon"
-                />
+                android:textSize="@dimen/playlist_count_text"
+                tools:text="198 треков" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -104,8 +104,7 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
         binding.createButton.setOnClickListener {
             lifecycleScope.launch {
                 if (playlistCreateViewModel.savePlaylistToDb()) {
-                    backPressCallback.isEnabled = false
-                    findNavController().popBackStack()
+                    toExit()
                 } else {
                     Toast.makeText(requireContext(), "Такое имя уже есть!", Toast.LENGTH_SHORT).show()
                 }
@@ -116,8 +115,7 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
             .setTitle(resources.getString(R.string.playlist_confirm))
             .setMessage(R.string.playlist_confirm_message)
             .setNegativeButton(resources.getString(R.string.confirm_yes)) { _, _ ->
-                backPressCallback.isEnabled = false
-                findNavController().popBackStack()
+                toExit()
             }
             .setPositiveButton(resources.getString(R.string.confirm_no)) { _, _ ->
 
@@ -127,9 +125,12 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
     }
 
     private fun showConfirmDialog() {
-        if (playlistName.isNotEmpty()) {
-            confirmDialog.show()
-        }
+        confirmDialog.show()
+    }
+
+    private fun toExit() {
+        backPressCallback.isEnabled = false
+        findNavController().popBackStack()
     }
 
     private fun changePlaylist(playlist: Playlist) {

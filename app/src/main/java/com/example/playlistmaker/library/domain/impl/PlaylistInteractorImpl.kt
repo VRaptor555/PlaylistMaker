@@ -8,7 +8,6 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlin.math.tan
 
 class PlaylistInteractorImpl(
     private val repositoryPlaylist: PlaylistRepository,
@@ -37,8 +36,13 @@ class PlaylistInteractorImpl(
     }
 
     override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
-        val tracksIdModified = playlist.tracksId + track.trackId
+        val currentListTracks = playlist.tracksId
+        if (currentListTracks.contains(track.trackId)) {
+            return
+        }
+        val tracksIdModified = currentListTracks + track.trackId
         playlist.tracksId = tracksIdModified
+        playlist.countTracks = playlist.tracksId.size
         repositoryPlaylist.updatePlaylist(playlist)
     }
 
