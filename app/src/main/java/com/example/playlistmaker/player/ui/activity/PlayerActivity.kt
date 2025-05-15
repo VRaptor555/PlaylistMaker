@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -16,27 +17,40 @@ import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.fragments.PlaylistCreateFragment
 import com.example.playlistmaker.library.ui.models.PlaylistState
 import com.example.playlistmaker.player.ui.adapters.PlaylistBottomAdapter
+import com.example.playlistmaker.player.ui.models.ActionPlaylistHandler
 import com.example.playlistmaker.player.ui.models.PlayerState
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.utils.dpToPx
+import com.example.playlistmaker.utils.pxToDp
 import com.example.playlistmaker.utils.getSerializable
 import com.example.playlistmaker.utils.getURLImage500
 import com.example.playlistmaker.utils.timeMillisToMin
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity(), ActionPlaylistHandler {
     private var _binding: ActivityPlayerBinding? = null
     private val binding get() = _binding!!
     private var _bottomSheet: BottomSheetBehavior<LinearLayout>? = null
     private val bottomSheet get() = _bottomSheet!!
 
-    private var _adapter: PlaylistBottomAdapter? = null
-    private val adapter get() = _adapter!!
+    private val viewModel: PlayerViewModel by viewModel {
+        parametersOf(getSerializable(this, ARGS_TRACK, Track::class.java))
+    }
+
+    private val adapter = PlaylistBottomAdapter(object: PlaylistBottomAdapter.PlaylistBottomClickListener {
+        override fun onPlaylistBottomClick(playlist: Playlist) {
+            lifecycleScope.launch {
+                if (viewModel.onAddToPlaylist(playlist)) {
+                    bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+                }
+            }
+        }
+    })
 
     private var isFavorite = false
 
@@ -44,18 +58,13 @@ class PlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val track = getSerializable(this, ARGS_TRACK, Track::class.java)
-        isFavorite = track.isFavorite
-        val viewModel: PlayerViewModel by viewModel {
-            parametersOf(track)
-        }
+        _bottomSheet = BottomSheetBehavior.from(binding.bottomSheet)
         viewModel.observeState().observe(this) {
             render(it)
         }
         viewModel.observePlaylistState().observe(this) {
             showPlaylist(it)
         }
-        _bottomSheet = BottomSheetBehavior.from(binding.bottomSheet)
 
         bottomSheet.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -77,9 +86,9 @@ class PlayerActivity : AppCompatActivity() {
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 if (slideOffset > 0) {
-                    binding.main.alpha = 0.5f
+                    binding.overlay.alpha = 0.6f
                 } else {
-                    binding.main.alpha = slideOffset * -0.5f + 0.5f
+                    binding.overlay.alpha = slideOffset * 0.6f + 0.6f
                 }
             }
         })
@@ -90,28 +99,6 @@ class PlayerActivity : AppCompatActivity() {
             this.finish()
         }
 
-        _adapter = PlaylistBottomAdapter(object: PlaylistBottomAdapter.PlaylistBottomClickListener {
-            override fun onPlaylistBottomClick(playlist: Playlist) {
-                viewModel.onAddToPlaylist(playlist)
-                bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
-            }
-        })
-
-        binding.timeLeft.text = timeMillisToMin(track.trackTimeMillis)
-        binding.durationInfo.text = timeMillisToMin(track.trackTimeMillis)
-        binding.albumInfo.text = track.collectionName
-        binding.yearInfo.text =
-            LocalDate.parse(track.releaseDate, DateTimeFormatter.ISO_DATE_TIME).year.toString()
-        binding.genreInfo.text = track.primaryGenreName
-        binding.countryInfo.text = track.country
-        binding.trackTitle.text = track.trackName
-        binding.trackArtist.text = track.artistName
-
-        Glide.with(baseContext)
-            .load(getURLImage500(track.artworkUrl100))
-            .placeholder(R.drawable.player_placeholder)
-            .transform(RoundedCorners(dpToPx(8f, baseContext)))
-            .into(binding.imageTrack)
 
         binding.playBtn.setOnClickListener {
             viewModel.play()
@@ -130,9 +117,13 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.initPlayer()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun addPlaylist() {
         binding.main.visibility = View.GONE
         binding.bottomSheet.visibility = View.GONE
+        bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+        adapter.playlist.clear()
+        adapter.notifyDataSetChanged()
         supportFragmentManager.beginTransaction()
             .replace(R.id.player_fragment_container, PlaylistCreateFragment())
             .addToBackStack("player")
@@ -167,10 +158,31 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun render(state: PlayerState) {
+        if (state.track != null) {
+            changePlayerInfo(state.track)
+        }
         changeStatePlaying(state.isPlayButtonEnable, state.buttonText, state.progress)
         if (isFavorite != state.isFavorite) {
             changeFavorite(state.isFavorite)
         }
+    }
+
+    private fun changePlayerInfo(track: Track) {
+        binding.timeLeft.text = timeMillisToMin(track.trackTimeMillis)
+        binding.durationInfo.text = timeMillisToMin(track.trackTimeMillis)
+        binding.albumInfo.text = track.collectionName
+        binding.yearInfo.text =
+            LocalDate.parse(track.releaseDate, DateTimeFormatter.ISO_DATE_TIME).year.toString()
+        binding.genreInfo.text = track.primaryGenreName
+        binding.countryInfo.text = track.country
+        binding.trackTitle.text = track.trackName
+        binding.trackArtist.text = track.artistName
+
+        Glide.with(baseContext)
+            .load(getURLImage500(track.artworkUrl100))
+            .placeholder(R.drawable.player_placeholder)
+            .transform(RoundedCorners(pxToDp(8f, baseContext)))
+            .into(binding.imageTrack)
     }
 
     private fun addTrackToPlaylist() {
@@ -192,6 +204,14 @@ class PlayerActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
             }
         }
+    }
+
+    override fun handlerAction(actionPlaylist: Playlist) {
+        lifecycleScope.launch {
+            viewModel.onAddToPlaylist(actionPlaylist)
+        }
+        binding.main.visibility = View.VISIBLE
+        binding.bottomSheet.visibility = View.VISIBLE
     }
 
     companion object {

@@ -12,9 +12,9 @@ class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val converter: PlaylistDbConverter,
 ): PlaylistRepository {
-    override suspend fun addPlaylist(playlist: Playlist) {
+    override suspend fun addPlaylist(playlist: Playlist): Long {
         val playlistEntity = converter.map(playlist)
-        appDatabase.playlistDao().insertPlaylist(playlistEntity)
+        return appDatabase.playlistDao().insertPlaylist(playlistEntity)
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {

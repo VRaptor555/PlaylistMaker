@@ -46,4 +46,8 @@
     <string name="confirm_yes">Complete</string>
     <string name="confirm_no">No</string>
     <string name="button_add_to_playlist">Add to playlist</string>
+    <string name="track_in_playlist">The track has already been added to %1$s playlist</string>
+    <string name="track_added_playlist">Added to playlist %1$s</string>
+    <string name="playlist_name_already">There is already such a playlist name!</string>
+    <string name="playlist_created">Playlist %1$s created!</string>
 </resources>

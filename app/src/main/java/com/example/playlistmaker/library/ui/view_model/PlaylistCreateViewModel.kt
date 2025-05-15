@@ -12,7 +12,7 @@ import com.example.playlistmaker.library.ui.models.PlaylistCreateState
 class PlaylistCreateViewModel(
     private val playlistInteractor: PlaylistInteractor,
 ) : ViewModel() {
-    private var playlist: Playlist = Playlist(
+    var playlist: Playlist = Playlist(
         0,
         "",
         null,
@@ -35,6 +35,7 @@ class PlaylistCreateViewModel(
 
     fun changeDescription(description: String?) {
         playlist.description = description
+        stateLiveData.postValue(PlaylistCreateState.ChangePlaylist(playlist))
     }
 
     fun changeImage(uri: Uri) {
@@ -44,7 +45,8 @@ class PlaylistCreateViewModel(
 
     suspend fun savePlaylistToDb(): Boolean {
         try {
-            playlistInteractor.addPlaylist(playlist)
+            val newId = playlistInteractor.addPlaylist(playlist)
+            playlist.id = newId
             return true
         } catch (_: SQLiteException) {
             return false

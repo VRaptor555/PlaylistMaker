@@ -1,10 +1,12 @@
 package com.example.playlistmaker.player.ui.view_model
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.R
 import com.example.playlistmaker.library.domain.db.PlaylistInteractor
 import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.models.PlaylistState
@@ -25,16 +27,16 @@ class PlayerViewModel(
     private val playerInteractor: PlayerInteractor,
     private val favoriteInteractor: FavoriteInteractor,
     private val playlistInteractor: PlaylistInteractor,
-    application: Application,
+    private val application: Application,
 ) : AndroidViewModel(application), KoinComponent {
 
     private var timerJob: Job? = null
 
-    private val playerState = MutableLiveData<PlayerState>(PlayerState.Default())
+    private val playerState = MutableLiveData<PlayerState>(PlayerState.Default(track))
     fun observeState(): LiveData<PlayerState> = playerState
 
     fun initPlayer() {
-        renderState(PlayerState.Default())
+        renderState(PlayerState.Default(track))
         viewModelScope.launch {
             playerInteractor.prepareUrl(track.previewUrl)
             while (playerInteractor.state() != PlayerRepositoryImpl.STATE_PREPARED) {
@@ -71,7 +73,7 @@ class PlayerViewModel(
             }
 
             PlayerRepositoryImpl.STATE_PREPARED -> renderState(PlayerState.Prepared(track.isFavorite))
-            PlayerRepositoryImpl.STATE_DEFAULT -> renderState(PlayerState.Default())
+            PlayerRepositoryImpl.STATE_DEFAULT -> renderState(PlayerState.Default(track))
         }
     }
 
@@ -103,10 +105,18 @@ class PlayerViewModel(
         }
     }
 
-    fun onAddToPlaylist(playlist: Playlist) {
-        viewModelScope.launch {
-            playlistInteractor.addTrackToPlaylist(playlist, track)
+    suspend fun onAddToPlaylist(playlist: Playlist): Boolean {
+        val isAddToPlaylist = playlistInteractor.addTrackToPlaylist(playlist, track)
+        if (isAddToPlaylist) {
+            Toast.makeText(application,
+                String.format(application.getString(R.string.track_added_playlist), playlist.name),
+                Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(application,
+                String.format(application.getString(R.string.track_in_playlist), playlist.name),
+                Toast.LENGTH_SHORT).show()
         }
+        return isAddToPlaylist
     }
 
     fun playlistLoad() {

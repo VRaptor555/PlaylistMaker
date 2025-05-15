@@ -19,4 +19,6 @@
     <color name="frame_dash">#AEAFB4</color>
     <color name="frame_active">#3772E7</color>
     <color name="main_behavior">#AEAFB4</color>
+    <color name="positive_color_button">#D9316E</color>
+    <color name="negative_color_button">#818C99</color>
 </resources>

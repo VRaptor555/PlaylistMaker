@@ -8,7 +8,7 @@ import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-fun dpToPx(dp: Float, context: Context): Int {
+fun pxToDp(dp: Float, context: Context): Int {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         dp,

@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="false">
-        <shape>
-            <solid android:color="@color/frame_dash"/>
-            <corners
-                android:radius="@dimen/half_medium_padding"/>
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <solid android:color="@color/frame_active"/>
-            <corners
-                android:radius="@dimen/half_medium_padding"/>
-        </shape>
-    </item>
+    <item android:state_enabled="false" android:drawable="@drawable/create_button_disable"/>
+    <item android:drawable="@drawable/create_button_enable"/>
 </selector>

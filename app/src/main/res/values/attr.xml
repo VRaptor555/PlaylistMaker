@@ -2,4 +2,6 @@
 <resources>
     <attr name="not_connect_icon" format="reference"/>
     <attr name="not_found_icon" format="reference"/>
+    <attr name="button_active" format="reference"/>
+    <attr name="button_disable" format="reference"/>
 </resources>

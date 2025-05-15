@@ -15,14 +15,21 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistCreateBinding
 import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.models.PlaylistCreateState
 import com.example.playlistmaker.library.ui.view_model.PlaylistCreateViewModel
 import com.example.playlistmaker.main.ui.fragments.BindingFragments
+import com.example.playlistmaker.player.ui.activity.PlayerActivity
+import com.example.playlistmaker.utils.pxToDp
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -40,7 +47,7 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
     private var playlistImageUrl: String? = null
     lateinit var confirmDialog: MaterialAlertDialogBuilder
 
-    private val backPressCallback: OnBackPressedCallback = object: OnBackPressedCallback(true) {
+    private var backPressCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             showConfirmDialog()
         }
@@ -104,14 +111,17 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
         binding.createButton.setOnClickListener {
             lifecycleScope.launch {
                 if (playlistCreateViewModel.savePlaylistToDb()) {
+                    Toast.makeText(requireContext(),
+                        String.format(getString(R.string.playlist_created), playlistName),
+                        Toast.LENGTH_SHORT).show()
                     toExit()
                 } else {
-                    Toast.makeText(requireContext(), "Такое имя уже есть!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.playlist_name_already, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
-        confirmDialog = MaterialAlertDialogBuilder(requireContext())
+        confirmDialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle(resources.getString(R.string.playlist_confirm))
             .setMessage(R.string.playlist_confirm_message)
             .setNegativeButton(resources.getString(R.string.confirm_yes)) { _, _ ->
@@ -120,8 +130,11 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
             .setPositiveButton(resources.getString(R.string.confirm_no)) { _, _ ->
 
             }
-        activity?.onBackPressedDispatcher?.addCallback(backPressCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(this, backPressCallback)
         backPressCallback.isEnabled = false
+        binding.home.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     private fun showConfirmDialog() {
@@ -130,21 +143,43 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
 
     private fun toExit() {
         backPressCallback.isEnabled = false
-        findNavController().popBackStack()
+        if (activity is PlayerActivity) {
+            parentFragmentManager.popBackStack()
+        } else {
+            findNavController().popBackStack()
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        if (activity is PlayerActivity) {
+            (activity as PlayerActivity).handlerAction(playlistCreateViewModel.playlist)
+        }
     }
 
     private fun changePlaylist(playlist: Playlist) {
+        binding.nameHint.isVisible = playlist.name.isNotEmpty()
+        binding.descriptionHint.isVisible = !(playlist.description == null || playlist.description?.isEmpty() == true)
+        binding.nameText.isSelected = binding.nameHint.isVisible
+        binding.descriptionText.isSelected = binding.descriptionHint.isVisible
         if (playlist.name != playlistName) {
             playlistName = playlist.name
             binding.createButton.isEnabled = playlistName.isNotEmpty()
         }
         if (playlist.imagePath != playlistImageUrl) {
             playlistImageUrl = playlist.imagePath
-            if (playlistImageUrl != null) {
-                binding.placeholderImage.setImageURI(playlistImageUrl?.toUri())
+            val imageUri = if (playlistImageUrl != null) {
+                playlistImageUrl?.toUri()
             } else {
-                binding.placeholderImage.setImageResource(R.drawable.playlist_add_placeholder)
+                null
             }
+            val multiTransform = MultiTransformation(CenterCrop(), RoundedCorners(pxToDp(8f, requireContext())))
+            Glide.with(this)
+                .load(imageUri)
+                .placeholder(R.drawable.playlist_add_placeholder)
+                .transform(multiTransform)
+                .into(binding.placeholderImage)
+
         }
         backPressCallback.isEnabled =
             playlist.name.isNotEmpty()

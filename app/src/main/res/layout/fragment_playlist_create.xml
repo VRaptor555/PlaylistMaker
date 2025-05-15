@@ -31,7 +31,6 @@
             android:layout_margin="26dp"
             android:background="@drawable/playlist_add_placeholder"
             android:clickable="true"
-            android:scaleType="fitCenter"
             android:contentDescription="@string/playlist_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,6 +52,20 @@
             app:layout_constraintTop_toBottomOf="@id/placeholder_image"
             android:textCursorDrawable="@drawable/cursor_color"/>
 
+        <TextView
+            android:id="@+id/name_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/small_padding"
+            app:layout_constraintBaseline_toTopOf="@id/name_text"
+            app:layout_marginBaseline="@dimen/small_padding"
+            app:layout_constraintStart_toStartOf="@id/name_text"
+            android:layout_marginStart="@dimen/medium_padding"
+            android:text="@string/playlist_name_text"
+            android:background="@color/color_background_other"
+            android:textColor="@color/frame_active"
+            android:visibility="gone"/>
+
         <EditText
             android:id="@+id/description_text"
             android:layout_width="match_parent"
@@ -67,16 +80,29 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/name_text"
-            android:textCursorDrawable="@drawable/cursor_color" />
+            android:textCursorDrawable="@drawable/cursor_color"/>
 
-        <Button
+        <TextView
+            android:id="@+id/description_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/small_padding"
+            app:layout_constraintBaseline_toTopOf="@id/description_text"
+            app:layout_marginBaseline="@dimen/small_padding"
+            app:layout_constraintStart_toStartOf="@id/description_text"
+            android:layout_marginStart="@dimen/medium_padding"
+            android:text="@string/playlist_description_text"
+            android:background="@color/color_background_other"
+            android:textColor="@color/frame_active"
+            android:visibility="gone"/>
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/create_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/PlaylistButtonStyle"
             android:layout_marginHorizontal="@dimen/medium_padding"
             android:layout_marginBottom="@dimen/full32_padding"
-            android:background="@drawable/playlist_create_button"
+            style="@style/PlaylistButtonStyle"
             android:enabled="false"
             android:text="@string/create_playlist_button"
             app:layout_constraintBottom_toBottomOf="parent"

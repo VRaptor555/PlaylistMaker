@@ -1,20 +1,20 @@
 package com.example.playlistmaker.library.domain.impl
 
+import android.util.Log
 import com.example.playlistmaker.library.domain.db.PlaylistInteractor
 import com.example.playlistmaker.library.domain.db.PlaylistRepository
+import com.example.playlistmaker.library.domain.db.TracklistRepository
 import com.example.playlistmaker.library.domain.model.Playlist
-import com.example.playlistmaker.search.domain.TracksRepository
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.utils.Resource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.single
 
 class PlaylistInteractorImpl(
     private val repositoryPlaylist: PlaylistRepository,
-    private val repositoryTracks: TracksRepository
+    private val repositoryTracklist: TracklistRepository
 ): PlaylistInteractor {
-    override suspend fun addPlaylist(playlist: Playlist) {
-        repositoryPlaylist.addPlaylist(playlist)
+    override suspend fun addPlaylist(playlist: Playlist): Long {
+        return repositoryPlaylist.addPlaylist(playlist)
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
@@ -25,26 +25,25 @@ class PlaylistInteractorImpl(
         return repositoryPlaylist.getPlaylists()
     }
 
-    override fun getTracksFromPlaylist(tracksId: String): Flow<Pair<List<Track>?, String?>> {
-        return repositoryTracks.getTracksFromId(tracksId).map { result ->
-            when(result) {
-                is Resource.Success -> Pair(result.data, null)
-                is Resource.Error -> Pair(null, result.message)
-            }
-        }
-
+    override fun getTracksFromPlaylist(tracksId: List<Long>): Flow<List<Track>> {
+        return repositoryTracklist.getTrackListById(tracksId)
     }
 
-    override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
+    override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track): Boolean {
         val currentListTracks = playlist.tracksId
         if (currentListTracks.contains(track.trackId)) {
-            return
+            return false
+        }
+        Log.d("PLAYLIST_TEST", "Добавляем в плейлист")
+        val trackInBase = repositoryTracklist.getTrackById(track.trackId).single()
+        if (trackInBase == null) {
+            repositoryTracklist.addTrack(track)
         }
         val tracksIdModified = currentListTracks + track.trackId
         playlist.tracksId = tracksIdModified
         playlist.countTracks = playlist.tracksId.size
         repositoryPlaylist.updatePlaylist(playlist)
+        return true
     }
-
 
 }

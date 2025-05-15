@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.data.impl
 
-import com.example.playlistmaker.search.data.TracksLookupRequest
 import com.example.playlistmaker.search.data.TracksRequest
 import com.example.playlistmaker.search.data.TracksSearchRequest
 import com.example.playlistmaker.search.data.TracksSearchResponse
@@ -18,11 +17,6 @@ class TracksRepositoryImpl(
 ) : TracksRepository {
     override fun searchTracks(text: String): Flow<Resource<List<Track>>> {
         val request = TracksSearchRequest(text)
-        return getTracks(request)
-    }
-
-    override fun getTracksFromId(text: String): Flow<Resource<List<Track>>> {
-        val request = TracksLookupRequest(text)
         return getTracks(request)
     }
 

@@ -7,7 +7,4 @@ import retrofit2.http.Query
 interface TracksApiService {
     @GET("search?entity=song")
     suspend fun searchTracks(@Query("term") text: String): TracksSearchResponse
-
-    @GET("lookup")
-    suspend fun getTracksById(@Query("id") text: String): TracksSearchResponse
 }

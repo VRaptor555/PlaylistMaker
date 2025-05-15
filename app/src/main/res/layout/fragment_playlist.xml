@@ -36,6 +36,7 @@
                 android:id="@+id/placeholder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/small_padding"
                 android:orientation="vertical">
 
                 <TextView
@@ -61,8 +62,9 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     tools:listitem="@layout/playlist_card" />
             </LinearLayout>
         </ScrollView>

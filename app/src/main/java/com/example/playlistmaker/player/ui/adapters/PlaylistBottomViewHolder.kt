@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.library.domain.model.Playlist
-import com.example.playlistmaker.utils.dpToPx
+import com.example.playlistmaker.utils.pxToDp
 
 class PlaylistBottomViewHolder private constructor(itemView: View): RecyclerView.ViewHolder(itemView) {
     private val namePlaylist: TextView = itemView.findViewById(R.id.name_playlist)
@@ -30,7 +30,7 @@ class PlaylistBottomViewHolder private constructor(itemView: View): RecyclerView
         Glide.with(itemView.context)
             .load(playlist.imagePath)
             .placeholder(R.drawable.placeholder)
-            .transform(RoundedCorners(dpToPx(8f, itemView.context)))
+            .transform(RoundedCorners(pxToDp(8f, itemView.context)))
             .into(imagePlaylist)
     }
 }
