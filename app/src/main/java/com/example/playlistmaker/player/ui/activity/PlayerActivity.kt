@@ -207,9 +207,6 @@ class PlayerActivity : AppCompatActivity(), ActionPlaylistHandler {
     }
 
     override fun handlerAction(actionPlaylist: Playlist) {
-        lifecycleScope.launch {
-            viewModel.onAddToPlaylist(actionPlaylist)
-        }
         binding.main.visibility = View.VISIBLE
         binding.bottomSheet.visibility = View.VISIBLE
     }

@@ -25,7 +25,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:importantForAccessibility="no"
             android:src="@drawable/placeholder"
-            tools:ignore="RtlSymmetry" />
+            tools:src="@tools:sample/avatars"/>
 
         <LinearLayout
             android:layout_width="0dp"

@@ -5,8 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
     tools:context=".player.ui.activity.PlayerActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/player_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -157,12 +163,11 @@
         <TextView
             android:id="@+id/btn_back"
             style="@style/BackButtonStyle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:navigationIcon="@drawable/arrow_back"
+            app:drawableStartCompat="@drawable/arrow_back"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/arrow_back" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/image_track"
@@ -272,9 +277,10 @@
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000000"
         android:alpha="0"
-        />
+        android:background="#000000"
+        app:layout_anchor="@+id/player_fragment_container"
+        app:layout_anchorGravity="center" />
 
     <LinearLayout
         android:id="@+id/bottom_sheet"
@@ -326,11 +332,7 @@
 
     </LinearLayout>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/player_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 

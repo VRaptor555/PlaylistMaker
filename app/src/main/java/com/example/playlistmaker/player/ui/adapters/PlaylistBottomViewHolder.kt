@@ -7,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.library.domain.model.Playlist
@@ -27,10 +29,11 @@ class PlaylistBottomViewHolder private constructor(itemView: View): RecyclerView
         namePlaylist.text = playlist.name
         val textCount = itemView.context.getString(R.string.playlist_count_tracks)
         countTitle.text = String.format(textCount, playlist.countTracks)
+        val multiTransform = MultiTransformation(CenterCrop(), RoundedCorners(pxToDp(2f, itemView.context)))
         Glide.with(itemView.context)
             .load(playlist.imagePath)
             .placeholder(R.drawable.placeholder)
-            .transform(RoundedCorners(pxToDp(8f, itemView.context)))
+            .transform(multiTransform)
             .into(imagePlaylist)
     }
 }

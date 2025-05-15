@@ -5,8 +5,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +25,7 @@ import com.example.playlistmaker.databinding.FragmentPlaylistCreateBinding
 import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.models.PlaylistCreateState
 import com.example.playlistmaker.library.ui.view_model.PlaylistCreateViewModel
+import com.example.playlistmaker.main.ui.CustomTextWatcher
 import com.example.playlistmaker.main.ui.fragments.BindingFragments
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.utils.pxToDp
@@ -40,12 +39,12 @@ import kotlin.uuid.Uuid
 
 class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() {
     private val playlistCreateViewModel: PlaylistCreateViewModel by viewModel()
-    private var nameTextWatcher: TextWatcher? = null
-    private var descriptionTextWatcher: TextWatcher? = null
+//    private lateinit var nameTextWatcher: CustomTextWatcher
+//    private lateinit var descriptionTextWatcher: CustomTextWatcher
 
     private var playlistName: String = ""
     private var playlistImageUrl: String? = null
-    lateinit var confirmDialog: MaterialAlertDialogBuilder
+    private var confirmDialog: MaterialAlertDialogBuilder? = null
 
     private var backPressCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -69,34 +68,16 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
             }
         }
 
-        nameTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        binding.nameText.addTextChangedListener(object: CustomTextWatcher() {
+            override fun onTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 playlistCreateViewModel.changeName(s?.toString() ?: "")
             }
-
-            override fun afterTextChanged(s: Editable?) {
-                //
-            }
-        }
-        descriptionTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        })
+        binding.descriptionText.addTextChangedListener(object: CustomTextWatcher() {
+            override fun onTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 playlistCreateViewModel.changeDescription(s?.toString())
             }
-
-            override fun afterTextChanged(s: Editable?) {
-                //
-            }
-        }
-        nameTextWatcher?.let { binding.nameText.addTextChangedListener(it)}
-        descriptionTextWatcher?.let { binding.descriptionText.addTextChangedListener(it) }
+        })
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
@@ -138,7 +119,7 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
     }
 
     private fun showConfirmDialog() {
-        confirmDialog.show()
+        confirmDialog?.show()
     }
 
     private fun toExit() {
