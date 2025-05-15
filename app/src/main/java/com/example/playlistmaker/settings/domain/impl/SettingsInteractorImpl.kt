@@ -2,7 +2,7 @@ package com.example.playlistmaker.settings.domain.impl
 
 import com.example.playlistmaker.settings.data.SettingsConverter.dtoToSettings
 import com.example.playlistmaker.settings.data.SettingsConverter.settingsToDto
-import com.example.playlistmaker.settings.data.dto.SettingsRepository
+import com.example.playlistmaker.settings.domain.SettingsRepository
 import com.example.playlistmaker.settings.domain.SettingsInteractor
 import com.example.playlistmaker.settings.domain.model.AppSettings
 

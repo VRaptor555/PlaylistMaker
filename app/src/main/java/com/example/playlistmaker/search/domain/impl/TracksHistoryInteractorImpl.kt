@@ -1,6 +1,6 @@
 package com.example.playlistmaker.search.domain.impl
 
-import com.example.playlistmaker.search.data.HistoryRepository
+import com.example.playlistmaker.search.domain.HistoryRepository
 import com.example.playlistmaker.search.domain.TracksHistoryInteractor
 import com.example.playlistmaker.search.domain.model.Track
 
@@ -15,11 +15,11 @@ class TracksHistoryInteractorImpl(private val sharedHistory: HistoryRepository):
         sharedHistory.clear()
     }
 
-    override fun getSavedTracksList(): MutableList<Track> {
+    override suspend fun getSavedTracksList(): MutableList<Track> {
         return sharedHistory.read().toMutableList()
     }
 
-    override fun size(): Int {
+    override suspend fun size(): Int {
         return sharedHistory.read().size
     }
 }

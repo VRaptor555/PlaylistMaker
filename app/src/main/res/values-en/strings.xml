@@ -31,4 +31,6 @@
     <string name="library_empty">Your library is empty</string>
     <string name="playlist_empty">You haven\'t created\n any playlists.</string>
     <string name="playlist_add_btn">New playlist</string>
+    <string name="button_play">PLAY</string>
+    <string name="button_pause">PAUSE</string>
 </resources>

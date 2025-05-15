@@ -1,33 +1,44 @@
 package com.example.playlistmaker.search.ui.view_model
 
 import android.app.Application
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
-import com.example.playlistmaker.search.domain.TracksConsumer
 import com.example.playlistmaker.search.domain.TracksHistoryInteractor
 import com.example.playlistmaker.search.domain.TracksInteractor
+import com.example.playlistmaker.search.domain.db.FavoriteInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.models.TracksState
+import com.example.playlistmaker.utils.debounce
+import kotlinx.coroutines.launch
 
 class TrackSearchViewModel(
     application: Application,
     private val trackInteractor: TracksInteractor,
     private val searchHistoryInteractor: TracksHistoryInteractor,
-): AndroidViewModel(application) {
+    private val favoriteInteractor: FavoriteInteractor,
+) : AndroidViewModel(application) {
     private val tracks = ArrayList<Track>()
 
-    private val handler = Handler(Looper.getMainLooper())
+    private val onTrackSearchDebounce = debounce<String>(
+        SEARCH_DEBOUNCE_DELAY,
+        viewModelScope,
+        true
+    ) { searchString -> startSearch(searchString) }
+
+    private val onTrackResearchDebounce = debounce<String>(
+        RESEARCH_DEBOUNCE_DELAY,
+        viewModelScope,
+        true
+    ) { researchString -> startSearch(researchString) }
 
     private val stateLiveData = MutableLiveData<TracksState>()
     private val mediatorTracksStateLiveData = MediatorLiveData<TracksState>().also { liveData ->
         liveData.addSource(stateLiveData) { trackState ->
-            liveData.value = when(trackState) {
+            liveData.value = when (trackState) {
                 is TracksState.Content -> TracksState.Content(trackState.tracks)
                 is TracksState.Empty -> trackState
                 is TracksState.Error -> trackState
@@ -37,48 +48,52 @@ class TrackSearchViewModel(
             }
         }
     }
+
     fun observeState(): LiveData<TracksState> = mediatorTracksStateLiveData
 
     private var latestSearchText: String? = null
 
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+    private fun startSearch(searchTracks: String) {
+        renderState(TracksState.Loading)
+
+        viewModelScope.launch {
+            trackInteractor
+                .searchTracks(searchTracks)
+                .collect { pair -> processResult(pair.first, pair.second) }
+        }
     }
 
-    private fun startSearch(searchTracks: String) {
-        if (searchTracks.isNotEmpty()) {
-            renderState(TracksState.Loading)
+    private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
+        if (foundTracks != null) {
+            tracks.clear()
+            tracks.addAll(foundTracks)
+        }
+        when {
+            errorMessage != null -> {
+                renderState(
+                    TracksState.Error(
+                        errorMessage = getApplication<Application>().getString(
+                            R.string.something_went_wrong
+                        )
+                    )
+                )
+            }
 
-            trackInteractor.searchTracks(
-                searchTracks,
-                object : TracksConsumer {
-                    override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                        if (foundTracks != null) {
-                            tracks.clear()
-                            tracks.addAll(foundTracks)
-                        }
-                        when {
-                            errorMessage != null -> {
-                                renderState(TracksState.Error(
-                                    errorMessage = getApplication<Application>().getString(
-                                    R.string.something_went_wrong)))
-                            }
-                            tracks.isEmpty() -> {
-                                renderState(TracksState.Empty(
-                                    message = getApplication<Application>().getString(
-                                        R.string.nothing_found
-                                    )
-                                ))
-                            }
-                            else -> renderState(
-                                TracksState.Content(
-                                    tracks = tracks
-                                )
-                            )
-                        }
-                    }
+            tracks.isEmpty() -> {
+                renderState(
+                    TracksState.Empty(
+                        message = getApplication<Application>().getString(
+                            R.string.nothing_found
+                        )
+                    )
+                )
+            }
 
-                })
+            else -> renderState(
+                TracksState.Content(
+                    tracks = tracks
+                )
+            )
         }
     }
 
@@ -86,35 +101,18 @@ class TrackSearchViewModel(
         stateLiveData.postValue(state)
     }
 
-    fun searchDebounce(searchText: String) {
-        if (latestSearchText == searchText) {
-            return
+    fun searchTracks(searchTracks: String) {
+        if (searchTracks.isNotEmpty() && latestSearchText != searchTracks) {
+            latestSearchText = searchTracks
+            onTrackSearchDebounce(searchTracks)
         }
-        this.latestSearchText = searchText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
-        val searchRunnable = Runnable { startSearch(searchText) }
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
     }
 
     fun restartSearch() {
         if (latestSearchText == null || latestSearchText?.length == 0) {
             return
         }
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
-        val searchRunnable = Runnable { startSearch(latestSearchText!!) }
-        val postTime = SystemClock.uptimeMillis()
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        onTrackResearchDebounce(latestSearchText!!)
     }
 
     fun addTrackToHistory(track: Track) {
@@ -124,11 +122,13 @@ class TrackSearchViewModel(
     fun getHistoryTrackList() {
         renderState(TracksState.Loading)
         tracks.clear()
-        tracks.addAll(searchHistoryInteractor.getSavedTracksList())
-        if (tracks.isEmpty()) {
-            renderState(TracksState.EmptyHistory)
-        } else {
-            renderState(TracksState.ContentHistory(tracks = tracks))
+        viewModelScope.launch {
+            tracks.addAll(searchHistoryInteractor.getSavedTracksList())
+            if (tracks.isEmpty()) {
+                renderState(TracksState.EmptyHistory)
+            } else {
+                renderState(TracksState.ContentHistory(tracks))
+            }
         }
     }
 
@@ -138,9 +138,55 @@ class TrackSearchViewModel(
         renderState(TracksState.EmptyHistory)
     }
 
+    fun refreshFavorite(history: Boolean) {
+        viewModelScope.launch {
+            favoriteInteractor.getTracks()
+                .collect { tracks -> reloadFavoriteList(tracks, history) }
+        }
+    }
+
+    private fun reloadFavoriteList(tracksFavorite: List<Track>, history: Boolean) {
+        val indexesOfTrack = tracksFavorite.map {
+            it.trackId
+        }
+        val tracksTmp = tracks.map {
+            Track(
+                trackId = it.trackId,
+                trackName = it.trackName,
+                artistName = it.artistName,
+                collectionName = it.collectionName,
+                releaseDate = it.releaseDate,
+                primaryGenreName = it.primaryGenreName,
+                country = it.country,
+                trackTimeMillis = it.trackTimeMillis,
+                artworkUrl100 = it.artworkUrl100,
+                previewUrl = it.previewUrl,
+                isFavorite = it.trackId in indexesOfTrack
+            )
+        }
+        tracks.clear()
+        tracks.addAll(tracksTmp)
+        if (tracks.isEmpty()) {
+            if (history) {
+                renderState(TracksState.EmptyHistory)
+            } else {
+                renderState(TracksState.Empty(message = getApplication<Application>().getString(
+                    R.string.nothing_found
+                )))
+            }
+        } else {
+            if (history) {
+                renderState(TracksState.ContentHistory(tracks))
+            } else {
+                renderState(TracksState.Content(tracks))
+            }
+
+        }
+    }
+
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2_000L
-        private val SEARCH_REQUEST_TOKEN = Any()
+        private const val RESEARCH_DEBOUNCE_DELAY = 500L
     }
 
 }

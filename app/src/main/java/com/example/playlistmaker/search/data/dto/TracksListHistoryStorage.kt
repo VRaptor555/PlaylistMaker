@@ -5,6 +5,7 @@ import com.example.playlistmaker.search.data.SearchConverter
 import com.example.playlistmaker.search.data.TrackDto
 import com.example.playlistmaker.search.domain.model.Track
 import com.google.gson.Gson
+import androidx.core.content.edit
 
 class TracksListHistoryStorage(
     private val sharedPreferences: SharedPreferences,
@@ -39,8 +40,8 @@ class TracksListHistoryStorage(
 
     private fun changeSavedList(tracks: List<Track>) {
         val json = gson.toJson(SearchConverter.trackToDto(tracks))
-        sharedPreferences.edit()
-            .putString(HISTORY_LIST_KEY, json)
-            .apply()
+        sharedPreferences.edit() {
+            putString(HISTORY_LIST_KEY, json)
+        }
     }
 }

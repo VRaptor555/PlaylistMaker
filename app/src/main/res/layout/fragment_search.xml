@@ -123,41 +123,47 @@
             tools:ignore="UseCompatTextViewDrawableXml" />
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/search_his_layout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/srch_txt"
-            style="@style/ErrorTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="48dp"
-            android:layout_marginBottom="@dimen/half_full_padding"
-            android:text="@string/you_search" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/searching_history_list"
+        <LinearLayout
+            android:id="@+id/search_his_layout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/half_medium_padding"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/btn_clear_history"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/full_padding"
-            android:backgroundTint="@color/color_refresh_btn"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="8dp"
-            android:text="@string/clear_his_btn"
-            android:textColor="@color/color_refresh_text" />
+            android:orientation="vertical"
+            android:visibility="visible">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/srch_txt"
+                style="@style/ErrorTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="48dp"
+                android:layout_marginBottom="@dimen/half_full_padding"
+                android:text="@string/you_search" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/searching_history_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/half_medium_padding"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btn_clear_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/full_padding"
+                android:layout_marginBottom="@dimen/full_padding"
+                android:layout_weight="0"
+                android:backgroundTint="@color/color_refresh_btn"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:text="@string/clear_his_btn"
+                android:textColor="@color/color_refresh_text" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

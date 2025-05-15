@@ -4,10 +4,11 @@ import android.app.Application
 import android.app.Application.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import com.example.playlistmaker.settings.data.dto.SettingsRepository
+import com.example.playlistmaker.settings.domain.SettingsRepository
 import com.example.playlistmaker.settings.data.model.AppSettingsDto
 import com.example.playlistmaker.utils.PLAYLIST_MAKER_PREFERENCES
 import com.google.gson.Gson
+import androidx.core.content.edit
 
 class SettingsStorageRepository(
     private val application: Application,
@@ -37,9 +38,9 @@ class SettingsStorageRepository(
 
     override fun setSettings(settings: AppSettingsDto) {
         val json = Gson().toJson(settings)
-        sharedPreferences.edit()
-            .putString(SETTINGS_KEY, json)
-            .apply()
+        sharedPreferences.edit() {
+            putString(SETTINGS_KEY, json)
+        }
     }
 
 
