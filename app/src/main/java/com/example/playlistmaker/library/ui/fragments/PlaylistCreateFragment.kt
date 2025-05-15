@@ -39,8 +39,6 @@ import kotlin.uuid.Uuid
 
 class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() {
     private val playlistCreateViewModel: PlaylistCreateViewModel by viewModel()
-//    private lateinit var nameTextWatcher: CustomTextWatcher
-//    private lateinit var descriptionTextWatcher: CustomTextWatcher
 
     private var playlistName: String = ""
     private var playlistImageUrl: String? = null
