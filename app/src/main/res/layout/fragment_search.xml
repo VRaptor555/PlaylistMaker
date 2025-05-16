@@ -125,7 +125,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/bottom_navigate_margin"
+        >
 
         <LinearLayout
             android:id="@+id/search_his_layout"

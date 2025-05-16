@@ -1,10 +1,15 @@
 package com.example.playlistmaker.player.ui.view_model
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.R
+import com.example.playlistmaker.library.domain.db.PlaylistInteractor
+import com.example.playlistmaker.library.domain.model.Playlist
+import com.example.playlistmaker.library.ui.models.PlaylistState
 import com.example.playlistmaker.player.data.impl.PlayerRepositoryImpl
 import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.ui.models.PlayerState
@@ -21,16 +26,17 @@ class PlayerViewModel(
     private val track: Track,
     private val playerInteractor: PlayerInteractor,
     private val favoriteInteractor: FavoriteInteractor,
-    application: Application,
+    private val playlistInteractor: PlaylistInteractor,
+    private val application: Application,
 ) : AndroidViewModel(application), KoinComponent {
 
     private var timerJob: Job? = null
 
-    private val playerState = MutableLiveData<PlayerState>(PlayerState.Default())
+    private val playerState = MutableLiveData<PlayerState>(PlayerState.Default(track))
     fun observeState(): LiveData<PlayerState> = playerState
 
     fun initPlayer() {
-        renderState(PlayerState.Default())
+        renderState(PlayerState.Default(track))
         viewModelScope.launch {
             playerInteractor.prepareUrl(track.previewUrl)
             while (playerInteractor.state() != PlayerRepositoryImpl.STATE_PREPARED) {
@@ -39,6 +45,9 @@ class PlayerViewModel(
             renderState(PlayerState.Prepared(track.isFavorite))
         }
     }
+
+    private val playlistState = MutableLiveData<PlaylistState>(PlaylistState.Empty)
+    fun observePlaylistState(): LiveData<PlaylistState> = playlistState
 
     private fun startTimer() {
         timerJob = viewModelScope.launch {
@@ -64,7 +73,7 @@ class PlayerViewModel(
             }
 
             PlayerRepositoryImpl.STATE_PREPARED -> renderState(PlayerState.Prepared(track.isFavorite))
-            PlayerRepositoryImpl.STATE_DEFAULT -> renderState(PlayerState.Default())
+            PlayerRepositoryImpl.STATE_DEFAULT -> renderState(PlayerState.Default(track))
         }
     }
 
@@ -93,6 +102,29 @@ class PlayerViewModel(
                 track.isFavorite = true
             }
             showCurrentStatus()
+        }
+    }
+
+    suspend fun onAddToPlaylist(playlist: Playlist): Boolean {
+        val isAddToPlaylist = playlistInteractor.addTrackToPlaylist(playlist, track)
+        if (isAddToPlaylist) {
+            Toast.makeText(application,
+                String.format(application.getString(R.string.track_added_playlist), playlist.name),
+                Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(application,
+                String.format(application.getString(R.string.track_in_playlist), playlist.name),
+                Toast.LENGTH_SHORT).show()
+        }
+        return isAddToPlaylist
+    }
+
+    fun playlistLoad() {
+        playlistState.postValue(PlaylistState.Loading)
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists().collect { playlist ->
+                playlistState.postValue(PlaylistState.Content(playlist))
+            }
         }
     }
 

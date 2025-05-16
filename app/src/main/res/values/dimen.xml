@@ -2,16 +2,24 @@
     <dimen name="full_padding">24dp</dimen>
     <dimen name="half_full_padding">12dp</dimen>
     <dimen name="medium_padding">16dp</dimen>
+    <dimen name="full32_padding">32dp</dimen>
     <dimen name="half_medium_padding">8dp</dimen>
+    <dimen name="small_padding">4dp</dimen>
     <dimen name="radius_button">16dp</dimen>
     <dimen name="icon_padding">20dp</dimen>
     <dimen name="track_image_size">45dp</dimen>
     <dimen name="small_image_size">24dp</dimen>
     <dimen name="library_top_mt">106dp</dimen>
-    <dimen name="library_top_pl">34dp</dimen>
+    <dimen name="library_top_pl">18dp</dimen>
+    <dimen name="bottom_navigate_h">56dp</dimen>
+    <dimen name="bottom_navigate_margin">72dp</dimen>
+    <dimen name="card_margin_playlist">14dp</dimen>
+    <dimen name="top_margin_playlist">18dp</dimen>
 <!-- =============== TEXT SIZE ================== -->
     <dimen name="def_text_size">22sp</dimen>
     <dimen name="small_text_size">16sp</dimen>
     <dimen name="xs_text_size">14sp</dimen>
-    <dimen name="bottom_navigate_h">56dp</dimen>
+    <dimen name="playlist_text">12sp</dimen>
+    <dimen name="playlist_count_text">11sp</dimen>
+    <dimen name="playlist_h1">19sp</dimen>
 </resources>

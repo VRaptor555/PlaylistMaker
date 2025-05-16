@@ -1,54 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".library.ui.fragments.PlaylistFragment">
 
-    <FrameLayout
+    <Button
+        android:id="@+id/btn_add_playlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center"
+        android:layout_marginTop="@dimen/full_padding"
+        android:layout_marginBottom="@dimen/medium_padding"
+        android:backgroundTint="@color/color_refresh_btn"
+        android:text="@string/playlist_add_btn"
+        android:textColor="@color/color_refresh_text" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/color_background_other"
         android:orientation="vertical"
-        android:background="@color/color_background_other">
+        tools:ignore="NestedScrolling">
 
-        <LinearLayout
-            android:id="@+id/placeholder"
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/bottom_navigate_margin"
+            tools:ignore="UselessParent">
 
-            <Button
-                android:id="@+id/btn_add_playlist"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/placeholder"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|center"
-                android:layout_marginTop="@dimen/full_padding"
-                android:backgroundTint="@color/color_refresh_btn"
-                android:text="@string/playlist_add_btn"
-                android:textColor="@color/color_refresh_text" />
+                android:paddingHorizontal="@dimen/small_padding"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/placeholder_found"
+                    style="@style/ErrorTextStyle"
+                    android:layout_width="312dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|center"
+                    android:layout_marginTop="@dimen/library_top_pl"
+                    android:drawablePadding="@dimen/medium_padding"
+                    android:text="@string/playlist_empty"
+                    android:visibility="visible"
+                    app:drawableTopCompat="?attr/not_found_icon" />
 
-            <TextView
-                android:id="@+id/placeholder_found"
-                style="@style/ErrorTextStyle"
-                android:layout_width="312dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|center"
-                android:layout_marginTop="@dimen/library_top_pl"
-                android:drawablePadding="@dimen/medium_padding"
-                android:text="@string/playlist_empty"
-                android:visibility="visible"
-                app:drawableTopCompat="?attr/not_found_icon" />
-        </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="144dp"
+                    android:theme="@style/CircularProgress"
+                    android:visibility="gone" />
 
-        <LinearLayout
-            android:id="@+id/playlist"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone"
-            >
-
-        </LinearLayout>
-    </FrameLayout>
-</ScrollView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    tools:listitem="@layout/playlist_card" />
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+</LinearLayout>

@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.utils.dpToPx
+import com.example.playlistmaker.utils.pxToDp
 import com.example.playlistmaker.utils.timeMillisToMin
 
 class FavoriteViewHolder private constructor(itemView: View) : ViewHolder(itemView) {
@@ -34,7 +34,7 @@ class FavoriteViewHolder private constructor(itemView: View) : ViewHolder(itemVi
         Glide.with(itemView.context)
             .load(track.artworkUrl100)
             .placeholder(R.drawable.placeholder)
-            .transform(RoundedCorners(dpToPx(2f, itemView.context)))
+            .transform(RoundedCorners(pxToDp(2f, itemView.context)))
             .into(trackImage)
     }
 }

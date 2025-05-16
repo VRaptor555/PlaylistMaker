@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.di
 
 import com.example.playlistmaker.search.ui.view_model.TrackSearchViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val searchViewModule = module {
