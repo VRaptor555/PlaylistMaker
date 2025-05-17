@@ -1,3 +1,3 @@
 package com.example.playlistmaker.search.data
 
-data class TracksSearchRequest(val text: String)
+data class TracksSearchRequest(override val text: String): TracksRequest(text)

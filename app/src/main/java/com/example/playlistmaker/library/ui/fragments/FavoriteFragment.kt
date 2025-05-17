@@ -23,6 +23,7 @@ class FavoriteFragment: BindingFragments<FragmentFavoriteBinding>() {
     private val favoriteViewModel: FavoriteViewModel by viewModel()
     private var adapter: FavoriteAdapter? = null
     private lateinit var onFavoriteClickDebounce: (Track) -> Unit
+
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?

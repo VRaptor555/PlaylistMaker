@@ -6,6 +6,8 @@
     <string name="library_button">Library</string>
     <string name="search_button">Search</string>
     <string name="settings_button">Settings</string>
+    <string name="new_playlist_button">New playlist</string>
+    <string name="create_playlist_button">Create</string>
     <string name="dark_theme">Dark theme</string>
     <string name="share_app">Share the app</string>
     <string name="support_text">Write to support</string>
@@ -33,4 +35,19 @@
     <string name="playlist_add_btn">New playlist</string>
     <string name="button_play">PLAY</string>
     <string name="button_pause">PAUSE</string>
+    <string name="button_add_remove_favorite">Add/Remove to favorite</string>
+    <string name="playlist_name_text">Name*</string>
+    <string name="playlist_description_text">Description</string>
+    <string name="playlist_image">Cover</string>
+    <string name="playlist_count_tracks">%1$d tracks</string>
+    <string name="playlist_error">Playlists couldn\'t be loaded %1$s</string>
+    <string name="playlist_confirm">Complete creating a playlist?</string>
+    <string name="playlist_confirm_message">All unsaved data will be lost.</string>
+    <string name="confirm_yes">Complete</string>
+    <string name="confirm_no">No</string>
+    <string name="button_add_to_playlist">Add to playlist</string>
+    <string name="track_in_playlist">The track has already been added to %1$s playlist</string>
+    <string name="track_added_playlist">Added to playlist %1$s</string>
+    <string name="playlist_name_already">There is already such a playlist name!</string>
+    <string name="playlist_created">Playlist %1$s created!</string>
 </resources>

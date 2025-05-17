@@ -24,9 +24,8 @@
             android:layout_marginStart="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:importantForAccessibility="no"
-            android:scaleType="fitCenter"
             android:src="@drawable/placeholder"
-            tools:ignore="RtlSymmetry" />
+            tools:src="@tools:sample/avatars"/>
 
         <LinearLayout
             android:layout_width="0dp"

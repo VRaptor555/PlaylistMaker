@@ -12,24 +12,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/div_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="@dimen/bottom_navigate_h"
-        app:layout_constraintBottom_toTopOf="@id/div_line"
         app:navGraph="@navigation/main_navigation_graph" />
+
     <View
         android:id="@+id/div_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-        android:background="@color/color_divline"/>
+        android:background="@color/color_divline"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
         android:layout_height="@dimen/bottom_navigate_h"
-
+        android:visibility="visible"
         app:itemActiveIndicatorStyle="@style/Theme.BottomNavigationView.ActiveIndicator"
         app:itemBackground="@color/color_background_other"
         app:itemIconTint="@color/button_nav"
