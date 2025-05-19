@@ -1,6 +1,5 @@
 package com.example.playlistmaker.library.domain.impl
 
-import android.util.Log
 import com.example.playlistmaker.library.domain.db.PlaylistInteractor
 import com.example.playlistmaker.library.domain.db.PlaylistRepository
 import com.example.playlistmaker.library.domain.db.TracklistRepository

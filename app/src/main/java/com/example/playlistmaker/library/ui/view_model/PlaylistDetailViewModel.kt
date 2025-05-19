@@ -11,7 +11,7 @@ import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.launch
 
 class PlaylistDetailViewModel(
-    private val playlist: Playlist,
+    playlist: Playlist,
     private val playlistInteractor: PlaylistInteractor,
 ): ViewModel() {
     private var tracksList: MutableList<Track> =  mutableListOf()
