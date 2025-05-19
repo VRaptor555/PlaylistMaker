@@ -70,12 +70,20 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
                 override fun onTrackClick(track: Track) {
                     onTrackClickDebounce(track)
                 }
+
+                override fun onLongTrackClick(track: Track): Boolean {
+                    return false
+                }
             }
         )
         historyAdapter = TrackAdapter(
             object : TrackAdapter.TrackClickListener {
                 override fun onTrackClick(track: Track) {
                     onHistoryTrackClickDebounce(track)
+                }
+
+                override fun onLongTrackClick(track: Track): Boolean {
+                    return true
                 }
             }
         )

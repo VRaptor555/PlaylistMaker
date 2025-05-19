@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.TypedValue
+import androidx.core.bundle.Bundle
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -24,6 +25,13 @@ fun <T : Serializable?> getSerializable(activity: Activity, name: String, clazz:
         activity.intent.getSerializableExtra(name, clazz)!!
     else
         activity.intent.getSerializableExtra(name) as T
+}
+
+fun <T: Serializable?> getSerializable(bundle: Bundle, name: String, clazz: Class<T>): T {
+    return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        bundle.getSerializable(name, clazz)!!
+    else
+        bundle.getSerializable(name) as T
 }
 
 fun timeMillisToMin(timeMillis: String): String {

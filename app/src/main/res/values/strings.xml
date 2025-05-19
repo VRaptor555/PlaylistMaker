@@ -53,4 +53,8 @@
     <string name="track_added_playlist">Добавлено в плейлист %1$s</string>
     <string name="playlist_name_already">Такое название плейлиста уже есть!</string>
     <string name="playlist_created">Плейлист %1$s создан!</string>
+    <string name="playlist_time_tracks">%1$d минут</string>
+    <string name="playlist_detail_delete_track">Хотите удалить трек?</string>
+    <string name="res_yes">Да</string>
+    <string name="res_no">Нет</string>
 </resources>

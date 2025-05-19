@@ -99,7 +99,10 @@ class PlaylistFragment: BindingFragments<FragmentPlaylistBinding>() {
     }
 
     private fun clickPlaylist(playlist: Playlist) {
-
+        findNavController().navigate(
+            R.id.action_libraryFragment_to_playlistDetailFragment,
+            PlaylistDetailFragment.createArgs(playlist)
+        )
     }
 
     @SuppressLint("NotifyDataSetChanged")

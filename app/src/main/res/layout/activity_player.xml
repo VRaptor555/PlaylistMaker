@@ -307,7 +307,7 @@
             android:gravity="center"
             android:paddingTop="22dp"
             android:paddingBottom="@dimen/half_full_padding"
-            android:textSize="@dimen/playlist_h1"
+            android:textSize="@dimen/playlist_h2"
             android:text="@string/button_add_to_playlist"/>
 
         <Button

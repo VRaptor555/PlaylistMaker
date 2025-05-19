@@ -1,5 +1,7 @@
 package com.example.playlistmaker.library.domain.model
 
+import java.io.Serializable
+
 data class Playlist(
     var id: Long,
     var name: String,
@@ -7,4 +9,4 @@ data class Playlist(
     var imagePath: String?,
     var tracksId: List<Long>,
     var countTracks: Int
-)
+): Serializable

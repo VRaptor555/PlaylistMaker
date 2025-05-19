@@ -21,5 +21,7 @@
     <dimen name="xs_text_size">14sp</dimen>
     <dimen name="playlist_text">12sp</dimen>
     <dimen name="playlist_count_text">11sp</dimen>
-    <dimen name="playlist_h1">19sp</dimen>
+    <dimen name="playlist_h3">18sp</dimen>
+    <dimen name="playlist_h2">19sp</dimen>
+    <dimen name="playlist_h1">24sp</dimen>
 </resources>

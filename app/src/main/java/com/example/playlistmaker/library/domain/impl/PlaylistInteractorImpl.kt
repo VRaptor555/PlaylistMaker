@@ -34,7 +34,6 @@ class PlaylistInteractorImpl(
         if (currentListTracks.contains(track.trackId)) {
             return false
         }
-        Log.d("PLAYLIST_TEST", "Добавляем в плейлист")
         val trackInBase = repositoryTracklist.getTrackById(track.trackId).single()
         if (trackInBase == null) {
             repositoryTracklist.addTrack(track)
@@ -46,4 +45,31 @@ class PlaylistInteractorImpl(
         return true
     }
 
+    override suspend fun deleteTrackFromPlaylist(
+        playlist: Playlist,
+        track: Track
+    ): Playlist {
+        val currentListTracks = playlist.tracksId
+        val tracksIdModifies = currentListTracks.filter { it != track.trackId }
+        playlist.tracksId = tracksIdModifies
+        playlist.countTracks = playlist.tracksId.size
+        repositoryPlaylist.updatePlaylist(playlist)
+        repositoryPlaylist.getPlaylists().collect { playlists ->
+            deleteTrackFromBase(playlists, track)
+        }
+        return playlist
+    }
+
+    private suspend fun deleteTrackFromBase(playlists: List<Playlist>, track: Track) {
+        var isFound = false
+        for (playlist in playlists) {
+            if (track.trackId in playlist.tracksId) {
+                isFound = true
+                break
+            }
+        }
+        if (!isFound) {
+            repositoryTracklist.deleteTrack(track)
+        }
+    }
 }
