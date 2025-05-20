@@ -9,41 +9,34 @@ import com.example.playlistmaker.library.domain.db.PlaylistInteractor
 import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.models.PlaylistCreateState
 
-class PlaylistCreateViewModel(
+open class PlaylistCreateViewModel(
+    open var playlist: Playlist,
     private val playlistInteractor: PlaylistInteractor,
 ) : ViewModel() {
-    var playlist: Playlist = Playlist(
-        0,
-        "",
-        null,
-        null,
-        listOf(),
-        0
-    )
 
     private val stateLiveData = MutableLiveData<PlaylistCreateState>()
     fun observeState(): LiveData<PlaylistCreateState> = stateLiveData
 
-    init {
+    fun loadPlaylist() {
         stateLiveData.postValue(PlaylistCreateState.ChangePlaylist(playlist))
     }
 
     fun changeName(name: String?) {
         playlist.name = name ?: ""
-        stateLiveData.postValue(PlaylistCreateState.ChangePlaylist(playlist))
+        loadPlaylist()
     }
 
     fun changeDescription(description: String?) {
         playlist.description = description
-        stateLiveData.postValue(PlaylistCreateState.ChangePlaylist(playlist))
+        loadPlaylist()
     }
 
     fun changeImage(uri: Uri) {
         playlist.imagePath = uri.toString()
-        stateLiveData.postValue(PlaylistCreateState.ChangePlaylist(playlist))
+        loadPlaylist()
     }
 
-    suspend fun savePlaylistToDb(): Boolean {
+    open suspend fun savePlaylistToDb(): Boolean {
         try {
             val newId = playlistInteractor.addPlaylist(playlist)
             playlist.id = newId

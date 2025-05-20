@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity() {
                 when(destination.id) {
                     R.id.playerActivity,
                     R.id.playlistAddFragment,
-                    R.id.playlistDetailFragment -> {
+                    R.id.playlistDetailFragment,
+                    R.id.playlistEditFragment -> {
                         bottomNavigationView.visibility = View.GONE
                         binding.divLine.visibility = View.GONE
                     }

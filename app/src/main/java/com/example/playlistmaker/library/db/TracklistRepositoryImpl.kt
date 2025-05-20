@@ -32,13 +32,13 @@ class TracklistRepositoryImpl(
     }
 
     override fun getTrackListById(idList: List<Long>): Flow<List<Track>> = flow {
-        val tracks = appDatabase.tracklistDao().getTrackList(idList)
-        emit(convertFromEntityList(tracks))
-    }
-
-    private fun convertFromEntityList(tracksEntity: List<TracklistEntity>): List<Track> {
-        return tracksEntity.map { trackEntity ->
-            converter.map(trackEntity)
+        val tracks = mutableListOf<Track>()
+        for(idTrack in idList) {
+            getTrackById(idTrack).collect { track ->
+                track?.let {
+                    tracks.add(0, it) }
+                }
         }
+        emit(tracks)
     }
 }

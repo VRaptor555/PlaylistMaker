@@ -94,7 +94,7 @@ class PlaylistFragment: BindingFragments<FragmentPlaylistBinding>() {
 
     private fun clickAdd() {
         findNavController().navigate(
-            R.id.action_libraryFragment_to_playlistAddFragment
+            R.id.action_libraryFragment_to_playlistAddFragment,
         )
     }
 

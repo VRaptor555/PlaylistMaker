@@ -58,7 +58,7 @@ class PlayerActivity : AppCompatActivity(), ActionPlaylistHandler {
         super.onCreate(savedInstanceState)
         _binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        _bottomSheet = BottomSheetBehavior.from(binding.bottomSheet)
+        _bottomSheet = BottomSheetBehavior.from(binding.bottomTracklist)
         viewModel.observeState().observe(this) {
             render(it)
         }
@@ -120,7 +120,7 @@ class PlayerActivity : AppCompatActivity(), ActionPlaylistHandler {
     @SuppressLint("NotifyDataSetChanged")
     private fun addPlaylist() {
         binding.main.visibility = View.GONE
-        binding.bottomSheet.visibility = View.GONE
+        binding.bottomTracklist.visibility = View.GONE
         bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
         adapter.playlist.clear()
         adapter.notifyDataSetChanged()
@@ -208,7 +208,7 @@ class PlayerActivity : AppCompatActivity(), ActionPlaylistHandler {
 
     override fun handlerAction(actionPlaylist: Playlist) {
         binding.main.visibility = View.VISIBLE
-        binding.bottomSheet.visibility = View.VISIBLE
+        binding.bottomTracklist.visibility = View.VISIBLE
     }
 
     companion object {

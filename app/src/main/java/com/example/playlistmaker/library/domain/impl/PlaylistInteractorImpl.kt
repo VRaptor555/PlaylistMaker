@@ -71,4 +71,12 @@ class PlaylistInteractorImpl(
             repositoryTracklist.deleteTrack(track)
         }
     }
+
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        repositoryPlaylist.updatePlaylist(playlist)
+    }
+
+    override fun getPlaylistById(id: Long): Flow<Playlist> {
+        return repositoryPlaylist.getPlaylistById(id)
+    }
 }

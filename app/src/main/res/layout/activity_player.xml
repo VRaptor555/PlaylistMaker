@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
+    android:fitsSystemWindows="true"
     tools:context=".player.ui.activity.PlayerActivity">
 
     <androidx.fragment.app.FragmentContainerView
@@ -283,7 +283,7 @@
         app:layout_anchorGravity="center" />
 
     <LinearLayout
-        android:id="@+id/bottom_sheet"
+        android:id="@+id/bottom_tracklist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bottom_behavior"
