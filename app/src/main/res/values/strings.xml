@@ -63,7 +63,7 @@
     <string name="res_no">Отмена</string>
     <string name="playlist_empty_track">В этом плейлисте нет списка треков, которым можно поделиться</string>
     <string name="playlist_send">Поделиться</string>
-    <string name="playlist_edit">Редакировать информацию</string>
+    <string name="playlist_edit">Редактировать информацию</string>
     <string name="playlist_delete">Удалить плейлист</string>
     <string name="playlist_no_tracks">В этом плейлисте нет треков</string>
 </resources>
