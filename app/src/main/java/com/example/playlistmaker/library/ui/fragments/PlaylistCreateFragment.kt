@@ -32,19 +32,23 @@ import com.example.playlistmaker.utils.pxToDp
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() {
-    private val playlistCreateViewModel: PlaylistCreateViewModel by viewModel()
+open class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() {
+    protected open val playlistViewModel: PlaylistCreateViewModel by viewModel()  {
+        parametersOf(Playlist(0, "", null, null, listOf(), 0))
+    }
 
-    private var playlistName: String = ""
+    protected var playlistName: String = ""
+    private var playlistDescription: String? = null
     private var playlistImageUrl: String? = null
     private var confirmDialog: MaterialAlertDialogBuilder? = null
 
-    private var backPressCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+    protected var backPressCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             showConfirmDialog()
         }
@@ -59,8 +63,7 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        playlistCreateViewModel.observeState().observe(viewLifecycleOwner) {
+        playlistViewModel.observeState().observe(viewLifecycleOwner) {
             when(it) {
                 is PlaylistCreateState.ChangePlaylist -> changePlaylist(it.playlist)
             }
@@ -68,19 +71,19 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
 
         binding.nameText.addTextChangedListener(object: CustomTextWatcher() {
             override fun onTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                playlistCreateViewModel.changeName(s?.toString() ?: "")
+                playlistViewModel.changeName(s?.toString() ?: "")
             }
         })
         binding.descriptionText.addTextChangedListener(object: CustomTextWatcher() {
             override fun onTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                playlistCreateViewModel.changeDescription(s?.toString())
+                playlistViewModel.changeDescription(s?.toString())
             }
         })
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 val privateUri = saveImageToPrivateStorage(uri)
-                 playlistCreateViewModel.changeImage(privateUri)
+                 playlistViewModel.changeImage(privateUri)
             }
         }
         binding.placeholderImage.setOnClickListener {
@@ -89,7 +92,7 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
 
         binding.createButton.setOnClickListener {
             lifecycleScope.launch {
-                if (playlistCreateViewModel.savePlaylistToDb()) {
+                if (playlistViewModel.savePlaylistToDb()) {
                     Toast.makeText(requireContext(),
                         String.format(getString(R.string.playlist_created), playlistName),
                         Toast.LENGTH_SHORT).show()
@@ -114,13 +117,14 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
         binding.home.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
+        playlistViewModel.loadPlaylist()
     }
 
     private fun showConfirmDialog() {
         confirmDialog?.show()
     }
 
-    private fun toExit() {
+    protected fun toExit() {
         backPressCallback.isEnabled = false
         if (activity is PlayerActivity) {
             parentFragmentManager.popBackStack()
@@ -132,11 +136,11 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
     override fun onDetach() {
         super.onDetach()
         if (activity is PlayerActivity) {
-            (activity as PlayerActivity).handlerAction(playlistCreateViewModel.playlist)
+            (activity as PlayerActivity).handlerAction(playlistViewModel.playlist)
         }
     }
 
-    private fun changePlaylist(playlist: Playlist) {
+    protected open fun changePlaylist(playlist: Playlist) {
         binding.nameHint.isVisible = playlist.name.isNotEmpty()
         binding.descriptionHint.isVisible = !(playlist.description == null || playlist.description?.isEmpty() == true)
         binding.nameText.isSelected = binding.nameHint.isVisible
@@ -144,6 +148,17 @@ class PlaylistCreateFragment: BindingFragments<FragmentPlaylistCreateBinding>() 
         if (playlist.name != playlistName) {
             playlistName = playlist.name
             binding.createButton.isEnabled = playlistName.isNotEmpty()
+            if(binding.nameText.text.isEmpty()) {
+                binding.nameText.setText(playlistName)
+            }
+        }
+        if (playlist.description != playlistDescription) {
+            playlistDescription = playlist.description
+            playlistDescription.let {
+                if(binding.descriptionText.text.isEmpty()) {
+                    binding.descriptionText.setText(it)
+                }
+            }
         }
         if (playlist.imagePath != playlistImageUrl) {
             playlistImageUrl = playlist.imagePath

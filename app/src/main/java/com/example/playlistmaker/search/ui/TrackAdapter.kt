@@ -14,6 +14,7 @@ class TrackAdapter(private val clickListener: TrackClickListener) : RecyclerView
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener { clickListener.onTrackClick(tracks[position]) }
+        holder.itemView.setOnLongClickListener { clickListener.onLongTrackClick(tracks[position]) }
     }
 
     override fun getItemCount(): Int {
@@ -22,5 +23,6 @@ class TrackAdapter(private val clickListener: TrackClickListener) : RecyclerView
 
     interface TrackClickListener {
         fun onTrackClick(track: Track)
+        fun onLongTrackClick(track: Track): Boolean
     }
 }

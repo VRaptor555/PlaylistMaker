@@ -25,11 +25,10 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationView.setupWithNavController(it)
             it.addOnDestinationChangedListener{ _, destination, _ ->
                 when(destination.id) {
-                    R.id.playerActivity -> {
-                        bottomNavigationView.visibility = View.GONE
-                        binding.divLine.visibility = View.GONE
-                    }
-                    R.id.playlistAddFragment -> {
+                    R.id.playerActivity,
+                    R.id.playlistAddFragment,
+                    R.id.playlistDetailFragment,
+                    R.id.playlistEditFragment -> {
                         bottomNavigationView.visibility = View.GONE
                         binding.divLine.visibility = View.GONE
                     }

@@ -21,4 +21,5 @@
     <color name="main_behavior">#AEAFB4</color>
     <color name="positive_color_button">#D9316E</color>
     <color name="negative_color_button">#818C99</color>
+    <color name="playlist_detail_background">#E6E8EB</color>
 </resources>

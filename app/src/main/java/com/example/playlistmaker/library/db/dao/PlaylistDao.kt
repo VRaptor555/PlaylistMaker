@@ -22,7 +22,7 @@ interface PlaylistDao {
     @Update(entity = PlaylistEntity::class)
     suspend fun updatePlaylist(playlist: PlaylistEntity)
 
-    @Query("SELECT * FROM playlists")
+    @Query("SELECT * FROM playlists ORDER BY countTracks DESC, id DESC")
     suspend fun getAllPlaylist(): List<PlaylistEntity>
 
     @Query("SELECT countTracks FROM playlists WHERE id = :idPlaylist")
