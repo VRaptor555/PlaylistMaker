@@ -1,6 +1,5 @@
 package com.example.playlistmaker.library.ui.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
@@ -16,6 +16,7 @@ import com.example.playlistmaker.library.ui.adapters.PlaylistAdapter
 import com.example.playlistmaker.library.ui.models.PlaylistState
 import com.example.playlistmaker.library.ui.view_model.PlaylistViewModel
 import com.example.playlistmaker.main.ui.fragments.BindingFragments
+import com.example.playlistmaker.main.ui.utils.PlaylistCallback
 import com.example.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -105,16 +106,19 @@ class PlaylistFragment: BindingFragments<FragmentPlaylistBinding>() {
         )
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun showContent(content: List<Playlist>) {
         binding.apply {
             placeholderFound.visibility = View.GONE
             progressBar.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
         }
-        adapter?.playlist?.clear()
-        adapter?.playlist?.addAll(content)
-        adapter?.notifyDataSetChanged()
+        adapter?.let {
+            val diffPlaylistCallback = PlaylistCallback(it.playlist.toList(), content)
+            val diffPlaylist = DiffUtil.calculateDiff(diffPlaylistCallback)
+            it.playlist.clear()
+            it.playlist.addAll(content)
+            diffPlaylist.dispatchUpdatesTo(it)
+        }
     }
 
     override fun onResume() {

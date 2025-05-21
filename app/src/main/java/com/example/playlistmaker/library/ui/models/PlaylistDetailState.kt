@@ -5,9 +5,10 @@ import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.search.domain.model.Track
 
 sealed interface PlaylistDetailState {
-    data class Loading(val playlist: Playlist): PlaylistDetailState
-    data class Content(val tracks: List<Track>): PlaylistDetailState
+    data object Loading: PlaylistDetailState
+    data class Content(val playlist: Playlist, val tracks: List<Track>): PlaylistDetailState
     data class SendMessage(val message: String): PlaylistDetailState
     data class ShareIntent(val share: Intent): PlaylistDetailState
+    data class ShowPlaylist(val playlist: Playlist): PlaylistDetailState
     data object ToExit: PlaylistDetailState
 }

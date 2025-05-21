@@ -15,7 +15,7 @@ import com.example.playlistmaker.utils.timeMillisToMin
 import kotlinx.coroutines.launch
 
 class PlaylistDetailViewModel(
-    var playlist: Playlist,
+    private var playlist: Playlist,
     private val playlistInteractor: PlaylistInteractor,
     private val shareInteractor: SharingInteractor,
     private val application: Application
@@ -25,18 +25,22 @@ class PlaylistDetailViewModel(
     private val stateLiveData = MutableLiveData<PlaylistDetailState>()
     fun observeState(): LiveData<PlaylistDetailState> = stateLiveData
 
+    val myPlaylist get() = playlist
+
     fun loadingPlaylist() {
-        stateLiveData.postValue(PlaylistDetailState.Loading(playlist))
-        if (playlist.tracksId.isNotEmpty()) {
-            viewModelScope.launch {
-                playlistInteractor.getTracksFromPlaylist(playlist.tracksId)
-                    .collect { tracks ->
-                        tracksList.clear()
-                        tracksList.addAll(tracks)
-                        stateLiveData.postValue(PlaylistDetailState.Content(tracks))
-                    }
-            }
+        stateLiveData.postValue(PlaylistDetailState.Loading)
+        viewModelScope.launch {
+            playlistInteractor.getTracksFromPlaylist(playlist.tracksId)
+                .collect { tracks ->
+                    tracksList.clear()
+                    tracksList.addAll(tracks)
+                    stateLiveData.postValue(PlaylistDetailState.Content(playlist, tracks))
+                }
         }
+    }
+
+    fun showPlaylist() {
+        stateLiveData.postValue(PlaylistDetailState.ShowPlaylist(playlist))
     }
 
     suspend fun updatePlaylist() {
@@ -67,8 +71,10 @@ class PlaylistDetailViewModel(
             stateLiveData.postValue(PlaylistDetailState.SendMessage(application.getString(R.string.playlist_empty_track)))
         } else {
             var message = playlist.name + "\n"
-            if (playlist.description != null && playlist.description!!.isNotEmpty()) {
-                message += playlist.description + "\n"
+            playlist.description?.let {
+                if (it.isNotEmpty()) {
+                    message += playlist.description + "\n"
+                }
             }
             val countTrackStr = String.format(
                 application.getString(R.string.playlist_count_tracks),

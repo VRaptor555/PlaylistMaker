@@ -1,12 +1,12 @@
 package com.example.playlistmaker.library.ui.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoriteBinding
@@ -14,6 +14,7 @@ import com.example.playlistmaker.library.ui.adapters.FavoriteAdapter
 import com.example.playlistmaker.library.ui.models.FavoriteState
 import com.example.playlistmaker.library.ui.view_model.FavoriteViewModel
 import com.example.playlistmaker.main.ui.fragments.BindingFragments
+import com.example.playlistmaker.main.ui.utils.PlaylistTracksCallback
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.debounce
@@ -63,15 +64,18 @@ class FavoriteFragment: BindingFragments<FragmentFavoriteBinding>() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun showContent(tracks: List<Track>) {
         binding.apply {
             placeholder.visibility = View.GONE
             tracksList.visibility = View.VISIBLE
         }
-        adapter?.tracks?.clear()
-        adapter?.tracks?.addAll(tracks)
-        adapter?.notifyDataSetChanged()
+        adapter?.let {
+            val diffTrackCalback = PlaylistTracksCallback(it.tracks.toList(), tracks)
+            val diffTracks = DiffUtil.calculateDiff(diffTrackCalback)
+            it.tracks.clear()
+            it.tracks.addAll(tracks)
+            diffTracks.dispatchUpdatesTo(it)
+        }
     }
 
     private fun clickTrack(track: Track) {

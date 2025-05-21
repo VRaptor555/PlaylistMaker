@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.ui.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,10 +9,12 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.main.ui.fragments.BindingFragments
+import com.example.playlistmaker.main.ui.utils.PlaylistTracksCallback
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TrackAdapter
@@ -43,7 +44,6 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
         return FragmentSearchBinding.inflate(inflater, container, false)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -131,7 +131,6 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
         }
         textWatcher?.let { binding.inputSearchText.addTextChangedListener(it)}
         binding.inputSearchText.setText(textValue)
-
     }
 
     private fun clickTrack(track: Track) {
@@ -146,11 +145,14 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
         )
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun refreshSearchAdapter(tracks: List<Track>) {
-        searchingAdapter?.tracks?.clear()
-        searchingAdapter?.tracks?.addAll(tracks)
-        searchingAdapter?.notifyDataSetChanged()
+        searchingAdapter?.let {
+            val diffTrackCalback = PlaylistTracksCallback(it.tracks.toList(), tracks)
+            val diffTracks = DiffUtil.calculateDiff(diffTrackCalback)
+            it.tracks.clear()
+            it.tracks.addAll(tracks)
+            diffTracks.dispatchUpdatesTo(it)
+        }
     }
 
     private fun showLoading() {
@@ -199,11 +201,14 @@ class SearchFragment: BindingFragments<FragmentSearchBinding>() {
         refreshSearchAdapter(tracks)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun refreshHistoryAdapter(tracks: List<Track>) {
-        historyAdapter?.tracks?.clear()
-        historyAdapter?.tracks?.addAll(tracks)
-        historyAdapter?.notifyDataSetChanged()
+        historyAdapter?.let {
+            val diffTrackCalback = PlaylistTracksCallback(it.tracks.toList(), tracks)
+            val diffTracks = DiffUtil.calculateDiff(diffTrackCalback)
+            it.tracks.clear()
+            it.tracks.addAll(tracks)
+            diffTracks.dispatchUpdatesTo(it)
+        }
     }
 
     private fun showHistoryEmpty() {

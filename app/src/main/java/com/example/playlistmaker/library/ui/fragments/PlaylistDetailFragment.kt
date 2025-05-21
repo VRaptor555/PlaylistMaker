@@ -1,6 +1,5 @@
 package com.example.playlistmaker.library.ui.fragments
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
@@ -23,6 +23,8 @@ import com.example.playlistmaker.library.domain.model.Playlist
 import com.example.playlistmaker.library.ui.models.PlaylistDetailState
 import com.example.playlistmaker.library.ui.view_model.PlaylistDetailViewModel
 import com.example.playlistmaker.main.ui.fragments.BindingFragments
+import com.example.playlistmaker.main.ui.utils.PlaylistCallback
+import com.example.playlistmaker.main.ui.utils.PlaylistTracksCallback
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.player.ui.adapters.PlaylistBottomAdapter
 import com.example.playlistmaker.search.domain.model.Track
@@ -62,6 +64,7 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         onTrackClickDebounce = debounce<Track>(
             CLICK_DEBOUNCE_DELAY,
             viewLifecycleOwner.lifecycleScope,
@@ -105,7 +108,8 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
         binding.tracksItems.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.tracksItems.adapter = tracksAdapter
-        binding.playlistItem.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.playlistItem.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.playlistItem.adapter = playlistAdapter
 
         _bottomTracklist = BottomSheetBehavior.from(binding.bottomTracklist)
@@ -114,6 +118,7 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                     }
+
                     else -> {
                     }
                 }
@@ -128,16 +133,19 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
         _bottomMenu = BottomSheetBehavior.from(binding.bottomMenu)
         bottomMenu.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when(newState) {
+                when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         blackout(false)
                     }
+
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         blackout(false)
                     }
+
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         blackout(true)
                     }
+
                     else -> {
                     }
                 }
@@ -153,19 +161,21 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
         })
         bottomMenu.state = BottomSheetBehavior.STATE_HIDDEN
 
-        confirmDeleteTrackDialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
-            .setTitle(resources.getString(R.string.playlist_detail_delete_track))
-            .setNegativeButton(resources.getString(R.string.res_no)) { _, _ ->
-            }
-            .setPositiveButton(resources.getString(R.string.res_yes)) { _, _ ->
-            }
+        confirmDeleteTrackDialog =
+            MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+                .setTitle(resources.getString(R.string.playlist_detail_delete_track))
+                .setNegativeButton(resources.getString(R.string.res_no)) { _, _ ->
+                }
+                .setPositiveButton(resources.getString(R.string.res_yes)) { _, _ ->
+                }
 
-        confirmDeletePlaylistDialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
-            .setNegativeButton(resources.getString(R.string.res_no)) { _, _ ->
-            }
-            .setPositiveButton(resources.getString(R.string.res_yes)) { _, _ ->
-                deleteThisPlaylist()
-            }
+        confirmDeletePlaylistDialog =
+            MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+                .setNegativeButton(resources.getString(R.string.res_no)) { _, _ ->
+                }
+                .setPositiveButton(resources.getString(R.string.res_yes)) { _, _ ->
+                    deleteThisPlaylist()
+                }
 
         binding.buttonShare.setOnClickListener {
             onShareClickDebounce(1)
@@ -178,13 +188,13 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
 
         binding.menuDelete.setOnClickListener {
             bottomMenu.state = BottomSheetBehavior.STATE_HIDDEN
-            confirmDeletePlaylist(playlistDetailViewModel.playlist)
+            confirmDeletePlaylist(playlistDetailViewModel.myPlaylist)
         }
 
         binding.menuEdit.setOnClickListener {
             findNavController().navigate(
                 R.id.action_playlistDetailFragment_to_playlistEditFragment,
-                PlaylistEditFragment.createArgs(playlistDetailViewModel.playlist)
+                PlaylistEditFragment.createArgs(playlistDetailViewModel.myPlaylist)
             )
         }
 
@@ -193,6 +203,7 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
         }
 
         binding.buttonSetting.setOnClickListener {
+            playlistDetailViewModel.showPlaylist()
             bottomMenu.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
@@ -202,6 +213,7 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
         lifecycleScope.launch {
             playlistDetailViewModel.updatePlaylist()
             playlistDetailViewModel.loadingPlaylist()
+            binding.bottomTracklist.isVisible = true
         }
     }
 
@@ -219,9 +231,11 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
 
     private fun confirmDeletePlaylist(playlist: Playlist) {
         confirmDeletePlaylistDialog?.setTitle(
-        String.format(
-            resources.getString(
-                R.string.playlist_delete_confirm), playlist.name)
+            String.format(
+                resources.getString(
+                    R.string.playlist_delete_confirm
+                ), playlist.name
+            )
         )
         confirmDeletePlaylistDialog?.show()
     }
@@ -230,7 +244,9 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
         confirmDeleteTrackDialog?.setTitle(
             String.format(
                 resources.getString(
-                    R.string.playlist_detail_delete_track), track.trackName)
+                    R.string.playlist_detail_delete_track
+                ), track.trackName
+            )
         )?.setPositiveButton(resources.getString(R.string.res_yes)) { _, _ ->
             playlistDetailViewModel.deleteTrack(track)
         }
@@ -239,11 +255,22 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
 
     private fun render(state: PlaylistDetailState) {
         when (state) {
-            is PlaylistDetailState.Loading -> showLoading(state.playlist)
-            is PlaylistDetailState.Content -> showContent(state.tracks)
+            is PlaylistDetailState.Loading -> showLoading()
+            is PlaylistDetailState.Content -> showContent(state.playlist, state.tracks)
             is PlaylistDetailState.SendMessage -> sendMessageToast(state.message)
             is PlaylistDetailState.ShareIntent -> sharing(state.share)
+            is PlaylistDetailState.ShowPlaylist -> showPlaylist(state.playlist)
             is PlaylistDetailState.ToExit -> findNavController().popBackStack()
+        }
+    }
+
+    private fun showPlaylist(playlist: Playlist) {
+        playlistAdapter?.let {
+            val diffPlaylistCallback = PlaylistCallback(it.playlist.toList(), listOf(playlist))
+            val diffPlaylist = DiffUtil.calculateDiff(diffPlaylistCallback)
+            it.playlist.clear()
+            it.playlist.add(playlist)
+            diffPlaylist.dispatchUpdatesTo(it)
         }
     }
 
@@ -255,36 +282,36 @@ class PlaylistDetailFragment : BindingFragments<FragmentPlaylistDetailBinding>()
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun showLoading(playlist: Playlist) {
+    private fun showLoading() {
+    }
+
+    private fun showContent(playlist: Playlist, tracks: List<Track>) {
         binding.playlistName.text = playlist.name
         binding.playlistDescription.text = playlist.description
         binding.playlistCount.text =
             String.format(getString(R.string.playlist_count_tracks), playlist.countTracks)
 
-        val multiTransform = MultiTransformation(CenterCrop(), RoundedCorners(pxToDp(8f, requireContext())))
+        val multiTransform =
+            MultiTransformation(CenterCrop(), RoundedCorners(pxToDp(8f, requireContext())))
         Glide.with(this)
             .load(playlist.imagePath)
             .placeholder(R.drawable.placeholder)
             .transform(multiTransform)
             .into(binding.imagePlaylist)
-        playlistAdapter?.playlist?.clear()
-        playlistAdapter?.playlist?.add(playlist)
-        playlistAdapter?.notifyDataSetChanged()
-        showContent(emptyList())
-    }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun showContent(tracks: List<Track>) {
         var timeTracks = 0L
         for (track in tracks) {
             timeTracks += track.trackTimeMillis.toLong()
         }
         binding.playlistTime.text =
             String.format(getString(R.string.playlist_time_tracks), timeTracks / 60000)
-        tracksAdapter?.tracks?.clear()
-        tracksAdapter?.tracks?.addAll(tracks)
-        tracksAdapter?.notifyDataSetChanged()
+        tracksAdapter?.let {
+            val diffTrackCallback = PlaylistTracksCallback(it.tracks.toList(), tracks)
+            val diffTracks = DiffUtil.calculateDiff(diffTrackCallback)
+            it.tracks.clear()
+            it.tracks.addAll(tracks)
+            diffTracks.dispatchUpdatesTo(it)
+        }
         binding.placeholderNoTrack.isVisible = tracks.isEmpty()
     }
 

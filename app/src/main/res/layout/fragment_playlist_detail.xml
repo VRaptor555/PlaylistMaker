@@ -13,39 +13,46 @@
         android:layout_height="match_parent"
         android:background="@color/playlist_detail_background">
 
+
+        <ImageView
+            android:id="@+id/image_playlist"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="w,1:1"
+            android:contentDescription="@string/playlist_image"
+            android:src="@drawable/placeholder"
+            android:layout_marginBottom="@dimen/full_padding"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/playlist_name"
+            />
+
         <TextView
             android:id="@+id/btn_back"
             style="@style/BackButtonStyle"
+            android:paddingStart="8dp"
+            android:paddingEnd="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:drawableStartCompat="@drawable/arrow_back"
             app:drawableTint="@color/color_text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/image_playlist"
-            android:layout_width="312dp"
-            android:layout_height="312dp"
-            android:contentDescription="@string/playlist_image"
-            android:src="@drawable/placeholder"
-            app:layout_constraintTop_toBottomOf="@id/btn_back"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlSymmetry" />
 
         <TextView
             android:id="@+id/playlist_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_padding"
-            android:layout_marginTop="@dimen/full_padding"
+            android:layout_marginBottom="@dimen/half_medium_padding"
             android:fontFamily="@font/ys_display_medium"
             android:textColor="@color/color_text"
             android:textSize="@dimen/playlist_h1"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_playlist"
+            app:layout_constraintBottom_toTopOf="@id/playlist_description"
             tools:text="Best songs 2025" />
 
         <TextView
@@ -53,12 +60,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_padding"
-            android:layout_marginTop="@dimen/half_medium_padding"
+            android:layout_marginBottom="@dimen/half_medium_padding"
             android:fontFamily="@font/ys_display_regular"
             android:textColor="@color/color_text"
             android:textSize="@dimen/playlist_h3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/playlist_name"
+            app:layout_constraintBottom_toTopOf="@id/playlist_count"
             tools:text="2022" />
 
         <TextView
@@ -66,19 +73,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_padding"
-            android:layout_marginTop="@dimen/half_medium_padding"
             android:fontFamily="@font/ys_display_regular"
             android:textColor="@color/color_text"
             android:textSize="@dimen/playlist_h3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/playlist_description"
+            app:layout_constraintBottom_toBottomOf="@id/playlist_count"
             tools:text="300 минут" />
 
         <TextView
             android:id="@+id/playlist_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/half_medium_padding"
+            android:layout_marginBottom="@dimen/medium_padding"
             android:drawablePadding="4dp"
             android:fontFamily="@font/ys_display_regular"
             android:textColor="@color/color_text"
@@ -86,7 +92,7 @@
             app:drawableStartCompat="@drawable/point"
             app:drawableTint="@color/color_text"
             app:layout_constraintStart_toEndOf="@id/playlist_time"
-            app:layout_constraintTop_toTopOf="@id/playlist_time"
+            app:layout_constraintBottom_toTopOf="@id/button_share"
             tools:text="98 треков" />
 
         <ImageView
@@ -94,11 +100,11 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="@dimen/medium_padding"
-            android:layout_marginTop="@dimen/medium_padding"
             android:padding="@dimen/small_padding"
             android:src="@drawable/shareapp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/playlist_count"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="290dp"
             app:tint="@color/color_text" />
 
         <ImageView
@@ -122,7 +128,7 @@
         android:orientation="vertical"
         android:visibility="visible"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="260dp"
+        app:behavior_peekHeight="266dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView
