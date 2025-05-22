@@ -26,6 +26,7 @@ import com.example.playlistmaker.utils.getSerializable
 import com.example.playlistmaker.utils.getURLImage500
 import com.example.playlistmaker.utils.timeMillisToMin
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -98,13 +99,13 @@ class PlayerActivity : AppCompatActivity(), ActionPlaylistHandler {
         binding.btnBack.setOnClickListener {
             this.finish()
         }
-
+        val analitics = FirebaseAnalytics.getInstance(this)
 
         binding.playBtn.setOnClickListener {
             viewModel.play()
         }
         binding.favoriteBtn.setOnClickListener {
-            viewModel.onFavoriteClicked()
+            viewModel.onFavoriteClicked(analitics)
         }
         binding.queueBtn.setOnClickListener {
             addTrackToPlaylist()

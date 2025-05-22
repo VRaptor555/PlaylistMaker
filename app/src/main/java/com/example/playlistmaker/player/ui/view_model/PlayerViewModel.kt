@@ -2,6 +2,7 @@ package com.example.playlistmaker.player.ui.view_model
 
 import android.app.Application
 import android.widget.Toast
+import androidx.core.bundle.Bundle
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,10 +16,12 @@ import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.ui.models.PlayerState
 import com.example.playlistmaker.search.domain.db.FavoriteInteractor
 import com.example.playlistmaker.search.domain.model.Track
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -92,7 +95,7 @@ class PlayerViewModel(
         private const val DALAY_TIMER = 300L
     }
 
-    fun onFavoriteClicked() {
+    fun onFavoriteClicked(analytics: FirebaseAnalytics) {
         viewModelScope.launch {
             if (track.isFavorite) {
                 favoriteInteractor.delTrack(track)
@@ -100,6 +103,9 @@ class PlayerViewModel(
             } else {
                 favoriteInteractor.addTrack(track)
                 track.isFavorite = true
+                val bundle = Bundle()
+                bundle.putSerializable("Add to favorite", track)
+                analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
             }
             showCurrentStatus()
         }
