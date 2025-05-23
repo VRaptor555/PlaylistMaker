@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.playlistmaker"
+    namespace = "ru.vraptor.playlistmaker"
     compileSdk = 35
 
     buildFeatures {
@@ -14,7 +14,7 @@ android {
     }
     
     defaultConfig {
-        applicationId = "com.example.playlistmaker"
+        applicationId = "ru.vraptor.playlistmaker"
         minSdk = 29
         targetSdk = 35
         versionCode = 1
@@ -26,10 +26,15 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
+                getDefaultProguardFile("proguard-android.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            isMinifyEnabled = false
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {

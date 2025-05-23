@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.playlistmaker.search.ui.fragments.SearchFragment"
+        android:name="ru.vraptor.playlistmaker.search.ui.fragments.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/libraryFragment"
-        android:name="com.example.playlistmaker.library.ui.fragments.LibraryFragment"
+        android:name="ru.vraptor.playlistmaker.library.ui.fragments.LibraryFragment"
         android:label="fragment_library"
         tools:layout="@layout/fragment_library" >
         <action
@@ -31,36 +31,33 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.playlistmaker.settings.ui.fragments.SettingsFragment"
+        android:name="ru.vraptor.playlistmaker.settings.ui.fragments.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <activity
         android:id="@+id/playerActivity"
-        android:name="com.example.playlistmaker.player.ui.activity.PlayerActivity"
+        android:name="ru.vraptor.playlistmaker.player.ui.activity.PlayerActivity"
         android:label="activity_player"
         tools:layout="@layout/activity_player" >
-        <argument
-            android:name="track"
-            app:argType="com.example.playlistmaker.search.domain.model.Track" />
     </activity>
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.example.playlistmaker.library.ui.fragments.FavoriteFragment"
+        android:name="ru.vraptor.playlistmaker.library.ui.fragments.FavoriteFragment"
         android:label="fragment_favorite"
         tools:layout="@layout/fragment_favorite" />
     <fragment
         android:id="@+id/playlistFragment"
-        android:name="com.example.playlistmaker.library.ui.fragments.PlaylistFragment"
+        android:name="ru.vraptor.playlistmaker.library.ui.fragments.PlaylistFragment"
         android:label="fragment_playlist"
         tools:layout="@layout/fragment_playlist" />
     <fragment
         android:id="@+id/playlistAddFragment"
-        android:name="com.example.playlistmaker.library.ui.fragments.PlaylistCreateFragment"
+        android:name="ru.vraptor.playlistmaker.library.ui.fragments.PlaylistCreateFragment"
         android:label="fragment_playlist_add"
         tools:layout="@layout/fragment_playlist_create" />
     <fragment
         android:id="@+id/playlistDetailFragment"
-        android:name="com.example.playlistmaker.library.ui.fragments.PlaylistDetailFragment"
+        android:name="ru.vraptor.playlistmaker.library.ui.fragments.PlaylistDetailFragment"
         android:label="fragment_playlist_detail"
         tools:layout="@layout/fragment_playlist_detail" >
         <action
@@ -72,6 +69,6 @@
     </fragment>
     <fragment
         android:id="@+id/playlistEditFragment"
-        android:name="com.example.playlistmaker.library.ui.fragments.PlaylistEditFragment"
+        android:name="ru.vraptor.playlistmaker.library.ui.fragments.PlaylistEditFragment"
         android:label="PlaylistEditFragment" />
 </navigation>

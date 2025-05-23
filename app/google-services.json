@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:400064839577:android:9fd6c7936f9439c75f1d08",
+        "mobilesdk_app_id": "1:400064839577:android:e4ede6b45a8e06e75f1d08",
         "android_client_info": {
-          "package_name": "com.example.playlistmaker"
+          "package_name": "ru.vraptor.playlistmaker"
         }
       },
       "oauth_client": [],
