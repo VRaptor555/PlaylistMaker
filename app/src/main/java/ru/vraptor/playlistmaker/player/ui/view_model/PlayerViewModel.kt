@@ -94,7 +94,7 @@ class PlayerViewModel(
         private const val DALAY_TIMER = 300L
     }
 
-    fun onFavoriteClicked(analytics: FirebaseAnalytics) {
+    fun onFavoriteClicked(): Track {
         viewModelScope.launch {
             if (track.isFavorite) {
                 favoriteInteractor.delTrack(track)
@@ -102,12 +102,10 @@ class PlayerViewModel(
             } else {
                 favoriteInteractor.addTrack(track)
                 track.isFavorite = true
-                val bundle = Bundle()
-                bundle.putSerializable("Add to favorite", track)
-                analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
             }
             showCurrentStatus()
         }
+        return track
     }
 
     suspend fun onAddToPlaylist(playlist: Playlist): Boolean {

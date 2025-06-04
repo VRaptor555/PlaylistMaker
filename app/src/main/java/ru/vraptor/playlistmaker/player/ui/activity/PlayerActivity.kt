@@ -99,14 +99,21 @@ class PlayerActivity : AppCompatActivity(), ActionPlaylistHandler {
         binding.btnBack.setOnClickListener {
             this.finish()
         }
-        val analitics = FirebaseAnalytics.getInstance(this)
+        val analytics = FirebaseAnalytics.getInstance(this)
 
         binding.playBtn.setOnClickListener {
             viewModel.play()
         }
+
         binding.favoriteBtn.setOnClickListener {
-            viewModel.onFavoriteClicked(analitics)
+            val track = viewModel.onFavoriteClicked()
+            if (track.isFavorite) {
+                val bundle = Bundle()
+                bundle.putSerializable("Add to favorite", track)
+                analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
+            }
         }
+
         binding.queueBtn.setOnClickListener {
             addTrackToPlaylist()
         }

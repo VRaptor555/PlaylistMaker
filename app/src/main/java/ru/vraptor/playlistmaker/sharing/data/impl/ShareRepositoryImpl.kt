@@ -26,7 +26,9 @@ class ShareRepositoryImpl(
     override fun putExtra(extra: List<Any>) {
         for (extraValue in extra) {
             when (extraValue) {
-                is IntentExtra -> intent.putExtra(extraValue.typeIntent, extraValue.valueIntent)
+                is IntentExtra -> intent.putExtra(extraValue.typeIntent,
+                    arrayOf(extraValue.valueIntent)
+                )
                 is IntentExtraStr -> intent.putExtra(extraValue.typeIntent, extraValue.valueIntent)
             }
         }

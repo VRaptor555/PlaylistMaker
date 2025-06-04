@@ -45,7 +45,7 @@ class SettingsFragment: BindingFragments<FragmentSettingsBinding>() {
             supportBtn.setOnClickListener {
                 viewModel.sendEmail(
                     EmailData(
-                        mailBox = arrayOf(getString(R.string.support_message_email)),
+                        mailBox = listOf(getString(R.string.support_message_email)),
                         subj = getString(R.string.support_message_subj),
                         text = getString(R.string.support_message_text),
                         data = "mailto:"
