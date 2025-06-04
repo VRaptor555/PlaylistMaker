@@ -2,10 +2,11 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.playlistmaker"
+    namespace = "ru.vraptor.playlistmaker"
     compileSdk = 35
 
     buildFeatures {
@@ -13,7 +14,7 @@ android {
     }
     
     defaultConfig {
-        applicationId = "com.example.playlistmaker"
+        applicationId = "ru.vraptor.playlistmaker"
         minSdk = 29
         targetSdk = 35
         versionCode = 1
@@ -25,10 +26,15 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
+                getDefaultProguardFile("proguard-android.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            isMinifyEnabled = false
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {
@@ -48,6 +54,8 @@ android {
 
 dependencies {
     ksp(libs.room.compiler)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
